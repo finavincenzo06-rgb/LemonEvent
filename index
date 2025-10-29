@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEMONCITY Blog - Suggerisci Eventi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .blog-header {
+            background: rgba(255, 235, 59, 0.1);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #ffeb3b;
+            filter: drop-shadow(0 0 15px rgba(255, 235, 59, 0.5));
+        }
+
+        h1 {
+            color: #ffeb3b;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(255, 235, 59, 0.5);
+        }
+
+        .subtitle {
+            color: #ccc;
+            font-size: 1.1em;
+            margin-top: 5px;
+        }
+
+        .admin-link {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px 20px;
+            background: rgba(255, 235, 59, 0.1);
+            border: 2px solid #ffeb3b;
+            color: #ffeb3b;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .admin-link:hover {
+            background: #ffeb3b;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        /* Layout principale: sinistra (form) / destra (suggerimenti) */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            min-height: 60vh;
+        }
+
+        .form-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 235, 59, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-title {
+            color: #ffeb3b;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 235, 59, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #ffeb3b;
+            background: rgba(255, 235, 59, 0.05);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 235, 59, 0.4);
+        }
+
+        .suggestions-section {
+            flex: 2;
+        }
+
+        .section-title {
+            color: #ffeb3b;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 235, 59, 0.2);
+        }
+
+        /* Articoli */
+        .blog-post {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 235, 59, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            color: #000;
+        }
+
+        .author-name {
+            color: #ffeb3b;
+            font-weight: 600;
+        }
+
+        .post-date {
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .post-title {
+            color: #ffeb3b;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .post-content {
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .vote-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.95em;
+        }
+
+        .vote-up {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 2px solid #4caf50;
+        }
+
+        .vote-up:hover {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        .vote-down {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 2px solid #f44336;
+        }
+
+        .vote-down:hover {
+            background: #f44336;
+            color: #fff;
+        }
+
+        .vote-count {
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        /* Popup successo */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #ffeb3b;
+            color: #000;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .success-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Stile per il messaggio di caricamento */
+        .loading-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .loading-message p {
+            font-size: 1.1em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .admin-link {
+                position: static;
+                display: inline-block;
+                margin-top: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="admin-login.html" class="admin-link">👑 Accesso Amministratore</a>
+                <div class="logo">🍋</div>
+                <h1>LEMONCITY EVENTS BLOG</h1>
+                <p class="subtitle">Condividi e scopri idee per nuovi eventi</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- Form a sinistra -->
+            <div class="form-section">
+                <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
+                <form id="bookingForm" onsubmit="submitBooking(event)">
+                    <div class="form-group">
+                        <label>ID Discord *</label>
+                        <input type="text" id="discordId" placeholder="es. username#1234" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Titolo dell'Evento *</label>
+                        <input type="text" id="title" placeholder="es. Torneo di Fortnite" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrizione *</label>
+                        <textarea id="description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cosa Serve? *</label>
+                        <textarea id="requirements" placeholder="Specifica materiali, persone, location, ecc..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quando? *</label>
+                        <input type="text" id="when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Invia Suggerimento</button>
+                </form>
+            </div>
+
+            <!-- Suggerimenti a destra -->
+            <div class="suggestions-section">
+                <h2 class="section-title">Suggerimenti della Community</h2>
+                <div id="suggestionsList">
+                    <!-- Messaggio di caricamento iniziale -->
+                    <div id="loadingMessage" class="loading-message">
+                        <p>🔄 Caricamento suggerimenti in corso...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-popup" id="successPopup">
+        <div class="success-text">Suggerimento inviato con successo!</div>
+    </div>
+
+    <script>
+        // Funzioni per comunicare con il backend PHP
+        async function getBookings() {
+            try {
+                const response = await fetch('api.php', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.error) {
+                    console.error('Errore API:', data.error);
+                    throw new Error(data.error);
+                }
+                return data;
+            } catch (error) {
+                console.error('Errore nel recupero dei dati:', error);
+                throw error; // Rilancia per gestirlo in loadSuggestions
+            }
+        }
+
+        async function saveBooking(booking) {
+            try {
+                const response = await fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(booking)
+                });
+                const result = await response.json();
+                return result.success;
+            } catch (error) {
+                console.error('Errore nel salvataggio:', error);
+                return false;
+            }
+        }
+
+        // Funzione per votare
+        async function voteSuggestion(id, type) {
+            try {
+                const response = await fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'vote',
+                        id: id,
+                        type: type
+                    })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    // Mostra messaggio di successo
+                    showVoteMessage('Voto confermato', 'success');
+                    loadSuggestions(); // Ricarica la lista dei suggerimenti
+                } else {
+                    // Mostra messaggio di errore
+                    showVoteMessage(result.message || 'Errore durante il voto', 'error');
+                }
+            } catch (error) {
+                console.error('Errore durante il voto:', error);
+                showVoteMessage('Errore durante il voto. Controlla la console.', 'error');
+            }
+        }
+
+        // Funzione per mostrare messaggio di voto
+        function showVoteMessage(message, type) {
+            // Rimuovi eventuali messaggi precedenti
+            const existingMsg = document.getElementById('vote-message');
+            if (existingMsg) existingMsg.remove();
+
+            const msgDiv = document.createElement('div');
+            msgDiv.id = 'vote-message';
+            msgDiv.textContent = message;
+            msgDiv.style.position = 'fixed';
+            msgDiv.style.top = '20px';
+            msgDiv.style.left = '50%';
+            msgDiv.style.transform = 'translateX(-50%)';
+            msgDiv.style.padding = '15px 30px';
+            msgDiv.style.borderRadius = '10px';
+            msgDiv.style.fontWeight = 'bold';
+            msgDiv.style.zIndex = '10000';
+            msgDiv.style.textAlign = 'center';
+
+            if (type === 'success') {
+                msgDiv.style.background = '#4CAF50';
+                msgDiv.style.color = '#fff';
+            } else {
+                msgDiv.style.background = '#f44336';
+                msgDiv.style.color = '#fff';
+            }
+
+            document.body.appendChild(msgDiv);
+
+            // Rimuovi il messaggio dopo 3 secondi
+            setTimeout(() => {
+                msgDiv.remove();
+            }, 3000);
+        }
+
+        async function submitBooking(e) {
+            e.preventDefault();
+
+            const booking = {
+                discordId: document.getElementById('discordId').value,
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                requirements: document.getElementById('requirements').value,
+                when: document.getElementById('when').value
+            };
+
+            const saved = await saveBooking(booking);
+
+            if (saved) {
+                document.getElementById('bookingForm').reset();
+                showSuccess();
+                loadSuggestions(); // Ricarica i suggerimenti
+            } else {
+                alert('Errore durante il salvataggio. Controlla la console.');
+            }
+        }
+
+        function showSuccess() {
+            const popup = document.getElementById('successPopup');
+            popup.classList.add('show');
+
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        async function loadSuggestions() {
+            // Mostra il messaggio di caricamento
+            const suggestionsList = document.getElementById('suggestionsList');
+            suggestionsList.innerHTML = `
+                <div id="loadingMessage" class="loading-message">
+                    <p>🔄 Caricamento suggerimenti in corso...</p>
+                </div>
+            `;
+
+            try {
+                const bookings = await getBookings(); // Attendi i dati
+
+                // Rimuovi il messaggio di caricamento
+                const loadingMsg = document.getElementById('loadingMessage');
+                if (loadingMsg) {
+                    loadingMsg.remove();
+                }
+
+                if (bookings.length === 0) {
+                    // Se non ci sono dati dopo il caricamento
+                    suggestionsList.innerHTML = `
+                        <div class="blog-post">
+                            <h3>Nessun suggerimento ricevuto</h3>
+                            <p>Sii il primo a suggerire un evento!</p>
+                        </div>
+                    `;
+                } else {
+                    // Inserisci i suggerimenti
+                    suggestionsList.innerHTML = bookings.map(b => `
+                        <div class="blog-post">
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <div class="author-icon">🎮</div>
+                                    <div>
+                                        <div class="author-name">${b.discord_id}</div>
+                                        <div class="post-date">${b.data_invio}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
+                            <div class="post-content">
+                                <p><strong>Descrizione:</strong> ${b.descrizione}</p>
+                                <p><strong>Requisiti:</strong> ${b.requisiti}</p>
+                                <p><strong>Quando:</strong> ${b.quando}</p>
+                            </div>
+                            <div class="post-meta">
+                                <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
+                                    <span>👍</span>
+                                    <span class="vote-count">${b.voti_positivi || 0}</span>
+                                </button>
+                                <button class="vote-btn vote-down" onclick="voteSuggestion(${b.id}, 'down')">
+                                    <span>👎</span>
+                                    <span class="vote-count">${b.voti_negativi || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                // Gestisci eventuali errori durante il caricamento
+                console.error("Errore durante il caricamento dei suggerimenti:", error);
+
+                // Rimuovi il messaggio di caricamento
+                const loadingMsg = document.getElementById('loadingMessage');
+                if (loadingMsg) {
+                    loadingMsg.remove();
+                }
+
+                // Mostra un messaggio di errore
+                suggestionsList.innerHTML = `
+                    <div class="blog-post">
+                        <h3>Errore nel caricamento</h3>
+                        <p>Impossibile caricare i suggerimenti. Riprova tra poco.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Inizializza la pagina
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSuggestions(); // Carica i suggerimenti pubblici all'avvio
+        });
+    </script>
+</body>
+</html>
