@@ -65,15 +65,43 @@
             margin-top: 5px;
         }
 
-        .user-info {
+        .user-section {
             position: absolute;
             top: 0;
             right: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
             padding: 10px 20px;
             color: #ffeb3b;
             font-weight: 600;
             background: rgba(255, 235, 59, 0.1);
             border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+        }
+
+        .logout-btn:hover {
+            background: #f44336;
+            color: #fff;
+            transform: translateY(-2px);
         }
 
         .admin-link {
@@ -328,16 +356,39 @@
             gap: 10px;
         }
 
+        /* Loading overlay per proteggere il contenuto durante il check */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .page-loading.hidden {
+            display: none;
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .main-content {
                 flex-direction: column;
             }
 
-            .user-info, .admin-link {
+            .user-section, .admin-link {
                 position: static;
-                display: inline-block;
+                display: flex;
+                justify-content: center;
                 margin-top: 15px;
+            }
+
+            .user-section {
+                flex-direction: column;
             }
 
             h1 {
@@ -347,18 +398,26 @@
     </style>
 </head>
 <body>
-    <!-- Forza HTTPS -->
-    <script>
-        if (location.protocol !== 'https:') {
-            location.replace('https://' + location.hostname + location.pathname + location.search);
-        }
-    </script>
+    <!-- Loading overlay -->
+    <div class="page-loading" id="pageLoading">
+        <div class="loading-message">
+            <p>🔄 Verifica autenticazione in corso...</p>
+        </div>
+    </div>
 
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
                 <a href="admin-login.html" class="admin-link">👑 Accesso Amministratore</a>
-                <div class="user-info" id="userInfo">Caricamento...</div>
+                
+                <div class="user-section">
+                    <div class="user-info" id="userInfo">
+                        <span>👤</span>
+                        <span id="username">Caricamento...</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">🚪 Esci</button>
+                </div>
+
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS BLOG</h1>
                 <p class="subtitle">Condividi e scopri idee per nuovi eventi</p>
@@ -419,43 +478,85 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
 
+        // Funzione di logout
+        async function logout() {
+            if (!confirm('Sei sicuro di voler uscire?')) return;
+
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                // Redirect al login
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Errore durante il logout:', error);
+                alert('Errore durante il logout. Riprova.');
+            }
+        }
+
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
+            
             if (error || !session) {
+                console.log('Nessuna sessione attiva, redirect al login');
                 window.location.href = '/login.html';
                 return null;
             }
 
             const user = session.user;
             const discordId = user.user_metadata?.['discord_id'] || user.id;
-            const username = user.user_metadata?.['full_name'] || user.user_metadata?.['user_name'] || user.email || 'Utente';
+            const username = user.user_metadata?.['full_name'] || 
+                           user.user_metadata?.['user_name'] || 
+                           user.email || 
+                           'Utente';
+            
             return { discordId, username };
         }
 
         async function getBookings() {
-            const { data, error } = await supabase.from('suggestions').select('*').order('data_invio', { ascending: false });
+            const { data, error } = await supabase
+                .from('suggestions')
+                .select('*')
+                .order('data_invio', { ascending: false });
+            
             if (error) throw error;
             return data;
         }
 
         async function saveBooking(booking) {
-            const { error } = await supabase.from('suggestions').insert([{
-                discord_id: booking.discordId,
-                titolo: booking.title,
-                descrizione: booking.description,
-                requisiti: booking.requirements,
-                quando: booking.when
-            }]);
+            const { error } = await supabase
+                .from('suggestions')
+                .insert([{
+                    discord_id: booking.discordId,
+                    titolo: booking.title,
+                    descrizione: booking.description,
+                    requisiti: booking.requirements,
+                    quando: booking.when
+                }]);
+            
             return !error;
         }
 
         async function voteSuggestion(id, type) {
             const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-            const { data, error: fetchError } = await supabase.from('suggestions').select(field).eq('id', id).single();
+            
+            const { data, error: fetchError } = await supabase
+                .from('suggestions')
+                .select(field)
+                .eq('id', id)
+                .single();
+            
             if (fetchError) throw fetchError;
+            
             const newValue = data[field] + 1;
-            const { error: updateError } = await supabase.from('suggestions').update({ [field]: newValue }).eq('id', id);
+            
+            const { error: updateError } = await supabase
+                .from('suggestions')
+                .update({ [field]: newValue })
+                .eq('id', id);
+            
             if (updateError) throw updateError;
+            
             loadSuggestions();
         }
 
@@ -467,6 +568,7 @@
 
         async function submitBooking(e) {
             e.preventDefault();
+            
             const auth = await getCurrentUser();
             if (!auth) return;
 
@@ -489,7 +591,7 @@
                 }
             } catch (error) {
                 console.error('Errore:', error);
-                alert('Errore durante l’invio. Controlla la console.');
+                alert('Errore durante l\'invio. Controlla la console.');
             }
         }
 
@@ -543,12 +645,41 @@
             }
         }
 
+        // Inizializzazione pagina
         document.addEventListener('DOMContentLoaded', async () => {
-            const user = await getCurrentUser();
-            if (!user) return;
-            document.getElementById('userInfo').textContent = `Ciao, ${user.username}`;
-            document.getElementById('discordId').value = user.discordId;
-            loadSuggestions();
+            const pageLoading = document.getElementById('pageLoading');
+            
+            try {
+                const user = await getCurrentUser();
+                
+                if (!user) {
+                    // Redirect al login gestito da getCurrentUser
+                    return;
+                }
+                
+                // Aggiorna UI con info utente
+                document.getElementById('username').textContent = user.username;
+                document.getElementById('discordId').value = user.discordId;
+                
+                // Carica i suggerimenti
+                await loadSuggestions();
+                
+                // Nascondi loading overlay
+                pageLoading.classList.add('hidden');
+                
+            } catch (error) {
+                console.error('Errore inizializzazione:', error);
+                window.location.href = '/login.html';
+            }
+        });
+
+        // Listener per i cambi di stato auth
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event);
+            
+            if (event === 'SIGNED_OUT') {
+                window.location.href = '/login.html';
+            }
         });
     </script>
 </body>
