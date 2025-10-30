@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEMONCITY Blog - Suggerisci Eventi</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ... (il tuo CSS rimane identico, non lo ripeto per brevità) ... */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         * {
@@ -385,7 +388,6 @@
             <div class="suggestions-section">
                 <h2 class="section-title">Suggerimenti della Community</h2>
                 <div id="suggestionsList">
-                    <!-- Messaggio di caricamento iniziale -->
                     <div id="loadingMessage" class="loading-message">
                         <p>🔄 Caricamento suggerimenti in corso...</p>
                     </div>
@@ -399,108 +401,92 @@
     </div>
 
     <script>
-        // Funzioni per comunicare con il backend PHP
+        // 🔑 CONFIGURA QUI LE TUE CREDENZIALI SUPABASE
+        const supabaseUrl = 'https://your-project.supabase.co'; // <-- MODIFICA
+        const supabaseAnonKey = 'your-anon-public-key';         // <-- MODIFICA
+
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // --- Funzioni Supabase ---
         async function getBookings() {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                if (data.error) {
-                    console.error('Errore API:', data.error);
-                    throw new Error(data.error);
-                }
-                return data;
-            } catch (error) {
-                console.error('Errore nel recupero dei dati:', error);
-                throw error; // Rilancia per gestirlo in loadSuggestions
-            }
+            const { data, error } = await supabase
+                .from('suggestions')
+                .select('*')
+                .order('data_invio', { ascending: false });
+
+            if (error) throw error;
+            return data;
         }
 
         async function saveBooking(booking) {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(booking)
-                });
-                const result = await response.json();
-                return result.success;
-            } catch (error) {
-                console.error('Errore nel salvataggio:', error);
-                return false;
-            }
+            const { error } = await supabase
+                .from('suggestions')
+                .insert([{
+                    discord_id: booking.discordId,
+                    titolo: booking.title,
+                    descrizione: booking.description,
+                    requisiti: booking.requirements,
+                    quando: booking.when
+                }]);
+
+            return !error;
         }
 
-        // Funzione per votare
         async function voteSuggestion(id, type) {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'vote',
-                        id: id,
-                        type: type
-                    })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    // Mostra messaggio di successo
-                    showVoteMessage('Voto confermato', 'success');
-                    loadSuggestions(); // Ricarica la lista dei suggerimenti
-                } else {
-                    // Mostra messaggio di errore
-                    showVoteMessage(result.message || 'Errore durante il voto', 'error');
-                }
-            } catch (error) {
-                console.error('Errore durante il voto:', error);
-                showVoteMessage('Errore durante il voto. Controlla la console.', 'error');
-            }
+            const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
+            
+            // Recupera il valore corrente
+            const { data, error: fetchError } = await supabase
+                .from('suggestions')
+                .select(field)
+                .eq('id', id)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            const newValue = data[field] + 1;
+
+            const { error: updateError } = await supabase
+                .from('suggestions')
+                .update({ [field]: newValue })
+                .eq('id', id);
+
+            if (updateError) throw updateError;
+            return true;
         }
 
-        // Funzione per mostrare messaggio di voto
+        // --- UI Helpers ---
         function showVoteMessage(message, type) {
-            // Rimuovi eventuali messaggi precedenti
             const existingMsg = document.getElementById('vote-message');
             if (existingMsg) existingMsg.remove();
 
             const msgDiv = document.createElement('div');
             msgDiv.id = 'vote-message';
             msgDiv.textContent = message;
-            msgDiv.style.position = 'fixed';
-            msgDiv.style.top = '20px';
-            msgDiv.style.left = '50%';
-            msgDiv.style.transform = 'translateX(-50%)';
-            msgDiv.style.padding = '15px 30px';
-            msgDiv.style.borderRadius = '10px';
-            msgDiv.style.fontWeight = 'bold';
-            msgDiv.style.zIndex = '10000';
-            msgDiv.style.textAlign = 'center';
-
-            if (type === 'success') {
-                msgDiv.style.background = '#4CAF50';
-                msgDiv.style.color = '#fff';
-            } else {
-                msgDiv.style.background = '#f44336';
-                msgDiv.style.color = '#fff';
-            }
-
+            msgDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 10000;
+                text-align: center;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+            `;
             document.body.appendChild(msgDiv);
-
-            // Rimuovi il messaggio dopo 3 secondi
-            setTimeout(() => {
-                msgDiv.remove();
-            }, 3000);
+            setTimeout(() => msgDiv.remove(), 3000);
         }
 
+        function showSuccess() {
+            const popup = document.getElementById('successPopup');
+            popup.classList.add('show');
+            setTimeout(() => popup.classList.remove('show'), 3000);
+        }
+
+        // --- Gestione form e caricamento ---
         async function submitBooking(e) {
             e.preventDefault();
 
@@ -512,28 +498,22 @@
                 when: document.getElementById('when').value
             };
 
-            const saved = await saveBooking(booking);
-
-            if (saved) {
-                document.getElementById('bookingForm').reset();
-                showSuccess();
-                loadSuggestions(); // Ricarica i suggerimenti
-            } else {
-                alert('Errore durante il salvataggio. Controlla la console.');
+            try {
+                const saved = await saveBooking(booking);
+                if (saved) {
+                    document.getElementById('bookingForm').reset();
+                    showSuccess();
+                    loadSuggestions();
+                } else {
+                    alert('Errore sconosciuto durante il salvataggio.');
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('Errore durante l’invio. Controlla la console.');
             }
         }
 
-        function showSuccess() {
-            const popup = document.getElementById('successPopup');
-            popup.classList.add('show');
-
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 3000);
-        }
-
         async function loadSuggestions() {
-            // Mostra il messaggio di caricamento
             const suggestionsList = document.getElementById('suggestionsList');
             suggestionsList.innerHTML = `
                 <div id="loadingMessage" class="loading-message">
@@ -542,16 +522,11 @@
             `;
 
             try {
-                const bookings = await getBookings(); // Attendi i dati
-
-                // Rimuovi il messaggio di caricamento
+                const bookings = await getBookings();
                 const loadingMsg = document.getElementById('loadingMessage');
-                if (loadingMsg) {
-                    loadingMsg.remove();
-                }
+                if (loadingMsg) loadingMsg.remove();
 
                 if (bookings.length === 0) {
-                    // Se non ci sono dati dopo il caricamento
                     suggestionsList.innerHTML = `
                         <div class="blog-post">
                             <h3>Nessun suggerimento ricevuto</h3>
@@ -559,7 +534,6 @@
                         </div>
                     `;
                 } else {
-                    // Inserisci i suggerimenti
                     suggestionsList.innerHTML = bookings.map(b => `
                         <div class="blog-post">
                             <div class="post-header">
@@ -567,7 +541,7 @@
                                     <div class="author-icon">🎮</div>
                                     <div>
                                         <div class="author-name">${b.discord_id}</div>
-                                        <div class="post-date">${b.data_invio}</div>
+                                        <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
                                     </div>
                                 </div>
                             </div>
@@ -591,16 +565,9 @@
                     `).join('');
                 }
             } catch (error) {
-                // Gestisci eventuali errori durante il caricamento
-                console.error("Errore durante il caricamento dei suggerimenti:", error);
-
-                // Rimuovi il messaggio di caricamento
+                console.error("Errore caricamento:", error);
                 const loadingMsg = document.getElementById('loadingMessage');
-                if (loadingMsg) {
-                    loadingMsg.remove();
-                }
-
-                // Mostra un messaggio di errore
+                if (loadingMsg) loadingMsg.remove();
                 suggestionsList.innerHTML = `
                     <div class="blog-post">
                         <h3>Errore nel caricamento</h3>
@@ -610,9 +577,9 @@
             }
         }
 
-        // Inizializza la pagina
-        document.addEventListener('DOMContentLoaded', function() {
-            loadSuggestions(); // Carica i suggerimenti pubblici all'avvio
+        // --- Inizializzazione ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSuggestions();
         });
     </script>
 </body>
