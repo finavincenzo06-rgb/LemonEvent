@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Quando? *</label>
+                        <label>Data? *</label>
                         <input type="text" id="when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
                     </div>
 
@@ -519,7 +519,7 @@
                     titolo: booking.title,
                     descrizione: booking.description,
                     requisiti: booking.requirements,
-                    quando: booking.when
+                    data: booking.when
                 }]);
             
             return !error;
@@ -610,7 +610,7 @@
                             <div class="post-content">
                                 <p><strong>Descrizione:</strong> ${b.descrizione}</p>
                                 <p><strong>Requisiti:</strong> ${b.requisiti}</p>
-                                <p><strong>Quando:</strong> ${b.quando}</p>
+                                <p><strong>Data:</strong> ${b.data}</p>
                             </div>
                             <div class="post-meta">
                                 <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
