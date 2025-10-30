@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEMONCITY Blog - Suggerisci Eventi</title>
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -97,7 +96,7 @@
             transform: translateY(-2px);
         }
 
-        /* Layout principale: sinistra (form) / destra (suggerimenti) */
+        /* Layout principale */
         .main-content {
             display: flex;
             gap: 30px;
@@ -348,6 +347,13 @@
     </style>
 </head>
 <body>
+    <!-- Forza HTTPS -->
+    <script>
+        if (location.protocol !== 'https:') {
+            location.replace('https://' + location.hostname + location.pathname + location.search);
+        }
+    </script>
+
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
@@ -366,7 +372,6 @@
             <div class="form-section">
                 <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                 <form id="bookingForm" onsubmit="submitBooking(event)">
-                    <!-- Campo Discord ID nascosto -->
                     <input type="hidden" id="discordId">
 
                     <div class="form-group">
@@ -410,86 +415,58 @@
     </div>
 
     <script>
-        // 🔑 CONFIGURA QUI LE TUE CREDENZIALI SUPABASE
         const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
-
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
 
-        // --- Gestione autenticazione e dati utente ---
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
-                // Se non c'è sessione, rimanda al login
-                window.location.href = 'login.html';
+                window.location.href = '/login.html';
                 return null;
             }
 
             const user = session.user;
             const discordId = user.user_metadata?.['discord_id'] || user.id;
             const username = user.user_metadata?.['full_name'] || user.user_metadata?.['user_name'] || user.email || 'Utente';
-
             return { discordId, username };
         }
 
-        // --- Funzioni Supabase ---
         async function getBookings() {
-            const { data, error } = await supabase
-                .from('suggestions')
-                .select('*')
-                .order('data_invio', { ascending: false });
-
+            const { data, error } = await supabase.from('suggestions').select('*').order('data_invio', { ascending: false });
             if (error) throw error;
             return data;
         }
 
         async function saveBooking(booking) {
-            const { error } = await supabase
-                .from('suggestions')
-                .insert([{
-                    discord_id: booking.discordId,
-                    titolo: booking.title,
-                    descrizione: booking.description,
-                    requisiti: booking.requirements,
-                    quando: booking.when
-                }]);
-
+            const { error } = await supabase.from('suggestions').insert([{
+                discord_id: booking.discordId,
+                titolo: booking.title,
+                descrizione: booking.description,
+                requisiti: booking.requirements,
+                quando: booking.when
+            }]);
             return !error;
         }
 
         async function voteSuggestion(id, type) {
             const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-            
-            const { data, error: fetchError } = await supabase
-                .from('suggestions')
-                .select(field)
-                .eq('id', id)
-                .single();
-
+            const { data, error: fetchError } = await supabase.from('suggestions').select(field).eq('id', id).single();
             if (fetchError) throw fetchError;
-
             const newValue = data[field] + 1;
-
-            const { error: updateError } = await supabase
-                .from('suggestions')
-                .update({ [field]: newValue })
-                .eq('id', id);
-
+            const { error: updateError } = await supabase.from('suggestions').update({ [field]: newValue }).eq('id', id);
             if (updateError) throw updateError;
-            loadSuggestions(); // ricarica per aggiornare
+            loadSuggestions();
         }
 
-        // --- UI Helpers ---
         function showSuccess() {
             const popup = document.getElementById('successPopup');
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
 
-        // --- Gestione form e caricamento ---
         async function submitBooking(e) {
             e.preventDefault();
-
             const auth = await getCurrentUser();
             if (!auth) return;
 
@@ -518,11 +495,7 @@
 
         async function loadSuggestions() {
             const suggestionsList = document.getElementById('suggestionsList');
-            suggestionsList.innerHTML = `
-                <div id="loadingMessage" class="loading-message">
-                    <p>🔄 Caricamento suggerimenti in corso...</p>
-                </div>
-            `;
+            suggestionsList.innerHTML = `<div id="loadingMessage" class="loading-message"><p>🔄 Caricamento suggerimenti in corso...</p></div>`;
 
             try {
                 const bookings = await getBookings();
@@ -530,12 +503,7 @@
                 if (loadingMsg) loadingMsg.remove();
 
                 if (bookings.length === 0) {
-                    suggestionsList.innerHTML = `
-                        <div class="blog-post">
-                            <h3>Nessun suggerimento ricevuto</h3>
-                            <p>Sii il primo a suggerire un evento!</p>
-                        </div>
-                    `;
+                    suggestionsList.innerHTML = `<div class="blog-post"><h3>Nessun suggerimento ricevuto</h3><p>Sii il primo a suggerire un evento!</p></div>`;
                 } else {
                     suggestionsList.innerHTML = bookings.map(b => `
                         <div class="blog-post">
@@ -571,26 +539,17 @@
                 console.error("Errore caricamento:", error);
                 const loadingMsg = document.getElementById('loadingMessage');
                 if (loadingMsg) loadingMsg.remove();
-                suggestionsList.innerHTML = `
-                    <div class="blog-post">
-                        <h3>Errore nel caricamento</h3>
-                        <p>Impossibile caricare i suggerimenti. Riprova tra poco.</p>
-                    </div>
-                `;
+                suggestionsList.innerHTML = `<div class="blog-post"><h3>Errore nel caricamento</h3><p>Impossibile caricare i suggerimenti. Riprova tra poco.</p></div>`;
             }
         }
 
-        // --- Inizializzazione ---
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await getCurrentUser();
             if (!user) return;
-
             document.getElementById('userInfo').textContent = `Ciao, ${user.username}`;
             document.getElementById('discordId').value = user.discordId;
-
             loadSuggestions();
         });
     </script>
 </body>
-</html>
 </html>
