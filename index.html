@@ -66,39 +66,21 @@
             margin-top: 5px;
         }
 
-        .auth-controls {
+        .user-info {
             position: absolute;
             top: 0;
             right: 0;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .user-info {
-            color: #ffeb3b;
-            font-weight: 600;
-            padding: 10px;
-        }
-
-        .auth-btn {
             padding: 10px 20px;
-            background: rgba(255, 235, 59, 0.1);
-            border: 2px solid #ffeb3b;
             color: #ffeb3b;
-            border-radius: 30px;
-            text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            background: #ffeb3b;
-            color: #000;
-            transform: translateY(-2px);
+            background: rgba(255, 235, 59, 0.1);
+            border-radius: 30px;
         }
 
         .admin-link {
+            position: absolute;
+            top: 0;
+            left: 0;
             padding: 10px 20px;
             background: rgba(255, 235, 59, 0.1);
             border: 2px solid #ffeb3b;
@@ -313,11 +295,6 @@
             font-size: 1.1em;
         }
 
-        .vote-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
         /* Popup successo */
         .success-popup {
             position: fixed;
@@ -358,7 +335,7 @@
                 flex-direction: column;
             }
 
-            .auth-controls, .admin-link {
+            .user-info, .admin-link {
                 position: static;
                 display: inline-block;
                 margin-top: 15px;
@@ -374,10 +351,8 @@
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
-                <div class="auth-controls" id="authControls">
-                    <!-- Dinamicamente riempito da JS -->
-                </div>
                 <a href="admin-login.html" class="admin-link">👑 Accesso Amministratore</a>
+                <div class="user-info" id="userInfo">Caricamento...</div>
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS BLOG</h1>
                 <p class="subtitle">Condividi e scopri idee per nuovi eventi</p>
@@ -392,10 +367,7 @@
                 <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                 <form id="bookingForm" onsubmit="submitBooking(event)">
                     <!-- Campo Discord ID nascosto -->
-                    <div class="form-group" id="discordIdGroup" style="display:none;">
-                        <label>ID Discord *</label>
-                        <input type="text" id="discordId" readonly required>
-                    </div>
+                    <input type="hidden" id="discordId">
 
                     <div class="form-group">
                         <label>Titolo dell'Evento *</label>
@@ -444,43 +416,20 @@
 
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
 
-        // --- Autenticazione ---
-        function getAuthData() {
-            return {
-                discordId: localStorage.getItem('discordId'),
-                discordUsername: localStorage.getItem('discordUsername')
-            };
-        }
-
-        function isAuthenticated() {
-            const auth = getAuthData();
-            return !!auth.discordId && !!auth.discordUsername;
-        }
-
-        function updateAuthUI() {
-            const authControls = document.getElementById('authControls');
-            const auth = getAuthData();
-
-            if (isAuthenticated()) {
-                authControls.innerHTML = `
-                    <div class="user-info">Ciao, ${auth.discordUsername}</div>
-                    <a href="#" class="auth-btn" onclick="logout()">Logout</a>
-                `;
-                document.getElementById('discordIdGroup').style.display = 'none';
-                document.getElementById('discordId').value = auth.discordId;
-            } else {
-                authControls.innerHTML = `
-                    <a href="login.html" class="auth-btn">Login con Discord</a>
-                `;
-                document.getElementById('discordIdGroup').style.display = 'block';
+        // --- Gestione autenticazione e dati utente ---
+        async function getCurrentUser() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session) {
+                // Se non c'è sessione, rimanda al login
+                window.location.href = 'login.html';
+                return null;
             }
-        }
 
-        function logout() {
-            localStorage.removeItem('discordId');
-            localStorage.removeItem('discordUsername');
-            updateAuthUI();
-            loadSuggestions(); // ricarica per disabilitare voti
+            const user = session.user;
+            const discordId = user.user_metadata?.['discord_id'] || user.id;
+            const username = user.user_metadata?.['full_name'] || user.user_metadata?.['user_name'] || user.email || 'Utente';
+
+            return { discordId, username };
         }
 
         // --- Funzioni Supabase ---
@@ -509,12 +458,6 @@
         }
 
         async function voteSuggestion(id, type) {
-            if (!isAuthenticated()) {
-                showVoteMessage("Devi effettuare il login per votare.", "error");
-                window.location.href = "login.html";
-                return;
-            }
-
             const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
             
             const { data, error: fetchError } = await supabase
@@ -533,36 +476,10 @@
                 .eq('id', id);
 
             if (updateError) throw updateError;
-
-            showVoteMessage("Voto registrato!", "success");
-            loadSuggestions(); // ricarica per aggiornare conteggi
+            loadSuggestions(); // ricarica per aggiornare
         }
 
         // --- UI Helpers ---
-        function showVoteMessage(message, type) {
-            const existingMsg = document.getElementById('vote-message');
-            if (existingMsg) existingMsg.remove();
-
-            const msgDiv = document.createElement('div');
-            msgDiv.id = 'vote-message';
-            msgDiv.textContent = message;
-            msgDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 15px 30px;
-                border-radius: 10px;
-                font-weight: bold;
-                z-index: 10000;
-                text-align: center;
-                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
-                color: white;
-            `;
-            document.body.appendChild(msgDiv);
-            setTimeout(() => msgDiv.remove(), 3000);
-        }
-
         function showSuccess() {
             const popup = document.getElementById('successPopup');
             popup.classList.add('show');
@@ -573,13 +490,9 @@
         async function submitBooking(e) {
             e.preventDefault();
 
-            if (!isAuthenticated()) {
-                alert("Devi effettuare il login per inviare un suggerimento.");
-                window.location.href = "login.html";
-                return;
-            }
+            const auth = await getCurrentUser();
+            if (!auth) return;
 
-            const auth = getAuthData();
             const booking = {
                 discordId: auth.discordId,
                 title: document.getElementById('title').value,
@@ -616,8 +529,6 @@
                 const loadingMsg = document.getElementById('loadingMessage');
                 if (loadingMsg) loadingMsg.remove();
 
-                const isLoggedIn = isAuthenticated();
-
                 if (bookings.length === 0) {
                     suggestionsList.innerHTML = `
                         <div class="blog-post">
@@ -626,42 +537,35 @@
                         </div>
                     `;
                 } else {
-                    suggestionsList.innerHTML = bookings.map(b => {
-                        const upBtnClass = isLoggedIn ? 'vote-up' : 'vote-up vote-disabled';
-                        const downBtnClass = isLoggedIn ? 'vote-down' : 'vote-down vote-disabled';
-                        const upOnClick = isLoggedIn ? `voteSuggestion(${b.id}, 'up')` : '';
-                        const downOnClick = isLoggedIn ? `voteSuggestion(${b.id}, 'down')` : '';
-
-                        return `
-                            <div class="blog-post">
-                                <div class="post-header">
-                                    <div class="post-author">
-                                        <div class="author-icon">🎮</div>
-                                        <div>
-                                            <div class="author-name">${b.discord_id}</div>
-                                            <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
-                                        </div>
+                    suggestionsList.innerHTML = bookings.map(b => `
+                        <div class="blog-post">
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <div class="author-icon">🎮</div>
+                                    <div>
+                                        <div class="author-name">${b.discord_id}</div>
+                                        <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
                                     </div>
                                 </div>
-                                <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
-                                <div class="post-content">
-                                    <p><strong>Descrizione:</strong> ${b.descrizione}</p>
-                                    <p><strong>Requisiti:</strong> ${b.requisiti}</p>
-                                    <p><strong>Quando:</strong> ${b.quando}</p>
-                                </div>
-                                <div class="post-meta">
-                                    <button class="vote-btn ${upBtnClass}" ${upOnClick ? `onclick="${upOnClick}"` : ''}>
-                                        <span>👍</span>
-                                        <span class="vote-count">${b.voti_positivi || 0}</span>
-                                    </button>
-                                    <button class="vote-btn ${downBtnClass}" ${downOnClick ? `onclick="${downOnClick}"` : ''}>
-                                        <span>👎</span>
-                                        <span class="vote-count">${b.voti_negativi || 0}</span>
-                                    </button>
-                                </div>
                             </div>
-                        `;
-                    }).join('');
+                            <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
+                            <div class="post-content">
+                                <p><strong>Descrizione:</strong> ${b.descrizione}</p>
+                                <p><strong>Requisiti:</strong> ${b.requisiti}</p>
+                                <p><strong>Quando:</strong> ${b.quando}</p>
+                            </div>
+                            <div class="post-meta">
+                                <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
+                                    <span>👍</span>
+                                    <span class="vote-count">${b.voti_positivi || 0}</span>
+                                </button>
+                                <button class="vote-btn vote-down" onclick="voteSuggestion(${b.id}, 'down')">
+                                    <span>👎</span>
+                                    <span class="vote-count">${b.voti_negativi || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
                 }
             } catch (error) {
                 console.error("Errore caricamento:", error);
@@ -677,10 +581,16 @@
         }
 
         // --- Inizializzazione ---
-        document.addEventListener('DOMContentLoaded', () => {
-            updateAuthUI();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await getCurrentUser();
+            if (!user) return;
+
+            document.getElementById('userInfo').textContent = `Ciao, ${user.username}`;
+            document.getElementById('discordId').value = user.discordId;
+
             loadSuggestions();
         });
     </script>
 </body>
+</html>
 </html>
