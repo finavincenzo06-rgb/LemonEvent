@@ -523,7 +523,8 @@
                     username: booking.username,
                     titolo: booking.title,
                     descrizione: booking.description,
-                    requisiti: booking.requirements
+                    requisiti: booking.requirements,
+                    quando: booking.when
                 }])
                 .select();
             
@@ -623,7 +624,7 @@
                             <div class="post-content">
                                 <p><strong>Descrizione:</strong> ${b.descrizione}</p>
                                 <p><strong>Requisiti:</strong> ${b.requisiti}</p>
-                                <p><strong>Data:</strong> ${b.data}</p>
+                                <p><strong>Data:</strong> ${b.quando}</p>
                             </div>
                             <div class="post-meta">
                                 <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
