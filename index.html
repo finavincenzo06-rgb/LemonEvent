@@ -514,7 +514,9 @@
         }
 
         async function saveBooking(booking) {
-            const { error } = await supabase
+            console.log('Tentativo di salvare:', booking);
+            
+            const { data, error } = await supabase
                 .from('suggestions')
                 .insert([{
                     discord_id: booking.discordId,
@@ -523,7 +525,18 @@
                     descrizione: booking.description,
                     requisiti: booking.requirements,
                     data: booking.when
-                }]);
+                }])
+                .select();
+            
+            if (error) {
+                console.error('Errore Supabase completo:', error);
+                console.error('Messaggio:', error.message);
+                console.error('Dettagli:', error.details);
+                console.error('Hint:', error.hint);
+                alert('Errore: ' + error.message);
+            } else {
+                console.log('Salvato con successo:', data);
+            }
             
             return !error;
         }
