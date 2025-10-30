@@ -141,6 +141,45 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
+        .form-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(33, 150, 243, 0.3);
+            border-radius: 10px;
+            color: #ccc;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+        }
+
+        .tab-btn:hover {
+            border-color: #2196f3;
+            color: #2196f3;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            border-color: #2196f3;
+            color: #fff;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
         .form-title {
             color: #2196f3;
             font-size: 1.6em;
@@ -159,7 +198,11 @@
             font-weight: 500;
         }
 
-        input[type="text"], textarea {
+        input[type="text"], 
+        input[type="date"],
+        input[type="time"],
+        textarea,
+        select {
             width: 100%;
             padding: 12px 15px;
             background: rgba(255, 255, 255, 0.05);
@@ -170,10 +213,23 @@
             transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus, textarea:focus {
+        input[type="text"]:focus, 
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        textarea:focus,
+        select:focus {
             outline: none;
             border-color: #2196f3;
             background: rgba(33, 150, 243, 0.1);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #fff;
         }
 
         textarea {
@@ -279,9 +335,10 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .vote-btn {
+        .vote-btn, .book-btn {
             display: flex;
             align-items: center;
             gap: 5px;
@@ -292,6 +349,7 @@
             transition: all 0.3s ease;
             border: none;
             font-size: 0.95em;
+            font-family: 'Poppins', sans-serif;
         }
 
         .vote-up {
@@ -316,9 +374,39 @@
             color: #fff;
         }
 
+        .book-btn {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 2px solid #ffc107;
+        }
+
+        .book-btn:hover {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .book-btn.booked {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            border: 2px solid #4caf50;
+            cursor: default;
+        }
+
         .vote-count {
             font-weight: 700;
             font-size: 1.1em;
+        }
+
+        .event-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(156, 39, 176, 0.2);
+            border: 2px solid #9c27b0;
+            color: #9c27b0;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
 
         .success-popup {
@@ -420,6 +508,27 @@
             box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
         }
 
+        .bookings-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .bookings-list-title {
+            color: #ffc107;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .booking-item {
+            color: #bbb;
+            font-size: 0.85em;
+            padding: 3px 0;
+        }
+
         @media (max-width: 900px) {
             .main-content {
                 flex-direction: column;
@@ -438,6 +547,10 @@
 
             h1 {
                 font-size: 2em;
+            }
+
+            .form-tabs {
+                flex-direction: column;
             }
         }
     </style>
@@ -464,7 +577,7 @@
 
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS</h1>
-                <p class="subtitle">Condividi e scopri idee per nuovi eventi</p>
+                <p class="subtitle">Condividi, scopri e prenota eventi della community</p>
             </div>
         </div>
     </div>
@@ -472,40 +585,75 @@
     <div class="container">
         <div class="main-content">
             <div class="form-section">
-                <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
-                <form id="bookingForm" onsubmit="submitBooking(event)">
-                    <input type="hidden" id="discordId">
-                    <input type="hidden" id="usernameField">
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
+                    <button class="tab-btn" onclick="switchTab('book')">📅 Prenota Evento</button>
+                </div>
 
-                    <div class="form-group">
-                        <label>Titolo dell'Evento *</label>
-                        <input type="text" id="title" placeholder="es. Torneo di Fortnite" required>
-                    </div>
+                <!-- Form Suggerimento -->
+                <div id="suggestForm" class="tab-content active">
+                    <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
+                    <form id="suggestionForm" onsubmit="submitSuggestion(event)">
+                        <div class="form-group">
+                            <label>Titolo dell'Evento *</label>
+                            <input type="text" id="suggest_title" placeholder="es. Torneo di Fortnite" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Descrizione *</label>
-                        <textarea id="description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label>Descrizione *</label>
+                            <textarea id="suggest_description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Cosa Serve? *</label>
-                        <textarea id="requirements" placeholder="Specifica materiali, persone, location, ecc..." required></textarea>
-                    </div>
+                        <div class="form-group">
+                            <label>Cosa Serve? *</label>
+                            <textarea id="suggest_requirements" placeholder="Specifica materiali, persone, location, ecc..." required></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Data *</label>
-                        <input type="text" id="when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
-                    </div>
+                        <div class="form-group">
+                            <label>Quando? *</label>
+                            <input type="text" id="suggest_when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
+                        </div>
 
-                    <button type="submit" class="submit-btn">Invia Suggerimento</button>
-                </form>
+                        <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
+                    </form>
+                </div>
+
+                <!-- Form Prenotazione -->
+                <div id="bookForm" class="tab-content">
+                    <h2 class="form-title">Prenota un Evento</h2>
+                    <form id="bookingForm" onsubmit="submitBooking(event)">
+                        <div class="form-group">
+                            <label>Seleziona Evento *</label>
+                            <select id="event_select" required>
+                                <option value="">-- Scegli un evento --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="book_fullname" placeholder="Il tuo nome e cognome" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Numero di Partecipanti *</label>
+                            <input type="text" id="book_participants" placeholder="es. 1 o 2 persone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Note Aggiuntive</label>
+                            <textarea id="book_notes" placeholder="Eventuali richieste o informazioni aggiuntive..."></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">📅 Conferma Prenotazione</button>
+                    </form>
+                </div>
             </div>
 
             <div class="suggestions-section">
-                <h2 class="section-title">Suggerimenti della Community</h2>
+                <h2 class="section-title">Suggerimenti ed Eventi della Community</h2>
                 <div id="suggestionsList">
                     <div id="loadingMessage" class="loading-message">
-                        <p>🔄 Caricamento suggerimenti in corso...</p>
+                        <p>🔄 Caricamento contenuti in corso...</p>
                     </div>
                 </div>
             </div>
@@ -513,7 +661,7 @@
     </div>
 
     <div class="success-popup" id="successPopup">
-        <div class="success-text">Suggerimento inviato con successo!</div>
+        <div class="success-text" id="successText">Operazione completata con successo!</div>
     </div>
 
     <div class="alert-popup" id="alertPopup">
@@ -527,6 +675,27 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
 
+        let currentUser = null;
+
+        function switchTab(tab) {
+            const suggestTab = document.getElementById('suggestForm');
+            const bookTab = document.getElementById('bookForm');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'suggest') {
+                suggestTab.classList.add('active');
+                bookTab.classList.remove('active');
+                tabs[0].classList.add('active');
+            } else {
+                suggestTab.classList.remove('active');
+                bookTab.classList.add('active');
+                tabs[1].classList.add('active');
+                loadEventsForBooking();
+            }
+        }
+
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
 
@@ -537,7 +706,7 @@
                 window.location.href = '/login.html';
             } catch (error) {
                 console.error('Errore durante il logout:', error);
-                alert('Errore durante il logout. Riprova.');
+                showAlert('Errore durante il logout. Riprova.');
             }
         }
 
@@ -560,7 +729,7 @@
             return { discordId, username };
         }
 
-        async function getBookings() {
+        async function getSuggestions() {
             const { data, error } = await supabase
                 .from('suggestions')
                 .select('*')
@@ -570,45 +739,70 @@
             return data;
         }
 
-        async function saveBooking(booking) {
-            console.log('Tentativo di salvare:', booking);
+        async function getBookingsForSuggestion(suggestionId) {
+            const { data, error } = await supabase
+                .from('event_bookings')
+                .select('*')
+                .eq('suggestion_id', suggestionId)
+                .order('data_prenotazione', { ascending: false });
             
+            if (error) throw error;
+            return data || [];
+        }
+
+        async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
                 .insert([{
-                    discord_id: booking.discordId,
-                    username: booking.username,
-                    titolo: booking.title,
-                    descrizione: booking.description,
-                    requisiti: booking.requirements,
-                    quando: booking.when
+                    discord_id: suggestion.discordId,
+                    username: suggestion.username,
+                    titolo: suggestion.title,
+                    descrizione: suggestion.description,
+                    requisiti: suggestion.requirements,
+                    quando: suggestion.when
                 }])
                 .select();
             
             if (error) {
-                console.error('Errore Supabase completo:', error);
-                console.error('Messaggio:', error.message);
-                console.error('Dettagli:', error.details);
-                console.error('Hint:', error.hint);
-                alert('Errore: ' + error.message);
-            } else {
-                console.log('Salvato con successo:', data);
+                console.error('Errore Supabase:', error);
+                showAlert('Errore: ' + error.message);
+                return false;
             }
             
-            return !error;
+            return true;
+        }
+
+        async function saveBooking(booking) {
+            const { data, error } = await supabase
+                .from('event_bookings')
+                .insert([{
+                    suggestion_id: booking.eventId,
+                    discord_id: booking.discordId,
+                    username: booking.username,
+                    nome_completo: booking.fullname,
+                    numero_partecipanti: booking.participants,
+                    note: booking.notes
+                }])
+                .select();
+            
+            if (error) {
+                console.error('Errore Supabase:', error);
+                showAlert('Errore: ' + error.message);
+                return false;
+            }
+            
+            return true;
         }
 
         async function voteSuggestion(id, type) {
-            const auth = await getCurrentUser();
-            if (!auth) return;
+            if (!currentUser) return;
 
             try {
-                // Controlla se l'utente ha già votato questo suggerimento
                 const { data: existingVote, error: checkError } = await supabase
                     .from('suggestion_votes')
                     .select('*')
                     .eq('suggestion_id', id)
-                    .eq('discord_id', auth.discordId)
+                    .eq('discord_id', currentUser.discordId)
                     .maybeSingle();
                 
                 if (checkError && checkError.code !== 'PGRST116') {
@@ -620,18 +814,16 @@
                     return;
                 }
 
-                // Registra il voto
                 const { error: insertError } = await supabase
                     .from('suggestion_votes')
                     .insert([{
                         suggestion_id: id,
-                        discord_id: auth.discordId,
+                        discord_id: currentUser.discordId,
                         vote_type: type
                     }]);
                 
                 if (insertError) throw insertError;
 
-                // Aggiorna il conteggio dei voti
                 const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
                 
                 const { data, error: fetchError } = await supabase
@@ -658,8 +850,23 @@
             }
         }
 
-        function showSuccess() {
+        async function checkUserBooking(suggestionId) {
+            if (!currentUser) return false;
+
+            const { data, error } = await supabase
+                .from('event_bookings')
+                .select('*')
+                .eq('suggestion_id', suggestionId)
+                .eq('discord_id', currentUser.discordId)
+                .maybeSingle();
+            
+            return data ? true : false;
+        }
+
+        function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
+            const text = document.getElementById('successText');
+            text.textContent = message;
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
@@ -676,33 +883,83 @@
             popup.classList.remove('show');
         }
 
+        async function submitSuggestion(e) {
+            e.preventDefault();
+            
+            if (!currentUser) return;
+
+            const suggestion = {
+                discordId: currentUser.discordId,
+                username: currentUser.username,
+                title: document.getElementById('suggest_title').value,
+                description: document.getElementById('suggest_description').value,
+                requirements: document.getElementById('suggest_requirements').value,
+                when: document.getElementById('suggest_when').value
+            };
+
+            try {
+                const saved = await saveSuggestion(suggestion);
+                if (saved) {
+                    document.getElementById('suggestionForm').reset();
+                    showSuccess('Suggerimento inviato con successo!');
+                    loadSuggestions();
+                }
+            } catch (error) {
+                console.error('Errore:', error);
+                showAlert('Errore durante l\'invio. Riprova.');
+            }
+        }
+
         async function submitBooking(e) {
             e.preventDefault();
             
-            const auth = await getCurrentUser();
-            if (!auth) return;
+            if (!currentUser) return;
+
+            const eventId = document.getElementById('event_select').value;
+            
+            if (!eventId) {
+                showAlert('Seleziona un evento da prenotare!');
+                return;
+            }
 
             const booking = {
-                discordId: auth.discordId,
-                username: auth.username,
-                title: document.getElementById('title').value,
-                description: document.getElementById('description').value,
-                requirements: document.getElementById('requirements').value,
-                when: document.getElementById('when').value
+                eventId: eventId,
+                discordId: currentUser.discordId,
+                username: currentUser.username,
+                fullname: document.getElementById('book_fullname').value,
+                participants: document.getElementById('book_participants').value,
+                notes: document.getElementById('book_notes').value
             };
 
             try {
                 const saved = await saveBooking(booking);
                 if (saved) {
                     document.getElementById('bookingForm').reset();
-                    showSuccess();
+                    showSuccess('Prenotazione confermata con successo!');
                     loadSuggestions();
-                } else {
-                    alert('Errore sconosciuto durante il salvataggio.');
+                    loadEventsForBooking();
                 }
             } catch (error) {
                 console.error('Errore:', error);
-                alert('Errore durante l\'invio. Controlla la console.');
+                showAlert('Errore durante la prenotazione. Riprova.');
+            }
+        }
+
+        async function loadEventsForBooking() {
+            try {
+                const suggestions = await getSuggestions();
+                const select = document.getElementById('event_select');
+                
+                select.innerHTML = '<option value="">-- Scegli un evento --</option>';
+                
+                suggestions.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.id;
+                    option.textContent = `${s.titolo} - ${s.quando}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Errore caricamento eventi:', error);
             }
         }
 
@@ -710,59 +967,98 @@
             const suggestionsList = document.getElementById('suggestionsList');
 
             try {
-                const bookings = await getBookings();
+                const suggestions = await getSuggestions();
 
-                if (bookings.length === 0) {
-                    suggestionsList.innerHTML = `<div class="blog-post"><h3>Nessun suggerimento ricevuto</h3><p>Sii il primo a suggerire un evento!</p></div>`;
-                } else {
-                    suggestionsList.innerHTML = bookings.map(b => `
+                if (suggestions.length === 0) {
+                    suggestionsList.innerHTML = `
                         <div class="blog-post">
-                            <div class="post-header">
-                                <div class="post-author">
-                                    <div class="author-icon">🎮</div>
-                                    <div>
-                                        <div class="author-name">${b.username || b.discord_id}</div>
-                                        <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
+                            <h3>Nessun contenuto disponibile</h3>
+                            <p>Sii il primo a suggerire un evento!</p>
+                        </div>`;
+                } else {
+                    const postsHtml = [];
+                    
+                    for (const s of suggestions) {
+                        const bookings = await getBookingsForSuggestion(s.id);
+                        const isBooked = await checkUserBooking(s.id);
+                        
+                        const bookingsHtml = bookings.length > 0 ? `
+                            <div class="bookings-list">
+                                <div class="bookings-list-title">👥 Prenotazioni (${bookings.length}):</div>
+                                ${bookings.map(b => `
+                                    <div class="booking-item">
+                                        • ${b.nome_completo} - ${b.numero_partecipanti} partecipanti
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '';
+
+                        postsHtml.push(`
+                            <div class="blog-post">
+                                <span class="event-badge">💡 Suggerimento Community</span>
+                                <div class="post-header">
+                                    <div class="post-author">
+                                        <div class="author-icon">🎮</div>
+                                        <div>
+                                            <div class="author-name">${s.username || s.discord_id}</div>
+                                            <div class="post-date">${new Date(s.data_invio).toLocaleString('it-IT')}</div>
+                                        </div>
                                     </div>
                                 </div>
+                                <h3 class="post-title">${s.titolo || 'Evento senza titolo'}</h3>
+                                <div class="post-content">
+                                    <p><strong>📝 Descrizione:</strong> ${s.descrizione}</p>
+                                    <p><strong>🛠️ Requisiti:</strong> ${s.requisiti}</p>
+                                    <p><strong>📅 Quando:</strong> ${s.quando}</p>
+                                </div>
+                                ${bookingsHtml}
+                                <div class="post-meta">
+                                    <button class="vote-btn vote-up" onclick="voteSuggestion(${s.id}, 'up')">
+                                        <span>👍</span>
+                                        <span class="vote-count">${s.voti_positivi || 0}</span>
+                                    </button>
+                                    <button class="vote-btn vote-down" onclick="voteSuggestion(${s.id}, 'down')">
+                                        <span>👎</span>
+                                        <span class="vote-count">${s.voti_negativi || 0}</span>
+                                    </button>
+                                    ${isBooked ? 
+                                        '<button class="book-btn booked">✅ Già Prenotato</button>' :
+                                        `<button class="book-btn" onclick="quickBook(${s.id}, '${s.titolo.replace(/'/g, "\\'")}')">📅 Prenota Ora</button>`
+                                    }
+                                </div>
                             </div>
-                            <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
-                            <div class="post-content">
-                                <p><strong>Descrizione:</strong> ${b.descrizione}</p>
-                                <p><strong>Requisiti:</strong> ${b.requisiti}</p>
-                                <p><strong>Data:</strong> ${b.quando}</p>
-                            </div>
-                            <div class="post-meta">
-                                <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
-                                    <span>👍</span>
-                                    <span class="vote-count">${b.voti_positivi || 0}</span>
-                                </button>
-                                <button class="vote-btn vote-down" onclick="voteSuggestion(${b.id}, 'down')">
-                                    <span>👎</span>
-                                    <span class="vote-count">${b.voti_negativi || 0}</span>
-                                </button>
-                            </div>
-                        </div>
-                    `).join('');
+                        `);
+                    }
+
+                    suggestionsList.innerHTML = postsHtml.join('');
                 }
             } catch (error) {
                 console.error("Errore caricamento:", error);
-                suggestionsList.innerHTML = `<div class="blog-post"><h3>Errore nel caricamento</h3><p>Impossibile caricare i suggerimenti. Riprova tra poco.</p></div>`;
+                suggestionsList.innerHTML = `
+                    <div class="blog-post">
+                        <h3>Errore nel caricamento</h3>
+                        <p>Impossibile caricare i contenuti. Riprova tra poco.</p>
+                    </div>`;
             }
+        }
+
+        function quickBook(eventId, eventTitle) {
+            switchTab('book');
+            document.getElementById('event_select').value = eventId;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const pageLoading = document.getElementById('pageLoading');
             
             try {
-                const user = await getCurrentUser();
+                currentUser = await getCurrentUser();
                 
-                if (!user) {
+                if (!currentUser) {
                     return;
                 }
                 
-                document.getElementById('username').textContent = user.username;
-                document.getElementById('usernameField').value = user.username;
+                document.getElementById('username').textContent = currentUser.username;
                 
                 await loadSuggestions();
                 
