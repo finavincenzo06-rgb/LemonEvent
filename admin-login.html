@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accesso Amministratore - LEMONCITY</title>
+    <title>LemonCity Events</title>
+    <link rel="icon" href="fotosito.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -15,7 +16,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #000;
+            background: #0a0e27;
             color: #fff;
             min-height: 100vh;
             position: relative;
@@ -29,7 +30,7 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            background: linear-gradient(45deg, #000, #111, #000);
+            background: linear-gradient(45deg, #0a0e27, #1a1f3a, #0a0e27);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
         }
@@ -55,7 +56,7 @@
         .shape1 {
             width: 300px;
             height: 300px;
-            background: #ffeb3b;
+            background: #2196f3;
             top: 10%;
             left: 10%;
             animation-delay: 0s;
@@ -64,7 +65,7 @@
         .shape2 {
             width: 400px;
             height: 400px;
-            background: #ffc107;
+            background: #1976d2;
             top: 60%;
             right: 10%;
             animation-delay: 5s;
@@ -73,7 +74,7 @@
         .shape3 {
             width: 250px;
             height: 250px;
-            background: #ffeb3b;
+            background: #2196f3;
             bottom: 10%;
             left: 40%;
             animation-delay: 10s;
@@ -111,24 +112,24 @@
         .logo {
             font-size: 4em;
             margin-bottom: 10px;
-            filter: drop-shadow(0 0 20px rgba(255, 235, 59, 0.5));
-            color: #ffeb3b;
+            filter: drop-shadow(0 0 20px rgba(33, 150, 243, 0.6));
+            color: #2196f3;
         }
 
         h1 {
-            color: #ffeb3b;
+            color: #2196f3;
             font-size: 2.2em;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(255, 235, 59, 0.5);
+            text-shadow: 0 0 20px rgba(33, 150, 243, 0.5);
             margin-bottom: 10px;
         }
 
         .login-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 235, 59, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 20px;
             padding: 40px;
             text-align: center;
@@ -136,7 +137,7 @@
         }
 
         .login-card h2 {
-            color: #ffeb3b;
+            color: #2196f3;
             margin-bottom: 25px;
             font-size: 1.8em;
             font-weight: 700;
@@ -146,11 +147,19 @@
             margin-bottom: 20px;
         }
 
+        .login-form-group label {
+            display: block;
+            text-align: left;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
         .login-input {
             width: 100%;
             padding: 14px 20px;
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 235, 59, 0.2);
+            border: 2px solid rgba(33, 150, 243, 0.3);
             border-radius: 12px;
             color: #fff;
             font-size: 16px;
@@ -160,28 +169,28 @@
 
         .login-input:focus {
             outline: none;
-            border-color: #ffeb3b;
-            background: rgba(255, 235, 59, 0.05);
-            box-shadow: 0 0 15px rgba(255, 235, 59, 0.3);
+            border-color: #2196f3;
+            background: rgba(33, 150, 243, 0.1);
+            box-shadow: 0 0 15px rgba(33, 150, 243, 0.3);
         }
 
         .login-btn {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            background: linear-gradient(135deg, #2196f3, #1976d2);
             border: none;
             border-radius: 15px;
-            color: #000;
+            color: #fff;
             font-weight: 700;
             font-size: 1em;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(255, 235, 59, 0.3);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.3);
         }
 
         .login-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(255, 235, 59, 0.5);
+            box-shadow: 0 12px 35px rgba(33, 150, 243, 0.5);
         }
 
         .back-btn {
@@ -262,7 +271,5 @@
         });
     });
 </script>
-</body>
-</html>
 </body>
 </html>
