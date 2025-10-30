@@ -206,17 +206,14 @@
     </div>
 
     <script>
-        // 🔑 Configurazione Supabase
         const SUPABASE_URL = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
 
-        // Inizializza Supabase
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const loginBtn = document.getElementById('loginBtn');
         const messageEl = document.getElementById('message');
 
-        // Funzione per mostrare messaggi
         function showMessage(text, type) {
             messageEl.textContent = text;
             messageEl.className = `message ${type} visible`;
@@ -226,7 +223,6 @@
             messageEl.className = 'message';
         }
 
-        // Verifica se l'utente è già autenticato
         async function checkSession() {
             try {
                 const { data: { session }, error } = await supabase.auth.getSession();
@@ -247,7 +243,6 @@
             }
         }
 
-        // Login con Discord
         async function loginWithDiscord() {
             loginBtn.disabled = true;
             showMessage('Connessione con Discord in corso', 'loading');
@@ -263,7 +258,6 @@
 
                 if (error) throw error;
 
-                // Il redirect avverrà automaticamente
                 console.log('Login avviato con successo');
                 
             } catch (error) {
@@ -281,14 +275,12 @@
                 
                 showMessage(errorMessage, 'error');
                 
-                // Nascondi il messaggio dopo 5 secondi
                 setTimeout(() => {
                     hideMessage();
                 }, 5000);
             }
         }
 
-        // Gestione cambiamenti stato autenticazione
         supabase.auth.onAuthStateChange(async (event, session) => {
             console.log('Auth state changed:', event, session);
 
@@ -304,10 +296,8 @@
             }
         });
 
-        // Controlla la sessione al caricamento della pagina
         checkSession();
 
-        // Log per debugging (rimuovi in produzione)
         console.log('Supabase URL:', SUPABASE_URL);
         console.log('Redirect URL:', `${window.location.origin}/index.html`);
     </script>
