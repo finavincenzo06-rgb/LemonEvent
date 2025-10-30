@@ -164,6 +164,13 @@
     </style>
 </head>
 <body>
+    <!-- Forza HTTPS -->
+    <script>
+        if (location.protocol !== 'https:') {
+            location.replace('https://' + location.hostname + location.pathname + location.search);
+        }
+    </script>
+
     <div class="login-container">
         <div class="logo">🍋</div>
         <h1>LEMONCITY</h1>
@@ -192,7 +199,7 @@
         async function checkSession() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (session) {
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }
         }
 
@@ -204,7 +211,7 @@
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'discord',
                     options: {
-                        redirectTo: window.location.origin + '/index.html'
+                        redirectTo: window.location.origin + '/'  // <-- CAMBIATO: ora usa /
                     }
                 });
 
@@ -216,10 +223,10 @@
             }
         }
 
-        // Ascolta i cambiamenti di stato (utile per callback OAuth)
+        // Ascolta i cambiamenti di stato
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN') {
-                window.location.href = 'index.html';
+                window.location.href = '/';
             }
         });
 
