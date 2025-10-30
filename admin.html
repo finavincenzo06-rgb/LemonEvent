@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEMONCITY Admin - Suggerimenti</title>
+    <link rel="icon" href="fotosito.png" type="image/png">
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -17,7 +18,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #000;
+            background: #0a0e27;
             color: #fff;
             min-height: 100vh;
             position: relative;
@@ -25,13 +26,13 @@
         }
 
         .admin-header {
-            background: linear-gradient(135deg, #111 0%, #000 100%);
+            background: linear-gradient(135deg, #0d1129 0%, #0a0e27 100%);
             padding: 20px 30px;
             box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+            border-bottom: 1px solid rgba(33, 150, 243, 0.2);
         }
 
         .header-content {
@@ -49,14 +50,14 @@
         }
 
         .admin-title h1 {
-            color: #ffeb3b;
+            color: #2196f3;
             font-size: 1.6em;
             font-weight: 700;
         }
 
         .badge {
-            background: linear-gradient(135deg, #ffeb3b, #ffc107);
-            color: #000;
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: #fff;
             padding: 6px 15px;
             border-radius: 20px;
             font-weight: 600;
@@ -95,10 +96,10 @@
         }
 
         .stat-card {
-            background: rgba(255, 235, 59, 0.05);
+            background: rgba(33, 150, 243, 0.1);
             padding: 25px;
             border-radius: 15px;
-            border: 1px solid rgba(255, 235, 59, 0.2);
+            border: 1px solid rgba(33, 150, 243, 0.3);
             text-align: center;
             transition: transform 0.3s ease;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -106,19 +107,19 @@
 
         .stat-card:hover {
             transform: translateY(-5px);
-            border-color: #ffeb3b;
+            border-color: #2196f3;
         }
 
         .stat-icon {
             font-size: 2.2em;
             margin-bottom: 10px;
-            color: #ffeb3b;
+            color: #2196f3;
         }
 
         .stat-number {
             font-size: 2.2em;
             font-weight: 700;
-            color: #ffeb3b;
+            color: #2196f3;
             margin-bottom: 5px;
         }
 
@@ -131,12 +132,12 @@
             font-size: 1.6em;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #ffeb3b;
+            color: #2196f3;
             display: flex;
             align-items: center;
             gap: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid rgba(255, 235, 59, 0.2);
+            border-bottom: 2px solid rgba(33, 150, 243, 0.3);
         }
 
         .events-grid {
@@ -147,7 +148,7 @@
         .event-card {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 235, 59, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
             padding: 25px;
             transition: all 0.3s ease;
@@ -163,13 +164,13 @@
             left: 0;
             width: 5px;
             height: 100%;
-            background: linear-gradient(180deg, #ffeb3b, #ffc107);
+            background: linear-gradient(180deg, #2196f3, #1976d2);
         }
 
         .event-card:hover {
             transform: translateY(-2px);
-            border-color: rgba(255, 235, 59, 0.3);
-            box-shadow: 0 8px 30px rgba(255, 235, 59, 0.1);
+            border-color: rgba(33, 150, 243, 0.4);
+            box-shadow: 0 8px 30px rgba(33, 150, 243, 0.2);
         }
 
         .event-header {
@@ -190,17 +191,17 @@
         .user-icon {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            background: linear-gradient(135deg, #2196f3, #1976d2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.3em;
-            color: #000;
+            color: #fff;
         }
 
         .user-info h3 {
-            color: #ffeb3b;
+            color: #2196f3;
             font-size: 1.1em;
             font-weight: 600;
         }
@@ -217,12 +218,12 @@
         .event-section {
             margin-bottom: 15px;
             padding: 12px;
-            background: rgba(255, 235, 59, 0.03);
+            background: rgba(33, 150, 243, 0.05);
             border-radius: 8px;
         }
 
         .event-section-title {
-            color: #ffeb3b;
+            color: #2196f3;
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 0.9em;
@@ -444,7 +445,7 @@
 
                                 <div class="event-section">
                                     <div class="event-section-title">⏰ Quando</div>
-                                    <div class="event-section-content">${b.quando}</div>
+                                    <div class="event-section-content">${b.data}</div>
                                 </div>
 
                                 <div class="vote-info">
