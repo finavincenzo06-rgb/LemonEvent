@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LEMONCITY Admin - Suggerimenti</title>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -71,6 +73,7 @@
             transition: all 0.3s ease;
             font-weight: 600;
             font-size: 0.9em;
+            text-decoration: none;
         }
 
         .back-btn:hover {
@@ -231,6 +234,31 @@
             font-size: 0.95em;
         }
 
+        .vote-info {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .vote-badge {
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .vote-positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 2px solid #4caf50;
+        }
+
+        .vote-negative {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 2px solid #f44336;
+        }
+
         .delete-btn {
             padding: 8px 20px;
             background: rgba(244, 67, 54, 0.2);
@@ -261,52 +289,7 @@
             opacity: 0.5;
         }
 
-        /* Nessun tab ora */
-        .admin-tabs {
-            display: none; /* Nascondi i tab */
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2em;
-            }
-
-            .main-card {
-                padding: 30px 20px;
-            }
-
-            .card-title {
-                font-size: 1.5em;
-            }
-
             .header-content {
                 flex-direction: column;
                 gap: 15px;
@@ -316,8 +299,8 @@
                 grid-template-columns: 1fr;
             }
 
-            .login-card {
-                margin: 60px 20px;
+            .admin-title h1 {
+                font-size: 1.3em;
             }
         }
     </style>
@@ -335,7 +318,6 @@
     </div>
 
     <div class="admin-container">
-        <!-- Nessun tab ora -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">💡</div>
@@ -356,7 +338,6 @@
 
         <h2 class="section-title">💡 Suggerimenti Ricevuti</h2>
         <div class="events-grid" id="suggestionsList">
-            <!-- Messaggio di caricamento -->
             <div class="empty-state">
                 <div class="empty-state-icon">🔄</div>
                 <h3>Caricamento...</h3>
@@ -365,61 +346,44 @@
     </div>
 
     <script>
+        // 🔑 CONFIGURA QUI LE TUE CREDENZIALI SUPABASE (stesse dell'index.html)
+        const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
+        const supabaseAnonKey = 'LA_TUA_CHIAVE_ANON_QUI'; // <-- INSERISCI LA TUA CHIAVE
+
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
         // Controlla se l'utente è loggato
         if (!sessionStorage.getItem('isAdminLoggedIn')) {
             alert('Non hai accesso a questa pagina. Effettua il login.');
             window.location.href = 'admin-login.html';
         }
 
-        // Funzioni per comunicare con il backend PHP
+        // --- Funzioni Supabase ---
         async function getBookings() {
-            try {
-                const response = await fetch('api.php', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+            const { data, error } = await supabase
+                .from('suggestions')
+                .select('*')
+                .order('data_invio', { ascending: false });
 
-                if (!response.ok) {
-                    throw new Error(`Errore HTTP! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                if (data.error) {
-                    console.error('Errore API:', data.error);
-                    throw new Error(data.error);
-                }
-                return data;
-            } catch (error) {
-                console.error('Errore nel recupero dei dati:', error);
-                throw error;
-            }
+            if (error) throw error;
+            return data;
         }
 
-        // Funzione per eliminare (aggiornata per usare POST)
         async function deleteSuggestion(id) {
             if (confirm('Sei sicuro di voler eliminare questo suggerimento?')) {
                 try {
-                    const response = await fetch('api.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            action: 'delete',
-                            id: id
-                        })
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        loadSuggestions(); // Ricarica la lista
-                    } else {
-                        alert('Errore durante l\'eliminazione: ' + (result.error || ''));
-                    }
+                    const { error } = await supabase
+                        .from('suggestions')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    
+                    alert('✅ Suggerimento eliminato con successo!');
+                    loadSuggestions(); // Ricarica la lista
                 } catch (error) {
                     console.error('Errore durante l\'eliminazione:', error);
-                    alert('Errore durante l\'eliminazione. Controlla la console.');
+                    alert('❌ Errore durante l\'eliminazione: ' + error.message);
                 }
             }
         }
@@ -445,7 +409,7 @@
                                     <div class="user-icon">🎮</div>
                                     <div class="user-info">
                                         <h3>${b.discord_id}</h3>
-                                        <div class="event-date">${b.data_invio}</div>
+                                        <div class="event-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
                                     </div>
                                 </div>
                             </div>
@@ -469,6 +433,11 @@
                                     <div class="event-section-title">⏰ Quando</div>
                                     <div class="event-section-content">${b.quando}</div>
                                 </div>
+
+                                <div class="vote-info">
+                                    <span class="vote-badge vote-positive">👍 ${b.voti_positivi || 0} Mi piace</span>
+                                    <span class="vote-badge vote-negative">👎 ${b.voti_negativi || 0} Non mi piace</span>
+                                </div>
                             </div>
 
                             <button class="delete-btn" onclick="deleteSuggestion(${b.id})">🗑️ Elimina Suggerimento</button>
@@ -479,16 +448,24 @@
                 updateStats(bookings);
             } catch (error) {
                 console.error("Errore caricamento suggerimenti:", error);
-                document.getElementById('suggestionsList').innerHTML = `<div class="empty-state"><h3>Errore nel caricamento</h3><p>Controlla la console.</p></div>`;
+                document.getElementById('suggestionsList').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <h3>Errore nel caricamento</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
             }
         }
 
         function updateStats(bookings) {
-            // Calcola e aggiorna le statistiche
             document.getElementById('totalSuggestions').textContent = bookings.length;
 
             const today = new Date().toLocaleDateString('it-IT');
-            const todaySuggestions = bookings.filter(b => b.data_invio.includes(today)).length;
+            const todaySuggestions = bookings.filter(b => {
+                const bookingDate = new Date(b.data_invio).toLocaleDateString('it-IT');
+                return bookingDate === today;
+            }).length;
             document.getElementById('todaySuggestions').textContent = todaySuggestions;
 
             const uniqueUsers = new Set(bookings.map(b => b.discord_id)).size;
@@ -497,7 +474,7 @@
 
         // Inizializza quando la pagina è caricata
         document.addEventListener('DOMContentLoaded', function() {
-            loadSuggestions(); // Carica i suggerimenti
+            loadSuggestions();
         });
     </script>
 </body>
