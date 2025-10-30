@@ -517,7 +517,8 @@
             const { error } = await supabase
                 .from('suggestions')
                 .insert([{
-                    discord_id: booking.username,
+                    discord_id: booking.discordId,
+                    username: booking.username,
                     titolo: booking.title,
                     descrizione: booking.description,
                     requisiti: booking.requirements,
@@ -563,6 +564,7 @@
             if (!auth) return;
 
             const booking = {
+                discordId: auth.discordId,
                 username: auth.username,
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
@@ -600,7 +602,7 @@
                                 <div class="post-author">
                                     <div class="author-icon">🎮</div>
                                     <div>
-                                        <div class="author-name">${b.discord_id}</div>
+                                        <div class="author-name">${b.username || b.discord_id}</div>
                                         <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
                                     </div>
                                 </div>
