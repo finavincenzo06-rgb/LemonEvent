@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LemonCity Events</title>
+    <title>LEMONCITY EVENTS</title>
     <link rel="icon" href="fotosito.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -424,6 +424,7 @@
                 <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                 <form id="bookingForm" onsubmit="submitBooking(event)">
                     <input type="hidden" id="discordId">
+                    <input type="hidden" id="usernameField">
 
                     <div class="form-group">
                         <label>Titolo dell'Evento *</label>
@@ -516,7 +517,7 @@
             const { error } = await supabase
                 .from('suggestions')
                 .insert([{
-                    discord_id: booking.discordId,
+                    discord_id: booking.username,
                     titolo: booking.title,
                     descrizione: booking.description,
                     requisiti: booking.requirements,
@@ -562,7 +563,7 @@
             if (!auth) return;
 
             const booking = {
-                discordId: auth.discordId,
+                username: auth.username,
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
                 requirements: document.getElementById('requirements').value,
@@ -640,7 +641,7 @@
                 }
                 
                 document.getElementById('username').textContent = user.username;
-                document.getElementById('discordId').value = user.discordId;
+                document.getElementById('usernameField').value = user.username;
                 
                 await loadSuggestions();
                 
