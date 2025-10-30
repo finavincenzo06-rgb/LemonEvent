@@ -223,23 +223,13 @@
             messageEl.className = 'message';
         }
 
-        async function checkSession() {
+        // FORZA LOGOUT ALL'APERTURA DELLA PAGINA LOGIN
+        async function forceLogout() {
             try {
-                const { data: { session }, error } = await supabase.auth.getSession();
-                
-                if (error) {
-                    console.error('Errore verifica sessione:', error);
-                    return;
-                }
-
-                if (session) {
-                    showMessage('Sei già autenticato! Reindirizzamento...', 'success');
-                    setTimeout(() => {
-                        window.location.href = '/index.html';
-                    }, 1000);
-                }
+                await supabase.auth.signOut();
+                console.log('Sessione precedente eliminata');
             } catch (error) {
-                console.error('Errore controllo sessione:', error);
+                console.error('Errore durante il logout forzato:', error);
             }
         }
 
@@ -290,13 +280,10 @@
                     window.location.href = '/index.html';
                 }, 1500);
             }
-
-            if (event === 'SIGNED_OUT') {
-                console.log('Utente disconnesso');
-            }
         });
 
-        checkSession();
+        // ESEGUI LOGOUT FORZATO AL CARICAMENTO
+        forceLogout();
 
         console.log('Supabase URL:', SUPABASE_URL);
         console.log('Redirect URL:', `${window.location.origin}/index.html`);
