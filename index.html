@@ -542,26 +542,63 @@
         }
 
         async function voteSuggestion(id, type) {
-            const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-            
-            const { data, error: fetchError } = await supabase
-                .from('suggestions')
-                .select(field)
-                .eq('id', id)
-                .single();
-            
-            if (fetchError) throw fetchError;
-            
-            const newValue = data[field] + 1;
-            
-            const { error: updateError } = await supabase
-                .from('suggestions')
-                .update({ [field]: newValue })
-                .eq('id', id);
-            
-            if (updateError) throw updateError;
-            
-            loadSuggestions();
+            const auth = await getCurrentUser();
+            if (!auth) return;
+
+            try {
+                // Controlla se l'utente ha già votato questo suggerimento
+                const { data: existingVote, error: checkError } = await supabase
+                    .from('suggestion_votes')
+                    .select('*')
+                    .eq('suggestion_id', id)
+                    .eq('discord_id', auth.discordId)
+                    .maybeSingle();
+                
+                if (checkError && checkError.code !== 'PGRST116') {
+                    throw checkError;
+                }
+
+                if (existingVote) {
+                    alert('Hai già votato questo suggerimento!');
+                    return;
+                }
+
+                // Registra il voto
+                const { error: insertError } = await supabase
+                    .from('suggestion_votes')
+                    .insert([{
+                        suggestion_id: id,
+                        discord_id: auth.discordId,
+                        vote_type: type
+                    }]);
+                
+                if (insertError) throw insertError;
+
+                // Aggiorna il conteggio dei voti
+                const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
+                
+                const { data, error: fetchError } = await supabase
+                    .from('suggestions')
+                    .select(field)
+                    .eq('id', id)
+                    .single();
+                
+                if (fetchError) throw fetchError;
+                
+                const newValue = data[field] + 1;
+                
+                const { error: updateError } = await supabase
+                    .from('suggestions')
+                    .update({ [field]: newValue })
+                    .eq('id', id);
+                
+                if (updateError) throw updateError;
+                
+                loadSuggestions();
+            } catch (error) {
+                console.error('Errore durante il voto:', error);
+                alert('Errore durante il voto. Riprova.');
+            }
         }
 
         function showSuccess() {
