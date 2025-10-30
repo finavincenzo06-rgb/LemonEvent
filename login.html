@@ -174,6 +174,143 @@
             60%, 100% { content: '...'; }
         }
 
+        .privacy-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .privacy-link {
+            display: block;
+            text-align: center;
+            color: #2196f3;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+
+        .privacy-link:hover {
+            color: #64b5f6;
+            text-decoration: underline;
+        }
+
+        .privacy-text {
+            text-align: center;
+            color: #999;
+            font-size: 0.85em;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9998;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .privacy-modal {
+            position: relative;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            background: rgba(10, 14, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(33, 150, 243, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            animation: slideUp 0.4s ease;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            color: #2196f3;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .privacy-content {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 0.95em;
+        }
+
+        .privacy-content h3 {
+            color: #2196f3;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .privacy-content p {
+            margin-bottom: 15px;
+        }
+
+        .privacy-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .privacy-content li {
+            margin-bottom: 8px;
+        }
+
         @media (max-width: 500px) {
             .login-container {
                 padding: 40px 30px;
@@ -185,6 +322,14 @@
 
             .logo {
                 font-size: 3em;
+            }
+
+            .privacy-modal {
+                padding: 30px 25px;
+            }
+
+            .modal-title {
+                font-size: 1.4em;
             }
         }
     </style>
@@ -205,6 +350,74 @@
         </button>
 
         <div id="message" class="message"></div>
+
+        <div class="privacy-section">
+            <a href="#" class="privacy-link" onclick="openPrivacyModal(event)">📋 Informativa Privacy</a>
+            <p class="privacy-text">Effettuando l'accesso accetti la nostra informativa sulla privacy</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="privacyModal" onclick="closePrivacyModal(event)">
+        <div class="privacy-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Informativa Privacy</h2>
+                <button class="close-btn" onclick="closePrivacyModal()">&times;</button>
+            </div>
+            <div class="privacy-content">
+                <p><strong>Ultimo aggiornamento:</strong> 31 Ottobre 2025</p>
+
+                <h3>1. Titolare del Trattamento</h3>
+                <p>LemonCity Events è il titolare del trattamento dei dati personali raccolti attraverso questo sito web.</p>
+
+                <h3>2. Dati Raccolti</h3>
+                <p>Durante l'utilizzo del nostro servizio, raccogliamo i seguenti dati:</p>
+                <ul>
+                    <li><strong>Dati Discord:</strong> ID Discord, nome utente, email associata al tuo account Discord</li>
+                    <li><strong>Dati dei suggerimenti:</strong> Titolo, descrizione, requisiti e data degli eventi che suggerisci</li>
+                    <li><strong>Dati di voto:</strong> I tuoi voti positivi o negativi sui suggerimenti</li>
+                </ul>
+
+                <h3>3. Finalità del Trattamento</h3>
+                <p>I tuoi dati vengono utilizzati per:</p>
+                <ul>
+                    <li>Permetterti l'accesso alla piattaforma tramite Discord</li>
+                    <li>Gestire i suggerimenti di eventi della community</li>
+                    <li>Visualizzare e conteggiare i voti sui suggerimenti</li>
+                    <li>Identificare gli autori dei suggerimenti</li>
+                </ul>
+
+                <h3>4. Base Giuridica</h3>
+                <p>Il trattamento dei dati si basa sul tuo consenso fornito al momento dell'accesso tramite Discord.</p>
+
+                <h3>5. Conservazione dei Dati</h3>
+                <p>I tuoi dati verranno conservati per tutta la durata del servizio e potranno essere cancellati su tua richiesta.</p>
+
+                <h3>6. Condivisione dei Dati</h3>
+                <p>I tuoi dati non verranno condivisi con terze parti, ad eccezione di:</p>
+                <ul>
+                    <li><strong>Supabase:</strong> Per la gestione del database e autenticazione</li>
+                    <li><strong>Discord:</strong> Per il sistema di autenticazione OAuth</li>
+                </ul>
+
+                <h3>7. I Tuoi Diritti</h3>
+                <p>Hai diritto di:</p>
+                <ul>
+                    <li>Accedere ai tuoi dati personali</li>
+                    <li>Richiedere la rettifica o cancellazione dei dati</li>
+                    <li>Opporti al trattamento dei dati</li>
+                    <li>Revocare il consenso in qualsiasi momento</li>
+                </ul>
+
+                <h3>8. Sicurezza</h3>
+                <p>Adottiamo misure di sicurezza tecniche e organizzative adeguate per proteggere i tuoi dati personali da accessi non autorizzati, perdita o alterazione.</p>
+
+                <h3>9. Contatti</h3>
+                <p>Per qualsiasi domanda riguardante questa informativa privacy o per esercitare i tuoi diritti, puoi contattarci tramite Discord o attraverso i canali ufficiali di LemonCity.</p>
+
+                <h3>10. Modifiche</h3>
+                <p>Ci riserviamo il diritto di modificare questa informativa privacy. Le modifiche saranno comunicate attraverso il sito web.</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -223,6 +436,18 @@
 
         function hideMessage() {
             messageEl.className = 'message';
+        }
+
+        function openPrivacyModal(event) {
+            if (event) event.preventDefault();
+            document.getElementById('privacyModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacyModal(event) {
+            if (event && event.target !== event.currentTarget && event.type !== 'click') return;
+            document.getElementById('privacyModal').classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         // FORZA LOGOUT ALL'APERTURA DELLA PAGINA LOGIN
