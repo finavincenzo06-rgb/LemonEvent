@@ -7,7 +7,6 @@
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ... (il tuo CSS rimane identico, non lo ripeto per brevità) ... */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         * {
@@ -67,10 +66,39 @@
             margin-top: 5px;
         }
 
-        .admin-link {
+        .auth-controls {
             position: absolute;
             top: 0;
             right: 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-info {
+            color: #ffeb3b;
+            font-weight: 600;
+            padding: 10px;
+        }
+
+        .auth-btn {
+            padding: 10px 20px;
+            background: rgba(255, 235, 59, 0.1);
+            border: 2px solid #ffeb3b;
+            color: #ffeb3b;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background: #ffeb3b;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .admin-link {
             padding: 10px 20px;
             background: rgba(255, 235, 59, 0.1);
             border: 2px solid #ffeb3b;
@@ -285,6 +313,11 @@
             font-size: 1.1em;
         }
 
+        .vote-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Popup successo */
         .success-popup {
             position: fixed;
@@ -325,10 +358,10 @@
                 flex-direction: column;
             }
 
-            .admin-link {
+            .auth-controls, .admin-link {
                 position: static;
                 display: inline-block;
-                margin-top: 20px;
+                margin-top: 15px;
             }
 
             h1 {
@@ -341,6 +374,9 @@
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
+                <div class="auth-controls" id="authControls">
+                    <!-- Dinamicamente riempito da JS -->
+                </div>
                 <a href="admin-login.html" class="admin-link">👑 Accesso Amministratore</a>
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS BLOG</h1>
@@ -355,9 +391,10 @@
             <div class="form-section">
                 <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                 <form id="bookingForm" onsubmit="submitBooking(event)">
-                    <div class="form-group">
+                    <!-- Campo Discord ID nascosto -->
+                    <div class="form-group" id="discordIdGroup" style="display:none;">
                         <label>ID Discord *</label>
-                        <input type="text" id="discordId" placeholder="es. username#1234" required>
+                        <input type="text" id="discordId" readonly required>
                     </div>
 
                     <div class="form-group">
@@ -402,10 +439,49 @@
 
     <script>
         // 🔑 CONFIGURA QUI LE TUE CREDENZIALI SUPABASE
-        const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co'; // <-- MODIFICA
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';         // <-- MODIFICA
+        const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
 
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
+
+        // --- Autenticazione ---
+        function getAuthData() {
+            return {
+                discordId: localStorage.getItem('discordId'),
+                discordUsername: localStorage.getItem('discordUsername')
+            };
+        }
+
+        function isAuthenticated() {
+            const auth = getAuthData();
+            return !!auth.discordId && !!auth.discordUsername;
+        }
+
+        function updateAuthUI() {
+            const authControls = document.getElementById('authControls');
+            const auth = getAuthData();
+
+            if (isAuthenticated()) {
+                authControls.innerHTML = `
+                    <div class="user-info">Ciao, ${auth.discordUsername}</div>
+                    <a href="#" class="auth-btn" onclick="logout()">Logout</a>
+                `;
+                document.getElementById('discordIdGroup').style.display = 'none';
+                document.getElementById('discordId').value = auth.discordId;
+            } else {
+                authControls.innerHTML = `
+                    <a href="login.html" class="auth-btn">Login con Discord</a>
+                `;
+                document.getElementById('discordIdGroup').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('discordId');
+            localStorage.removeItem('discordUsername');
+            updateAuthUI();
+            loadSuggestions(); // ricarica per disabilitare voti
+        }
 
         // --- Funzioni Supabase ---
         async function getBookings() {
@@ -433,9 +509,14 @@
         }
 
         async function voteSuggestion(id, type) {
+            if (!isAuthenticated()) {
+                showVoteMessage("Devi effettuare il login per votare.", "error");
+                window.location.href = "login.html";
+                return;
+            }
+
             const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
             
-            // Recupera il valore corrente
             const { data, error: fetchError } = await supabase
                 .from('suggestions')
                 .select(field)
@@ -452,7 +533,9 @@
                 .eq('id', id);
 
             if (updateError) throw updateError;
-            return true;
+
+            showVoteMessage("Voto registrato!", "success");
+            loadSuggestions(); // ricarica per aggiornare conteggi
         }
 
         // --- UI Helpers ---
@@ -490,8 +573,15 @@
         async function submitBooking(e) {
             e.preventDefault();
 
+            if (!isAuthenticated()) {
+                alert("Devi effettuare il login per inviare un suggerimento.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const auth = getAuthData();
             const booking = {
-                discordId: document.getElementById('discordId').value,
+                discordId: auth.discordId,
                 title: document.getElementById('title').value,
                 description: document.getElementById('description').value,
                 requirements: document.getElementById('requirements').value,
@@ -526,6 +616,8 @@
                 const loadingMsg = document.getElementById('loadingMessage');
                 if (loadingMsg) loadingMsg.remove();
 
+                const isLoggedIn = isAuthenticated();
+
                 if (bookings.length === 0) {
                     suggestionsList.innerHTML = `
                         <div class="blog-post">
@@ -534,35 +626,42 @@
                         </div>
                     `;
                 } else {
-                    suggestionsList.innerHTML = bookings.map(b => `
-                        <div class="blog-post">
-                            <div class="post-header">
-                                <div class="post-author">
-                                    <div class="author-icon">🎮</div>
-                                    <div>
-                                        <div class="author-name">${b.discord_id}</div>
-                                        <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
+                    suggestionsList.innerHTML = bookings.map(b => {
+                        const upBtnClass = isLoggedIn ? 'vote-up' : 'vote-up vote-disabled';
+                        const downBtnClass = isLoggedIn ? 'vote-down' : 'vote-down vote-disabled';
+                        const upOnClick = isLoggedIn ? `voteSuggestion(${b.id}, 'up')` : '';
+                        const downOnClick = isLoggedIn ? `voteSuggestion(${b.id}, 'down')` : '';
+
+                        return `
+                            <div class="blog-post">
+                                <div class="post-header">
+                                    <div class="post-author">
+                                        <div class="author-icon">🎮</div>
+                                        <div>
+                                            <div class="author-name">${b.discord_id}</div>
+                                            <div class="post-date">${new Date(b.data_invio).toLocaleString('it-IT')}</div>
+                                        </div>
                                     </div>
                                 </div>
+                                <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
+                                <div class="post-content">
+                                    <p><strong>Descrizione:</strong> ${b.descrizione}</p>
+                                    <p><strong>Requisiti:</strong> ${b.requisiti}</p>
+                                    <p><strong>Quando:</strong> ${b.quando}</p>
+                                </div>
+                                <div class="post-meta">
+                                    <button class="vote-btn ${upBtnClass}" ${upOnClick ? `onclick="${upOnClick}"` : ''}>
+                                        <span>👍</span>
+                                        <span class="vote-count">${b.voti_positivi || 0}</span>
+                                    </button>
+                                    <button class="vote-btn ${downBtnClass}" ${downOnClick ? `onclick="${downOnClick}"` : ''}>
+                                        <span>👎</span>
+                                        <span class="vote-count">${b.voti_negativi || 0}</span>
+                                    </button>
+                                </div>
                             </div>
-                            <h3 class="post-title">${b.titolo || 'Evento senza titolo'}</h3>
-                            <div class="post-content">
-                                <p><strong>Descrizione:</strong> ${b.descrizione}</p>
-                                <p><strong>Requisiti:</strong> ${b.requisiti}</p>
-                                <p><strong>Quando:</strong> ${b.quando}</p>
-                            </div>
-                            <div class="post-meta">
-                                <button class="vote-btn vote-up" onclick="voteSuggestion(${b.id}, 'up')">
-                                    <span>👍</span>
-                                    <span class="vote-count">${b.voti_positivi || 0}</span>
-                                </button>
-                                <button class="vote-btn vote-down" onclick="voteSuggestion(${b.id}, 'down')">
-                                    <span>👎</span>
-                                    <span class="vote-count">${b.voti_negativi || 0}</span>
-                                </button>
-                            </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 }
             } catch (error) {
                 console.error("Errore caricamento:", error);
@@ -579,6 +678,7 @@
 
         // --- Inizializzazione ---
         document.addEventListener('DOMContentLoaded', () => {
+            updateAuthUI();
             loadSuggestions();
         });
     </script>
