@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Data? *</label>
+                        <label>Data *</label>
                         <input type="text" id="when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
                     </div>
 
@@ -585,12 +585,9 @@
 
         async function loadSuggestions() {
             const suggestionsList = document.getElementById('suggestionsList');
-            suggestionsList.innerHTML = `<div id="loadingMessage" class="loading-message"><p>🔄 Caricamento suggerimenti in corso...</p></div>`;
 
             try {
                 const bookings = await getBookings();
-                const loadingMsg = document.getElementById('loadingMessage');
-                if (loadingMsg) loadingMsg.remove();
 
                 if (bookings.length === 0) {
                     suggestionsList.innerHTML = `<div class="blog-post"><h3>Nessun suggerimento ricevuto</h3><p>Sii il primo a suggerire un evento!</p></div>`;
@@ -627,8 +624,6 @@
                 }
             } catch (error) {
                 console.error("Errore caricamento:", error);
-                const loadingMsg = document.getElementById('loadingMessage');
-                if (loadingMsg) loadingMsg.remove();
                 suggestionsList.innerHTML = `<div class="blog-post"><h3>Errore nel caricamento</h3><p>Impossibile caricare i suggerimenti. Riprova tra poco.</p></div>`;
             }
         }
