@@ -28,7 +28,6 @@
             padding: 20px;
         }
 
-        /* Header */
         .blog-header {
             background: rgba(255, 235, 59, 0.1);
             padding: 20px 0;
@@ -124,7 +123,6 @@
             transform: translateY(-2px);
         }
 
-        /* Layout principale */
         .main-content {
             display: flex;
             gap: 30px;
@@ -211,7 +209,6 @@
             border-bottom: 2px solid rgba(255, 235, 59, 0.2);
         }
 
-        /* Articoli */
         .blog-post {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(10px);
@@ -322,7 +319,6 @@
             font-size: 1.1em;
         }
 
-        /* Popup successo */
         .success-popup {
             position: fixed;
             top: 50%;
@@ -342,7 +338,6 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
-        /* Stile per il messaggio di caricamento */
         .loading-message {
             text-align: center;
             padding: 40px 20px;
@@ -356,7 +351,6 @@
             gap: 10px;
         }
 
-        /* Loading overlay per proteggere il contenuto durante il check */
         .page-loading {
             position: fixed;
             top: 0;
@@ -374,7 +368,6 @@
             display: none;
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .main-content {
                 flex-direction: column;
@@ -398,7 +391,6 @@
     </style>
 </head>
 <body>
-    <!-- Loading overlay -->
     <div class="page-loading" id="pageLoading">
         <div class="loading-message">
             <p>🔄 Verifica autenticazione in corso...</p>
@@ -427,7 +419,6 @@
 
     <div class="container">
         <div class="main-content">
-            <!-- Form a sinistra -->
             <div class="form-section">
                 <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                 <form id="bookingForm" onsubmit="submitBooking(event)">
@@ -457,7 +448,6 @@
                 </form>
             </div>
 
-            <!-- Suggerimenti a destra -->
             <div class="suggestions-section">
                 <h2 class="section-title">Suggerimenti della Community</h2>
                 <div id="suggestionsList">
@@ -478,7 +468,6 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
 
-        // Funzione di logout
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
 
@@ -486,7 +475,6 @@
                 const { error } = await supabase.auth.signOut();
                 if (error) throw error;
                 
-                // Redirect al login
                 window.location.href = '/login.html';
             } catch (error) {
                 console.error('Errore durante il logout:', error);
@@ -645,7 +633,6 @@
             }
         }
 
-        // Inizializzazione pagina
         document.addEventListener('DOMContentLoaded', async () => {
             const pageLoading = document.getElementById('pageLoading');
             
@@ -653,18 +640,14 @@
                 const user = await getCurrentUser();
                 
                 if (!user) {
-                    // Redirect al login gestito da getCurrentUser
                     return;
                 }
                 
-                // Aggiorna UI con info utente
                 document.getElementById('username').textContent = user.username;
                 document.getElementById('discordId').value = user.discordId;
                 
-                // Carica i suggerimenti
                 await loadSuggestions();
                 
-                // Nascondi loading overlay
                 pageLoading.classList.add('hidden');
                 
             } catch (error) {
@@ -673,7 +656,6 @@
             }
         });
 
-        // Listener per i cambi di stato auth
         supabase.auth.onAuthStateChange((event, session) => {
             console.log('Auth state changed:', event);
             
