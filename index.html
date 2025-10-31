@@ -25,7 +25,7 @@
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -131,14 +131,8 @@
             min-height: 60vh;
         }
 
-        .left-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
         .form-section {
+            flex: 1;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
@@ -147,14 +141,26 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
+        .right-section {
+            flex: 1;
+        }
+
+        .suggestions-section {
+            display: block;
+        }
+
+        .suggestions-section.hidden {
+            display: none;
+        }
+
         .packages-section {
+            display: none;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 193, 7, 0.3);
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: none;
         }
 
         .packages-section.visible {
@@ -163,9 +169,9 @@
 
         .packages-title {
             color: #ffc107;
-            font-size: 1.5em;
+            font-size: 1.8em;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
             text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
         }
@@ -174,34 +180,35 @@
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 193, 7, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
             transition: all 0.3s ease;
         }
 
         .package-card:hover {
             border-color: #ffc107;
             transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.2);
         }
 
         .package-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px solid rgba(255, 193, 7, 0.2);
         }
 
         .package-name {
             color: #ffc107;
-            font-size: 1.3em;
+            font-size: 1.5em;
             font-weight: 700;
         }
 
         .package-price {
             color: #4caf50;
-            font-size: 1.4em;
+            font-size: 1.6em;
             font-weight: 700;
         }
 
@@ -212,10 +219,10 @@
 
         .package-features li {
             color: #ccc;
-            padding: 8px 0;
-            padding-left: 25px;
+            padding: 10px 0;
+            padding-left: 30px;
             position: relative;
-            font-size: 0.95em;
+            font-size: 1em;
         }
 
         .package-features li:before {
@@ -224,22 +231,21 @@
             left: 0;
             color: #4caf50;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.3em;
         }
 
         .extras-section {
             background: rgba(76, 175, 80, 0.1);
             border: 2px solid rgba(76, 175, 80, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 10px;
+            padding: 25px;
         }
 
         .extras-title {
             color: #4caf50;
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
@@ -247,9 +253,9 @@
             display: inline-block;
             background: linear-gradient(135deg, #4caf50, #45a049);
             color: #fff;
-            padding: 4px 12px;
+            padding: 6px 15px;
             border-radius: 20px;
-            font-size: 0.8em;
+            font-size: 0.85em;
             font-weight: 600;
             margin-left: 10px;
         }
@@ -364,10 +370,6 @@
         .submit-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
-        }
-
-        .suggestions-section {
-            flex: 1.5;
         }
 
         .section-title {
@@ -666,98 +668,108 @@
 
     <div class="container">
         <div class="main-content">
-            <div class="left-column">
-                <div class="form-section">
-                    <div class="form-tabs">
-                        <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
-                        <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
+            <div class="form-section">
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
+                    <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
+                </div>
+
+                <!-- Form Suggerimento -->
+                <div id="suggestForm" class="tab-content active">
+                    <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
+                    <div class="info-note">
+                        ℹ️ I suggerimenti sono pubblici e visibili a tutti gli utenti
                     </div>
-
-                    <!-- Form Suggerimento -->
-                    <div id="suggestForm" class="tab-content active">
-                        <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
-                        <div class="info-note">
-                            ℹ️ I suggerimenti sono pubblici e visibili a tutti gli utenti
+                    <form id="suggestionForm" onsubmit="submitSuggestion(event)">
+                        <div class="form-group">
+                            <label>Titolo dell'Evento *</label>
+                            <input type="text" id="suggest_title" placeholder="es. Torneo di Fortnite" required>
                         </div>
-                        <form id="suggestionForm" onsubmit="submitSuggestion(event)">
-                            <div class="form-group">
-                                <label>Titolo dell'Evento *</label>
-                                <input type="text" id="suggest_title" placeholder="es. Torneo di Fortnite" required>
-                            </div>
 
-                            <div class="form-group">
-                                <label>Descrizione *</label>
-                                <textarea id="suggest_description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
-                            </div>
+                        <div class="form-group">
+                            <label>Descrizione *</label>
+                            <textarea id="suggest_description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
+                        </div>
 
-                            <div class="form-group">
-                                <label>Cosa Serve? *</label>
-                                <textarea id="suggest_requirements" placeholder="Specifica materiali, persone, location, ecc..." required></textarea>
-                            </div>
+                        <div class="form-group">
+                            <label>Cosa Serve? *</label>
+                            <textarea id="suggest_requirements" placeholder="Specifica materiali, persone, location, ecc..." required></textarea>
+                        </div>
 
-                            <div class="form-group">
-                                <label>Quando? *</label>
-                                <input type="text" id="suggest_when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Quando? *</label>
+                            <input type="text" id="suggest_when" placeholder="es. Venerdì 31 Ottobre ore 21:00" required>
+                        </div>
 
-                            <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
-                        </form>
+                        <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
+                    </form>
+                </div>
+
+                <!-- Form Organizzazione Evento -->
+                <div id="organizeForm" class="tab-content">
+                    <h2 class="form-title">Organizza un Evento</h2>
+                    <div class="info-note">
+                        🔒 Le richieste di organizzazione sono private e visibili solo agli amministratori
                     </div>
-
-                    <!-- Form Organizzazione Evento -->
-                    <div id="organizeForm" class="tab-content">
-                        <h2 class="form-title">Organizza un Evento</h2>
-                        <div class="info-note">
-                            🔒 Le richieste di organizzazione sono private e visibili solo agli amministratori
+                    <form id="eventOrganizationForm" onsubmit="submitEventOrganization(event)">
+                        <div class="form-group">
+                            <label>Tipo di Evento *</label>
+                            <select id="event_type" required onchange="handleEventTypeChange()">
+                                <option value="">-- Seleziona tipo evento --</option>
+                                <option value="matrimonio">💒 Matrimonio</option>
+                                <option value="funerale">🕊️ Funerale</option>
+                                <option value="festa">🎊 Festa</option>
+                                <option value="altro">📌 Altro</option>
+                            </select>
                         </div>
-                        <form id="eventOrganizationForm" onsubmit="submitEventOrganization(event)">
-                            <div class="form-group">
-                                <label>Tipo di Evento *</label>
-                                <select id="event_type" required onchange="handleEventTypeChange()">
-                                    <option value="">-- Seleziona tipo evento --</option>
-                                    <option value="matrimonio">💒 Matrimonio</option>
-                                    <option value="funerale">🕊️ Funerale</option>
-                                    <option value="festa">🎊 Festa</option>
-                                    <option value="altro">📌 Altro</option>
-                                </select>
-                            </div>
 
-                            <div class="form-group">
-                                <label>Nome Completo *</label>
-                                <input type="text" id="org_fullname" placeholder="Il tuo nome e cognome" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Nome Completo *</label>
+                            <input type="text" id="org_fullname" placeholder="Il tuo nome e cognome" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label>Data Desiderata *</label>
-                                <input type="date" id="org_date" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Data Desiderata *</label>
+                            <input type="date" id="org_date" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label>Numero Partecipanti Stimato *</label>
-                                <input type="text" id="org_participants" placeholder="es. 50-100 persone" required>
-                            </div>
+                        <div class="form-group">
+                            <label>Numero Partecipanti Stimato *</label>
+                            <input type="text" id="org_participants" placeholder="es. 50-100 persone" required>
+                        </div>
 
-                            <div class="form-group" id="budgetGroup" style="display: none;">
-                                <label>Pacchetto Matrimonio</label>
-                                <select id="org_package">
-                                    <option value="">-- Scegli un pacchetto (opzionale) --</option>
-                                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
-                                </select>
-                            </div>
+                        <div class="form-group" id="budgetGroup" style="display: none;">
+                            <label>Pacchetto Matrimonio</label>
+                            <select id="org_package">
+                                <option value="">-- Scegli un pacchetto (opzionale) --</option>
+                                <option value="matrimonio1">Matrimonio 1 - $35,000</option>
+                                <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                            </select>
+                        </div>
 
-                            <div class="form-group">
-                                <label>Budget Indicativo</label>
-                                <input type="text" id="org_budget" placeholder="es. 5000€ - 10000€">
-                            </div>
+                        <div class="form-group">
+                            <label>Budget Indicativo</label>
+                            <input type="text" id="org_budget" placeholder="es. 5000€ - 10000€">
+                        </div>
 
-                            <div class="form-group">
-                                <label>Dettagli e Richieste Speciali *</label>
-                                <textarea id="org_details" placeholder="Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc..." required></textarea>
-                            </div>
+                        <div class="form-group">
+                            <label>Dettagli e Richieste Speciali *</label>
+                            <textarea id="org_details" placeholder="Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc..." required></textarea>
+                        </div>
 
-                            <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
-                        </form>
+                        <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <!-- Suggerimenti Community -->
+                <div class="suggestions-section" id="suggestionsSection">
+                    <h2 class="section-title">Suggerimenti della Community</h2>
+                    <div id="suggestionsList">
+                        <div id="loadingMessage" class="loading-message">
+                            <p>🔄 Caricamento suggerimenti in corso...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -807,15 +819,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="suggestions-section">
-                <h2 class="section-title">Suggerimenti della Community</h2>
-                <div id="suggestionsList">
-                    <div id="loadingMessage" class="loading-message">
-                        <p>🔄 Caricamento suggerimenti in corso...</p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -838,14 +841,11 @@
 
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
-            const packagesSection = document.getElementById('packagesSection');
             const budgetGroup = document.getElementById('budgetGroup');
             
             if (eventType === 'matrimonio') {
-                packagesSection.classList.add('visible');
                 budgetGroup.style.display = 'block';
             } else {
-                packagesSection.classList.remove('visible');
                 budgetGroup.style.display = 'none';
             }
         }
@@ -854,6 +854,7 @@
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
             const tabs = document.querySelectorAll('.tab-btn');
+            const suggestionsSection = document.getElementById('suggestionsSection');
             const packagesSection = document.getElementById('packagesSection');
 
             tabs.forEach(t => t.classList.remove('active'));
@@ -862,12 +863,14 @@
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
+                suggestionsSection.classList.remove('hidden');
                 packagesSection.classList.remove('visible');
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                handleEventTypeChange();
+                suggestionsSection.classList.add('hidden');
+                packagesSection.classList.add('visible');
             }
         }
 
@@ -1085,7 +1088,6 @@
                 const saved = await saveEventOrganization(eventData);
                 if (saved) {
                     document.getElementById('eventOrganizationForm').reset();
-                    document.getElementById('packagesSection').classList.remove('visible');
                     showSuccess('Richiesta inviata! Verrai contattato presto dagli amministratori.');
                 }
             } catch (error) {
