@@ -959,182 +959,7 @@
         let currentUser = null;
         let userVotes = {};
 
-        function handleEventTypeChange() {
-            const eventType = document.getElementById('event_type').value;
-            const packageGroup = document.getElementById('packageGroup');
-            const packageSelect = document.getElementById('org_package');
-            const packageLabel = document.getElementById('packageLabel');
-            const matrimonioPackages = document.getElementById('matrimonioPackages');
-            const funeralePackages = document.getElementById('funeralePackages');
-            const festaPackages = document.getElementById('festaPackages');
-            const altroPackages = document.getElementById('altroPackages');
-
-            matrimonioPackages.classList.remove('visible');
-            funeralePackages.classList.remove('visible');
-            festaPackages.classList.remove('visible');
-            altroPackages.classList.remove('visible');
-
-            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
-
-            if (eventType === 'matrimonio') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Matrimonio';
-                packageSelect.innerHTML += `
-                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
-                `;
-                matrimonioPackages.classList.add('visible');
-            } else if (eventType === 'funerale') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Funerale';
-                packageSelect.innerHTML += `
-                    <option value="funerale1">Funerale 1 - $25,000</option>
-                    <option value="funerale2">Funerale 2 - $45,000</option>
-                `;
-                funeralePackages.classList.add('visible');
-            } else if (eventType === 'festa') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Festa';
-                packageSelect.innerHTML += `
-                    <option value="festa1">Festa Generale 1 - $30,000</option>
-                    <option value="festa2">Festa Generale 2 - $55,000</option>
-                `;
-                festaPackages.classList.add('visible');
-            } else if (eventType === 'altro') {
-                packageGroup.style.display = 'none';
-                altroPackages.classList.add('visible');
-            } else {
-                packageGroup.style.display = 'none';
-            }
-        }
-
-        function switchTab(tab) {
-            const suggestTab = document.getElementById('suggestForm');
-            const organizeTab = document.getElementById('organizeForm');
-            const tabs = document.querySelectorAll('.tab-btn');
-            const suggestionsSection = document.getElementById('suggestionsSection');
-            const matrimonioPackages = document.getElementById('matrimonioPackages');
-            const funeralePackages = document.getElementById('funeralePackages');
-            const festaPackages = document.getElementById('festaPackages');
-            const altroPackages = document.getElementById('altroPackages');
-
-            tabs.forEach(t => t.classList.remove('active'));
-
-            if (tab === 'suggest') {
-                suggestTab.classList.add('active');
-                organizeTab.classList.remove('active');
-                tabs[0].classList.add('active');
-                suggestionsSection.classList.remove('hidden');
-                matrimonioPackages.classList.remove('visible');
-                funeralePackages.classList.remove('visible');
-                festaPackages.classList.remove('visible');
-                altroPackages.classList.remove('visible');
-            } else {
-                suggestTab.classList.remove('active');
-                organizeTab.classList.add('active');
-                tabs[1].classList.add('active');
-                suggestionsSection.classList.add('hidden');
-            }
-        }
-
-        async function logout() {
-            if (!confirm('Sei sicuro di voler uscire?')) return;
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                window.location.href = '/login.html';
-            } catch (error) {
-                console.error('Errore durante il logout:', error);
-                showAlert('Errore durante il logout. Riprova.');
-            }
-        }
-
-        async function getCurrentUser() {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session) {
-                console.log('Nessuna sessione attiva, redirect al login');
-                window.location.href = '/login.html';
-                return null;
-            }
-            const user = session.user;
-            const discordId = user.user_metadata?.['discord_id'] || user.id;
-            const username = user.user_metadata?.['full_name'] || 
-                           user.user_metadata?.['user_name'] || 
-                           user.email || 
-                           'Utente';
-            return { discordId, username };
-        }
-
-        async function getSuggestions() {
-            const { data, error } = await supabase
-                .from('suggestions')
-                .select('*')
-                .order('data_invio', { ascending: false });
-            if (error) throw error;
-            return data;
-        }
-
-        async function getUserVotes() {
-            if (!currentUser) return {};
-            try {
-                const { data, error } = await supabase
-                    .from('suggestion_votes')
-                    .select('suggestion_id, vote_type')
-                    .eq('discord_id', currentUser.discordId);
-                if (error) throw error;
-                const votes = {};
-                data.forEach(vote => {
-                    votes[vote.suggestion_id] = vote.vote_type;
-                });
-                return votes;
-            } catch (error) {
-                console.error('Errore nel caricamento voti:', error);
-                return {};
-            }
-        }
-
-        async function saveSuggestion(suggestion) {
-            const { data, error } = await supabase
-                .from('suggestions')
-                .insert([{
-                    discord_id: suggestion.discordId,
-                    username: suggestion.username,
-                    titolo: suggestion.title,
-                    descrizione: suggestion.description,
-                    requisiti: suggestion.requirements,
-                    quando: suggestion.when
-                }])
-                .select();
-            if (error) {
-                console.error('Errore Supabase:', error);
-                showAlert('Errore: ' + error.message);
-                return false;
-            }
-            return true;
-        }
-
-        async function saveEventOrganization(eventData) {
-            const { data, error } = await supabase
-                .from('event_organizations')
-                .insert([{
-                    discord_id: eventData.discordId,
-                    username: eventData.username,
-                    tipo_evento: eventData.eventType,
-                    nome_completo: eventData.fullname,
-                    data_evento: eventData.eventDate,
-                    numero_partecipanti: eventData.participants,
-                    pacchetto: eventData.package || null,
-                    budget: eventData.budget,
-                    dettagli: eventData.details
-                }])
-                .select();
-            if (error) {
-                console.error('Errore Supabase:', error);
-                showAlert('Errore: ' + error.message);
-                return false;
-            }
-            return true;
-        }
+        // ... (tutte le altre funzioni rimangono identiche fino a voteSuggestion)
 
         async function voteSuggestion(id, type) {
             if (!currentUser) {
@@ -1170,15 +995,13 @@
                     .eq('id', id);
                 if (updateError) throw updateError;
 
-                // Aggiorna stato locale
                 delete userVotes[id];
                 await loadSuggestions();
                 return;
             }
 
-            // Se ha votato il tipo opposto → rimuovi vecchio voto, aggiungi nuovo
+            // Se ha votato il tipo opposto → rimuovi vecchio voto
             if (currentVote) {
-                // Rimuovi vecchio voto
                 const { error: deleteOldError } = await supabase
                     .from('suggestion_votes')
                     .delete()
@@ -1186,7 +1009,6 @@
                     .eq('discord_id', currentUser.discordId);
                 if (deleteOldError) throw deleteOldError;
 
-                // Decrementa contatore vecchio
                 const oldField = currentVote === 'up' ? 'voti_positivi' : 'voti_negativi';
                 const { data: oldData, error: oldFetchError } = await supabase
                     .from('suggestions')
@@ -1229,10 +1051,11 @@
                 .eq('id', id);
             if (newUpdateError) throw newUpdateError;
 
-            // Aggiorna stato locale
             userVotes[id] = type;
             await loadSuggestions();
         }
+
+        // ... (tutto il resto del codice rimane identico)
 
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
@@ -1447,11 +1270,187 @@
         });
 
         supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth state changed:', event);
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
             }
         });
+
+        // Funzioni helper (riprodotte per completezza)
+        async function logout() {
+            if (!confirm('Sei sicuro di voler uscire?')) return;
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Errore durante il logout:', error);
+                showAlert('Errore durante il logout. Riprova.');
+            }
+        }
+
+        async function getCurrentUser() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session) {
+                window.location.href = '/login.html';
+                return null;
+            }
+            const user = session.user;
+            const discordId = user.user_metadata?.['discord_id'] || user.id;
+            const username = user.user_metadata?.['full_name'] || 
+                           user.user_metadata?.['user_name'] || 
+                           user.email || 
+                           'Utente';
+            return { discordId, username };
+        }
+
+        async function getSuggestions() {
+            const { data, error } = await supabase
+                .from('suggestions')
+                .select('*')
+                .order('data_invio', { ascending: false });
+            if (error) throw error;
+            return data;
+        }
+
+        async function getUserVotes() {
+            if (!currentUser) return {};
+            try {
+                const { data, error } = await supabase
+                    .from('suggestion_votes')
+                    .select('suggestion_id, vote_type')
+                    .eq('discord_id', currentUser.discordId);
+                if (error) throw error;
+                const votes = {};
+                data.forEach(vote => {
+                    votes[vote.suggestion_id] = vote.vote_type;
+                });
+                return votes;
+            } catch (error) {
+                console.error('Errore nel caricamento voti:', error);
+                return {};
+            }
+        }
+
+        async function saveSuggestion(suggestion) {
+            const { data, error } = await supabase
+                .from('suggestions')
+                .insert([{
+                    discord_id: suggestion.discordId,
+                    username: suggestion.username,
+                    titolo: suggestion.title,
+                    descrizione: suggestion.description,
+                    requisiti: suggestion.requirements,
+                    quando: suggestion.when
+                }])
+                .select();
+            if (error) {
+                console.error('Errore Supabase:', error);
+                showAlert('Errore: ' + error.message);
+                return false;
+            }
+            return true;
+        }
+
+        async function saveEventOrganization(eventData) {
+            const { data, error } = await supabase
+                .from('event_organizations')
+                .insert([{
+                    discord_id: eventData.discordId,
+                    username: eventData.username,
+                    tipo_evento: eventData.eventType,
+                    nome_completo: eventData.fullname,
+                    data_evento: eventData.eventDate,
+                    numero_partecipanti: eventData.participants,
+                    pacchetto: eventData.package || null,
+                    budget: eventData.budget,
+                    dettagli: eventData.details
+                }])
+                .select();
+            if (error) {
+                console.error('Errore Supabase:', error);
+                showAlert('Errore: ' + error.message);
+                return false;
+            }
+            return true;
+        }
+
+        function handleEventTypeChange() {
+            const eventType = document.getElementById('event_type').value;
+            const packageGroup = document.getElementById('packageGroup');
+            const packageSelect = document.getElementById('org_package');
+            const packageLabel = document.getElementById('packageLabel');
+            const matrimonioPackages = document.getElementById('matrimonioPackages');
+            const funeralePackages = document.getElementById('funeralePackages');
+            const festaPackages = document.getElementById('festaPackages');
+            const altroPackages = document.getElementById('altroPackages');
+
+            matrimonioPackages.classList.remove('visible');
+            funeralePackages.classList.remove('visible');
+            festaPackages.classList.remove('visible');
+            altroPackages.classList.remove('visible');
+
+            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+
+            if (eventType === 'matrimonio') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Matrimonio';
+                packageSelect.innerHTML += `
+                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
+                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                `;
+                matrimonioPackages.classList.add('visible');
+            } else if (eventType === 'funerale') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Funerale';
+                packageSelect.innerHTML += `
+                    <option value="funerale1">Funerale 1 - $25,000</option>
+                    <option value="funerale2">Funerale 2 - $45,000</option>
+                `;
+                funeralePackages.classList.add('visible');
+            } else if (eventType === 'festa') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Festa';
+                packageSelect.innerHTML += `
+                    <option value="festa1">Festa Generale 1 - $30,000</option>
+                    <option value="festa2">Festa Generale 2 - $55,000</option>
+                `;
+                festaPackages.classList.add('visible');
+            } else if (eventType === 'altro') {
+                packageGroup.style.display = 'none';
+                altroPackages.classList.add('visible');
+            } else {
+                packageGroup.style.display = 'none';
+            }
+        }
+
+        function switchTab(tab) {
+            const suggestTab = document.getElementById('suggestForm');
+            const organizeTab = document.getElementById('organizeForm');
+            const tabs = document.querySelectorAll('.tab-btn');
+            const suggestionsSection = document.getElementById('suggestionsSection');
+            const matrimonioPackages = document.getElementById('matrimonioPackages');
+            const funeralePackages = document.getElementById('funeralePackages');
+            const festaPackages = document.getElementById('festaPackages');
+            const altroPackages = document.getElementById('altroPackages');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'suggest') {
+                suggestTab.classList.add('active');
+                organizeTab.classList.remove('active');
+                tabs[0].classList.add('active');
+                suggestionsSection.classList.remove('hidden');
+                matrimonioPackages.classList.remove('visible');
+                funeralePackages.classList.remove('visible');
+                festaPackages.classList.remove('visible');
+                altroPackages.classList.remove('visible');
+            } else {
+                suggestTab.classList.remove('active');
+                organizeTab.classList.add('active');
+                tabs[1].classList.add('active');
+                suggestionsSection.classList.add('hidden');
+            }
+        }
     </script>
 </body>
 </html>
