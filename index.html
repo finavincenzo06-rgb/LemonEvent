@@ -333,7 +333,6 @@
             padding: 30px 0;
             color: #999;
         }
-        /* Manteniamo il resto dello stile per form, pacchetti, ecc. */
         .form-tabs {
             display: flex;
             gap: 10px;
@@ -529,11 +528,8 @@
     </style>
 </head>
 <body>
-    <div class="page-loading" id="pageLoading">
-        <div class="loading-message">
-            <p>🔄 Verifica autenticazione in corso...</p>
-        </div>
-    </div>
+    <!-- ✅ RIMOSSO: <div class="page-loading" id="pageLoading">...</div> -->
+
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
@@ -632,7 +628,6 @@
                 </div>
             </div>
         </div>
-
         <!-- NUOVA SEZIONE SUGGERIMENTI A DUE COLONNE -->
         <div class="suggestions-container">
             <!-- Suggerimenti dell'utente -->
@@ -651,7 +646,6 @@
             </div>
         </div>
     </div>
-
     <div class="success-popup" id="successPopup">
         <div class="success-text" id="successText">Operazione completata con successo!</div>
     </div>
@@ -659,7 +653,6 @@
         <div class="alert-popup-message" id="alertMessage"></div>
         <button class="alert-popup-btn" onclick="closeAlert()">Ok</button>
     </div>
-
     <!-- Popup Modifica Suggerimento -->
     <div class="edit-popup" id="editPopup">
         <div class="edit-popup-content">
@@ -689,7 +682,6 @@
             </form>
         </div>
     </div>
-
     <script>
         const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
@@ -697,7 +689,6 @@
         let currentUser = null;
         let userVotes = {};
 
-        // ✅ FUNZIONE DI VOTO: UNA VOLTA SOLA, SENZA CAMBIO
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -716,7 +707,6 @@
                         vote_type: type
                     }]);
                 if (insertError) throw insertError;
-
                 const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
                 const { data, error: fetchError } = await supabase
                     .from('suggestions')
@@ -724,14 +714,12 @@
                     .eq('id', id)
                     .single();
                 if (fetchError) throw fetchError;
-
                 const newCount = data[field] + 1;
                 const { error: updateError } = await supabase
                     .from('suggestions')
                     .update({ [field]: newCount })
                     .eq('id', id);
                 if (updateError) throw updateError;
-
                 userVotes[id] = type;
                 await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
             } catch (error) {
@@ -740,7 +728,6 @@
             }
         }
 
-        // ✅ CARICA SOLO I SUGGERIMENTI DELL'UTENTE
         async function loadUserSuggestions() {
             const container = document.getElementById('userSuggestionsList');
             try {
@@ -754,7 +741,6 @@
                     .eq('discord_id', currentUser.discordId)
                     .order('data_invio', { ascending: false });
                 if (error) throw error;
-
                 if (data.length === 0) {
                     container.innerHTML = `<div class="loading-message">Non hai ancora inviato suggerimenti.</div>`;
                 } else {
@@ -766,7 +752,6 @@
             }
         }
 
-        // ✅ CARICA CLASSIFICA GLOBALE ORDINATA PER VOTI POSITIVI
         async function loadRankedSuggestions() {
             const container = document.getElementById('rankedSuggestionsList');
             try {
@@ -774,9 +759,8 @@
                     .from('suggestions')
                     .select('*')
                     .order('voti_positivi', { ascending: false })
-                    .limit(20); // Mostra top 20
+                    .limit(20);
                 if (error) throw error;
-
                 if (data.length === 0) {
                     container.innerHTML = `<div class="loading-message">Nessun suggerimento disponibile.</div>`;
                 } else {
@@ -788,7 +772,6 @@
             }
         }
 
-        // ✅ RENDERIZZA UN SUGGERIMENTO
         function renderSuggestion(s, isOwner) {
             const userVote = userVotes[s.id];
             const upVoteClass = userVote === 'up' ? 'voted' : '';
@@ -829,7 +812,6 @@
             `;
         }
 
-        // --- RESTO DELLE FUNZIONI (inalterate rispetto al tuo file) ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -838,10 +820,12 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
+
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
             document.getElementById('editSuggestionForm').reset();
         }
+
         async function saveEditedSuggestion(e) {
             e.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
@@ -865,6 +849,7 @@
                 showAlert('Errore durante la modifica. Riprova.');
             }
         }
+
         async function deleteSuggestion(id) {
             if (!confirm('Sei sicuro di voler eliminare questo suggerimento?')) return;
             try {
@@ -884,20 +869,24 @@
                 showAlert('Errore durante l\'eliminazione. Riprova.');
             }
         }
+
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             document.getElementById('successText').textContent = message;
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
+
         function showAlert(message) {
             const popup = document.getElementById('alertPopup');
             document.getElementById('alertMessage').textContent = message;
             popup.classList.add('show');
         }
+
         function closeAlert() {
             document.getElementById('alertPopup').classList.remove('show');
         }
+
         async function submitSuggestion(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -921,6 +910,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function submitEventOrganization(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -946,6 +936,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -965,6 +956,7 @@
             }
             return true;
         }
+
         async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
                 .from('event_organizations')
@@ -987,6 +979,7 @@
             }
             return true;
         }
+
         async function getUserVotes() {
             if (!currentUser) return {};
             try {
@@ -1005,6 +998,7 @@
                 return {};
             }
         }
+
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
@@ -1019,6 +1013,7 @@
                            'Utente';
             return { discordId, username };
         }
+
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
@@ -1030,6 +1025,7 @@
                 showAlert('Errore durante il logout. Riprova.');
             }
         }
+
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
             const packageGroup = document.getElementById('packageGroup');
@@ -1075,6 +1071,7 @@
                 packageGroup.style.display = 'none';
             }
         }
+
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
@@ -1090,20 +1087,21 @@
                 tabs[1].classList.add('active');
             }
         }
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const pageLoading = document.getElementById('pageLoading');
+            // ✅ RIMOSSA la gestione di pageLoading
             try {
                 currentUser = await getCurrentUser();
                 if (!currentUser) return;
                 document.getElementById('username').textContent = currentUser.username;
                 userVotes = await getUserVotes();
                 await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
-                pageLoading.classList.add('hidden');
             } catch (error) {
                 console.error('Errore inizializzazione:', error);
                 window.location.href = '/login.html';
             }
         });
+
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
