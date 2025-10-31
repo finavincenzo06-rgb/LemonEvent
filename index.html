@@ -173,6 +173,8 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+            display: flex;
+            flex-direction: column;
         }
         .section-title {
             color: #93c5fd;
@@ -184,36 +186,51 @@
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
         }
+        .suggestions-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+        .suggestions-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .suggestions-list::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 3px;
+        }
+        .suggestions-list::-webkit-scrollbar-thumb {
+            background: rgba(93, 132, 225, 0.5);
+            border-radius: 3px;
+        }
         .blog-post {
             background: rgba(20, 28, 50, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(59, 130, 246, 0.25);
             border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
             position: relative;
         }
         .blog-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.25);
-            border-color: rgba(93, 132, 225, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
         }
         .ranked-item {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 10px;
         }
         .rank-badge {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 1em;
+            font-size: 0.95em;
             border-radius: 50%;
             background: rgba(93, 132, 225, 0.25);
             color: #93c5fd;
@@ -225,69 +242,77 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
-            gap: 14px;
+            gap: 12px;
         }
         .post-author {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .author-icon {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3em;
+            font-size: 1.2em;
             color: #fff;
         }
         .author-name {
             color: #93c5fd;
             font-weight: 700;
-            font-size: 1.05em;
+            font-size: 1em;
         }
         .post-date {
             color: #94a3b8;
-            font-size: 0.82em;
+            font-size: 0.78em;
         }
         .post-title {
             color: #dbeafe;
-            font-size: 1.4em;
+            font-size: 1.25em;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-family: 'Montserrat', sans-serif;
+        }
+        /* ✅ TESTO DEI SUGGERIMENTI PERSONALI PIÙ PICCOLO */
+        .my-suggestion .post-title {
+            font-size: 1.15em;
+        }
+        .my-suggestion .post-content p {
+            font-size: 0.92em;
+            color: #cbd5e1;
         }
         .post-content {
             color: #e2e8f0;
-            font-size: 0.98em;
-            margin-bottom: 16px;
-            line-height: 1.6;
+            font-size: 0.95em;
+            margin-bottom: 14px;
+            line-height: 1.55;
         }
         .post-content p {
-            margin: 7px 0;
+            margin: 6px 0;
         }
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .vote-btn {
             display: flex;
             align-items: center;
-            gap: 7px;
-            padding: 8px 16px;
-            border-radius: 14px;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
             border: none;
-            font-size: 0.94em;
+            font-size: 0.92em;
             font-family: 'Inter', sans-serif;
         }
         .vote-up {
@@ -322,19 +347,90 @@
         }
         .vote-count {
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.05em;
         }
         .event-badge {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 5px 12px;
             background: rgba(124, 58, 237, 0.25);
             border: 1px solid #a78bfa;
             color: #ddd6fe;
-            border-radius: 22px;
-            font-size: 0.88em;
+            border-radius: 20px;
+            font-size: 0.85em;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
+        /* ✅ NUOVO POPUP DI CONFERMA "ESCI" */
+        .confirm-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+        .confirm-popup.show {
+            display: flex;
+        }
+        .confirm-content {
+            background: rgba(10, 15, 35, 0.95);
+            border: 2px solid rgba(239, 68, 68, 0.6);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+        }
+        .confirm-title {
+            color: #fca5a5;
+            font-size: 1.6em;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        .confirm-message {
+            color: #e2e8f0;
+            font-size: 1.1em;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .confirm-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+        .confirm-btn {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .confirm-yes {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            border: none;
+        }
+        .confirm-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+        }
+        .confirm-no {
+            background: rgba(30, 41, 59, 0.6);
+            color: #cbd5e1;
+            border: 1px solid #475569;
+        }
+        .confirm-no:hover {
+            background: rgba(50, 62, 85, 0.7);
+        }
+        /* Altri popup (success/error) */
         .success-popup, .alert-popup {
             position: fixed;
             top: 50%;
@@ -361,9 +457,9 @@
             opacity: 1;
         }
         .edit-btn, .delete-btn {
-            padding: 6px 12px;
-            font-size: 0.82em;
-            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.78em;
+            border-radius: 7px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -371,7 +467,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 32px;
+            min-width: 28px;
         }
         .edit-btn {
             background: rgba(251, 191, 36, 0.25);
@@ -386,7 +482,7 @@
             background: rgba(239, 68, 68, 0.25);
             border: 1px solid #fca5a5;
             color: #fca5a5;
-            margin-left: 8px;
+            margin-left: 6px;
         }
         .delete-btn:hover {
             background: #ef4444;
@@ -394,14 +490,14 @@
         }
         .post-actions {
             position: absolute;
-            bottom: 18px;
-            right: 18px;
+            bottom: 16px;
+            right: 16px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         .loading-message {
             text-align: center;
-            padding: 36px 0;
+            padding: 32px 0;
             color: #94a3b8;
             font-style: italic;
             font-size: 1.05em;
@@ -625,7 +721,7 @@
                         <span>👤</span>
                         <span id="username">Caricamento...</span>
                     </div>
-                    <button class="logout-btn" onclick="logout()">🚪 Esci</button>
+                    <button class="logout-btn" onclick="showLogoutConfirm()">🚪 Esci</button>
                 </div>
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS</h1>
@@ -714,22 +810,33 @@
                 </div>
             </div>
         </div>
-
         <!-- SEZIONE SUGGERIMENTI A DUE COLONNE -->
         <div class="suggestions-container">
             <!-- Suggerimenti dell'utente -->
             <div class="suggestions-column">
                 <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                <div id="userSuggestionsList">
+                <div class="suggestions-list" id="userSuggestionsList">
                     <div class="loading-message">Caricamento...</div>
                 </div>
             </div>
             <!-- Classifica globale -->
             <div class="suggestions-column">
                 <h2 class="section-title">🏆 Classifica Community</h2>
-                <div id="rankedSuggestionsList">
+                <div class="suggestions-list" id="rankedSuggestionsList">
                     <div class="loading-message">Caricamento...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ NUOVO POPUP DI CONFERMA "ESCI" -->
+    <div class="confirm-popup" id="logoutConfirmPopup">
+        <div class="confirm-content">
+            <div class="confirm-title">🚪 Conferma Uscita</div>
+            <div class="confirm-message">Sei sicuro di voler terminare la sessione?<br>Perderai l'accesso ai tuoi suggerimenti e alla classifica personalizzata.</div>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-yes" onclick="performLogout()">Sì, Esci</button>
+                <button class="confirm-btn confirm-no" onclick="hideLogoutConfirm()">Annulla</button>
             </div>
         </div>
     </div>
@@ -779,6 +886,25 @@
         let currentUser = null;
         let userVotes = {};
 
+        // ✅ NUOVE FUNZIONI PER IL POPUP DI CONFERMA
+        function showLogoutConfirm() {
+            document.getElementById('logoutConfirmPopup').classList.add('show');
+        }
+        function hideLogoutConfirm() {
+            document.getElementById('logoutConfirmPopup').classList.remove('show');
+        }
+        async function performLogout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error('Errore durante il logout:', error);
+                showAlert('Errore durante il logout. Riprova.');
+                hideLogoutConfirm();
+            }
+        }
+
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -797,7 +923,6 @@
                         vote_type: type
                     }]);
                 if (insertError) throw insertError;
-
                 const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
                 const { data, error: fetchError } = await supabase
                     .from('suggestions')
@@ -805,14 +930,12 @@
                     .eq('id', id)
                     .single();
                 if (fetchError) throw fetchError;
-
                 const newCount = data[field] + 1;
                 const { error: updateError } = await supabase
                     .from('suggestions')
                     .update({ [field]: newCount })
                     .eq('id', id);
                 if (updateError) throw updateError;
-
                 userVotes[id] = type;
                 await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
             } catch (error) {
@@ -834,7 +957,6 @@
                     .eq('discord_id', currentUser.discordId)
                     .order('data_invio', { ascending: false });
                 if (error) throw error;
-
                 if (data.length === 0) {
                     container.innerHTML = `<div class="loading-message">Non hai ancora inviato suggerimenti.</div>`;
                 } else {
@@ -855,7 +977,6 @@
                     .order('voti_positivi', { ascending: false })
                     .limit(20);
                 if (error) throw error;
-
                 if (data.length === 0) {
                     container.innerHTML = `<div class="loading-message">Nessun suggerimento disponibile.</div>`;
                 } else {
@@ -909,14 +1030,15 @@
             const userVote = userVotes[s.id];
             const upVoteClass = userVote === 'up' ? 'voted' : '';
             const downVoteClass = userVote === 'down' ? 'voted' : '';
+            const postClass = isOwner ? 'blog-post my-suggestion' : 'blog-post';
             return `
-            <div class="blog-post">
-                <span class="event-badge">💡 Il Tuo Suggerimento</span>
+            <div class="${postClass}">
+                <span class="event-badge">💡 ${isOwner ? 'Il Tuo Suggerimento' : 'Suggerimento'}</span>
                 <div class="post-header">
                     <div class="post-author">
-                        <div class="author-icon">👤</div>
+                        <div class="author-icon">${isOwner ? '👤' : '🎮'}</div>
                         <div>
-                            <div class="author-name">${s.username || 'Tu'}</div>
+                            <div class="author-name">${s.username || (isOwner ? 'Tu' : s.discord_id)}</div>
                             <div class="post-date">${new Date(s.data_invio).toLocaleString('it-IT')}</div>
                         </div>
                     </div>
@@ -949,7 +1071,7 @@
             `;
         }
 
-        // --- RESTO DELLE FUNZIONI (identiche al file originale) ---
+        // --- RESTO DELLE FUNZIONI (inalterate) ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -1140,17 +1262,6 @@
                            user.email || 
                            'Utente';
             return { discordId, username };
-        }
-        async function logout() {
-            if (!confirm('Sei sicuro di voler uscire?')) return;
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                window.location.href = '/login.html';
-            } catch (error) {
-                console.error('Errore durante il logout:', error);
-                showAlert('Errore durante il logout. Riprova.');
-            }
         }
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
