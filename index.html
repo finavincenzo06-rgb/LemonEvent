@@ -338,6 +338,7 @@
             margin-bottom: 25px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            position: relative;
         }
         .blog-post:hover {
             transform: translateY(-5px);
@@ -415,6 +416,7 @@
         .vote-up.voted {
             background: #4caf50;
             color: #fff;
+            cursor: not-allowed;
         }
         .vote-down {
             background: rgba(244, 67, 54, 0.2);
@@ -428,6 +430,7 @@
         .vote-down.voted {
             background: #f44336;
             color: #fff;
+            cursor: not-allowed;
         }
         .vote-count {
             font-weight: 700;
@@ -540,37 +543,40 @@
             color: #ccc;
             font-size: 0.9em;
         }
-        .edit-btn {
-            padding: 8px 15px;
-            background: rgba(255, 152, 0, 0.2);
-            border: 2px solid #ff9800;
-            color: #ff9800;
-            border-radius: 12px;
+        .edit-btn, .delete-btn {
+            padding: 6px 10px;
+            font-size: 0.8em;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.95em;
+        }
+        .edit-btn {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
         }
         .edit-btn:hover {
             background: #ff9800;
             color: #fff;
         }
         .delete-btn {
-            padding: 8px 15px;
             background: rgba(244, 67, 54, 0.2);
-            border: 2px solid #f44336;
+            border: 1px solid #f44336;
             color: #f44336;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.95em;
+            margin-left: 8px;
         }
         .delete-btn:hover {
             background: #f44336;
             color: #fff;
+        }
+        .post-actions {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
         }
         .edit-popup {
             position: fixed;
@@ -959,96 +965,49 @@
         let currentUser = null;
         let userVotes = {};
 
-        // --- TUTTE LE FUNZIONI RIMANGONO IDENTICHE TRANNE voteSuggestion ---
-
+        // ✅ NUOVA FUNZIONE DI VOTO: UNA VOLTA SOLA, SENZA CAMBIO
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
                 return;
             }
 
+            // Se ha già votato questo suggerimento (qualsiasi tipo), blocca
+            if (userVotes[id]) {
+                showAlert("Hai già votato questo suggerimento.");
+                return;
+            }
+
             try {
-                // Verifica lo stato reale nel DB
-                const { data: existingVote, error: fetchError } = await supabase
+                // Inserisci il voto
+                const { error: insertError } = await supabase
                     .from('suggestion_votes')
-                    .select('vote_type')
-                    .eq('suggestion_id', id)
-                    .eq('discord_id', currentUser.discordId)
-                    .single();
+                    .insert([{
+                        suggestion_id: id,
+                        discord_id: currentUser.discordId,
+                        vote_type: type
+                    }]);
+                if (insertError) throw insertError;
 
-                const currentVoteType = existingVote ? existingVote.vote_type : null;
-
-                // Se clicca sullo stesso tipo → rimuovi il voto
-                if (currentVoteType === type) {
-                    await supabase
-                        .from('suggestion_votes')
-                        .delete()
-                        .eq('suggestion_id', id)
-                        .eq('discord_id', currentUser.discordId);
-
-                    const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-                    const { data: suggestion, error } = await supabase
-                        .from('suggestions')
-                        .select(field)
-                        .eq('id', id)
-                        .single();
-                    if (!error) {
-                        const newValue = Math.max(0, suggestion[field] - 1);
-                        await supabase
-                            .from('suggestions')
-                            .update({ [field]: newValue })
-                            .eq('id', id);
-                    }
-
-                    delete userVotes[id];
-                    await loadSuggestions();
-                    return;
-                }
-
-                // Se esiste un voto opposto → rimuovilo
-                if (currentVoteType) {
-                    await supabase
-                        .from('suggestion_votes')
-                        .delete()
-                        .eq('suggestion_id', id)
-                        .eq('discord_id', currentUser.discordId);
-
-                    const oldField = currentVoteType === 'up' ? 'voti_positivi' : 'voti_negativi';
-                    const { data: oldSuggestion, error } = await supabase
-                        .from('suggestions')
-                        .select(oldField)
-                        .eq('id', id)
-                        .single();
-                    if (!error) {
-                        const oldValue = Math.max(0, oldSuggestion[oldField] - 1);
-                        await supabase
-                            .from('suggestions')
-                            .update({ [oldField]: oldValue })
-                            .eq('id', id);
-                    }
-                }
-
-                // Inserisci nuovo voto
-                await supabase
-                    .from('suggestion_votes')
-                    .insert([{ suggestion_id: id, discord_id: currentUser.discordId, vote_type: type }]);
-
-                const newField = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-                const { data: newSuggestion, error } = await supabase
+                // Incrementa contatore
+                const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
+                const { data, error: fetchError } = await supabase
                     .from('suggestions')
-                    .select(newField)
+                    .select(field)
                     .eq('id', id)
                     .single();
-                if (!error) {
-                    const newValue = newSuggestion[newField] + 1;
-                    await supabase
-                        .from('suggestions')
-                        .update({ [newField]: newValue })
-                        .eq('id', id);
-                }
+                if (fetchError) throw fetchError;
 
+                const newCount = data[field] + 1;
+                const { error: updateError } = await supabase
+                    .from('suggestions')
+                    .update({ [field]: newCount })
+                    .eq('id', id);
+                if (updateError) throw updateError;
+
+                // Registra localmente il voto (per evitare ulteriori voti)
                 userVotes[id] = type;
-                await loadSuggestions();
+                await loadSuggestions(); // Ricarica per mostrare lo stato "votato"
 
             } catch (error) {
                 console.error('Errore durante il voto:', error);
@@ -1056,7 +1015,6 @@
             }
         }
 
-        // --- RESTO DEL CODICE INALTERATO ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -1065,10 +1023,12 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
+
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
             document.getElementById('editSuggestionForm').reset();
         }
+
         async function saveEditedSuggestion(e) {
             e.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
@@ -1092,6 +1052,7 @@
                 showAlert('Errore durante la modifica. Riprova.');
             }
         }
+
         async function deleteSuggestion(id) {
             if (!confirm('Sei sicuro di voler eliminare questo suggerimento? Questa azione non può essere annullata.')) {
                 return;
@@ -1113,6 +1074,7 @@
                 showAlert('Errore durante l\'eliminazione. Riprova.');
             }
         }
+
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             const text = document.getElementById('successText');
@@ -1120,16 +1082,19 @@
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
+
         function showAlert(message) {
             const popup = document.getElementById('alertPopup');
             const messageEl = document.getElementById('alertMessage');
             messageEl.textContent = message;
             popup.classList.add('show');
         }
+
         function closeAlert() {
             const popup = document.getElementById('alertPopup');
             popup.classList.remove('show');
         }
+
         async function submitSuggestion(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1153,6 +1118,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function submitEventOrganization(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1178,6 +1144,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function loadSuggestions() {
             const suggestionsList = document.getElementById('suggestionsList');
             try {
@@ -1214,23 +1181,21 @@
                                 <p><strong>📅 Quando:</strong> ${s.quando}</p>
                             </div>
                             <div class="post-meta">
-                                <button class="vote-btn vote-up ${upVoteClass}" onclick="voteSuggestion(${s.id}, 'up')">
+                                <button class="vote-btn vote-up ${upVoteClass}" onclick="voteSuggestion(${s.id}, 'up')" ${userVote ? 'disabled' : ''}>
                                     <span>👍</span>
                                     <span class="vote-count">${s.voti_positivi || 0}</span>
                                 </button>
-                                <button class="vote-btn vote-down ${downVoteClass}" onclick="voteSuggestion(${s.id}, 'down')">
+                                <button class="vote-btn vote-down ${downVoteClass}" onclick="voteSuggestion(${s.id}, 'down')" ${userVote ? 'disabled' : ''}>
                                     <span>👎</span>
                                     <span class="vote-count">${s.voti_negativi || 0}</span>
                                 </button>
-                                ${isOwner ? `
-                                    <button class="edit-btn" onclick='openEditPopup(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
-                                        ✏️ Modifica
-                                    </button>
-                                    <button class="delete-btn" onclick="deleteSuggestion(${s.id})">
-                                        🗑️ Elimina
-                                    </button>
-                                ` : ''}
                             </div>
+                            ${isOwner ? `
+                                <div class="post-actions">
+                                    <button class="edit-btn" onclick='openEditPopup(${JSON.stringify(s).replace(/'/g, "&apos;")})'>✏️</button>
+                                    <button class="delete-btn" onclick="deleteSuggestion(${s.id})">🗑️</button>
+                                </div>
+                            ` : ''}
                         </div>
                     `}).join('');
                 }
@@ -1243,6 +1208,7 @@
                     </div>`;
             }
         }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const pageLoading = document.getElementById('pageLoading');
             try {
@@ -1258,11 +1224,14 @@
                 window.location.href = '/login.html';
             }
         });
+
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
             }
         });
+
+        // --- Funzioni helper (inalterate) ---
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
@@ -1274,6 +1243,7 @@
                 showAlert('Errore durante il logout. Riprova.');
             }
         }
+
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
@@ -1288,6 +1258,7 @@
                            'Utente';
             return { discordId, username };
         }
+
         async function getSuggestions() {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -1296,6 +1267,7 @@
             if (error) throw error;
             return data;
         }
+
         async function getUserVotes() {
             if (!currentUser) return {};
             try {
@@ -1314,6 +1286,7 @@
                 return {};
             }
         }
+
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -1333,6 +1306,7 @@
             }
             return true;
         }
+
         async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
                 .from('event_organizations')
@@ -1355,6 +1329,7 @@
             }
             return true;
         }
+
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
             const packageGroup = document.getElementById('packageGroup');
@@ -1364,11 +1339,14 @@
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
             const altroPackages = document.getElementById('altroPackages');
+
             matrimonioPackages.classList.remove('visible');
             funeralePackages.classList.remove('visible');
             festaPackages.classList.remove('visible');
             altroPackages.classList.remove('visible');
+
             packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Matrimonio';
@@ -1400,6 +1378,7 @@
                 packageGroup.style.display = 'none';
             }
         }
+
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
@@ -1409,7 +1388,9 @@
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
             const altroPackages = document.getElementById('altroPackages');
+
             tabs.forEach(t => t.classList.remove('active'));
+
             if (tab === 'suggest') {
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
