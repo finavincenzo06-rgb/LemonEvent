@@ -959,103 +959,104 @@
         let currentUser = null;
         let userVotes = {};
 
-        // ... (tutte le altre funzioni rimangono identiche fino a voteSuggestion)
-
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
                 return;
             }
 
-            const currentVote = userVotes[id];
+            try {
+                const currentVote = userVotes[id];
 
-            // Se ha già votato lo stesso tipo → rimuovi il voto
-            if (currentVote === type) {
-                // Rimuovi il voto dal DB
-                const { error: deleteError } = await supabase
+                // Se ha già votato lo stesso tipo → rimuovi il voto
+                if (currentVote === type) {
+                    // Rimuovi il voto dal DB
+                    const { error: deleteError } = await supabase
+                        .from('suggestion_votes')
+                        .delete()
+                        .eq('suggestion_id', id)
+                        .eq('discord_id', currentUser.discordId);
+                    if (deleteError) throw deleteError;
+
+                    // Decrementa il contatore corrispondente
+                    const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
+                    const { data, error: fetchError } = await supabase
+                        .from('suggestions')
+                        .select(field)
+                        .eq('id', id)
+                        .single();
+                    if (fetchError) throw fetchError;
+
+                    const newValue = Math.max(0, data[field] - 1);
+                    const { error: updateError } = await supabase
+                        .from('suggestions')
+                        .update({ [field]: newValue })
+                        .eq('id', id);
+                    if (updateError) throw updateError;
+
+                    delete userVotes[id];
+                    await loadSuggestions();
+                    return;
+                }
+
+                // Se ha votato il tipo opposto → rimuovi vecchio voto
+                if (currentVote) {
+                    const { error: deleteOldError } = await supabase
+                        .from('suggestion_votes')
+                        .delete()
+                        .eq('suggestion_id', id)
+                        .eq('discord_id', currentUser.discordId);
+                    if (deleteOldError) throw deleteOldError;
+
+                    const oldField = currentVote === 'up' ? 'voti_positivi' : 'voti_negativi';
+                    const { data: oldData, error: oldFetchError } = await supabase
+                        .from('suggestions')
+                        .select(oldField)
+                        .eq('id', id)
+                        .single();
+                    if (oldFetchError) throw oldFetchError;
+
+                    const oldNewValue = Math.max(0, oldData[oldField] - 1);
+                    const { error: oldUpdateError } = await supabase
+                        .from('suggestions')
+                        .update({ [oldField]: oldNewValue })
+                        .eq('id', id);
+                    if (oldUpdateError) throw oldUpdateError;
+                }
+
+                // Inserisci nuovo voto
+                const { error: insertError } = await supabase
                     .from('suggestion_votes')
-                    .delete()
-                    .eq('suggestion_id', id)
-                    .eq('discord_id', currentUser.discordId);
-                if (deleteError) throw deleteError;
+                    .insert([{
+                        suggestion_id: id,
+                        discord_id: currentUser.discordId,
+                        vote_type: type
+                    }]);
+                if (insertError) throw insertError;
 
-                // Decrementa il contatore corrispondente
-                const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-                const { data, error: fetchError } = await supabase
+                // Incrementa contatore nuovo
+                const newField = type === 'up' ? 'voti_positivi' : 'voti_negativi';
+                const { data: newData, error: newFetchError } = await supabase
                     .from('suggestions')
-                    .select(field)
+                    .select(newField)
                     .eq('id', id)
                     .single();
-                if (fetchError) throw fetchError;
+                if (newFetchError) throw newFetchError;
 
-                const newValue = Math.max(0, data[field] - 1);
-                const { error: updateError } = await supabase
+                const newCount = newData[newField] + 1;
+                const { error: newUpdateError } = await supabase
                     .from('suggestions')
-                    .update({ [field]: newValue })
+                    .update({ [newField]: newCount })
                     .eq('id', id);
-                if (updateError) throw updateError;
+                if (newUpdateError) throw newUpdateError;
 
-                delete userVotes[id];
+                userVotes[id] = type;
                 await loadSuggestions();
-                return;
+            } catch (error) {
+                console.error('Errore durante il voto:', error);
+                showAlert('Errore durante il voto. Riprova.');
             }
-
-            // Se ha votato il tipo opposto → rimuovi vecchio voto
-            if (currentVote) {
-                const { error: deleteOldError } = await supabase
-                    .from('suggestion_votes')
-                    .delete()
-                    .eq('suggestion_id', id)
-                    .eq('discord_id', currentUser.discordId);
-                if (deleteOldError) throw deleteOldError;
-
-                const oldField = currentVote === 'up' ? 'voti_positivi' : 'voti_negativi';
-                const { data: oldData, error: oldFetchError } = await supabase
-                    .from('suggestions')
-                    .select(oldField)
-                    .eq('id', id)
-                    .single();
-                if (oldFetchError) throw oldFetchError;
-
-                const oldNewValue = Math.max(0, oldData[oldField] - 1);
-                const { error: oldUpdateError } = await supabase
-                    .from('suggestions')
-                    .update({ [oldField]: oldNewValue })
-                    .eq('id', id);
-                if (oldUpdateError) throw oldUpdateError;
-            }
-
-            // Inserisci nuovo voto
-            const { error: insertError } = await supabase
-                .from('suggestion_votes')
-                .insert([{
-                    suggestion_id: id,
-                    discord_id: currentUser.discordId,
-                    vote_type: type
-                }]);
-            if (insertError) throw insertError;
-
-            // Incrementa contatore nuovo
-            const newField = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-            const { data: newData, error: newFetchError } = await supabase
-                .from('suggestions')
-                .select(newField)
-                .eq('id', id)
-                .single();
-            if (newFetchError) throw newFetchError;
-
-            const newCount = newData[newField] + 1;
-            const { error: newUpdateError } = await supabase
-                .from('suggestions')
-                .update({ [newField]: newCount })
-                .eq('id', id);
-            if (newUpdateError) throw newUpdateError;
-
-            userVotes[id] = type;
-            await loadSuggestions();
         }
-
-        // ... (tutto il resto del codice rimane identico)
 
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
@@ -1275,7 +1276,6 @@
             }
         });
 
-        // Funzioni helper (riprodotte per completezza)
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
