@@ -738,12 +738,10 @@
                             <input type="text" id="org_participants" placeholder="es. 50-100 persone" required>
                         </div>
 
-                        <div class="form-group" id="budgetGroup" style="display: none;">
-                            <label>Pacchetto Matrimonio</label>
+                        <div class="form-group" id="packageGroup" style="display: none;">
+                            <label id="packageLabel">Pacchetto</label>
                             <select id="org_package">
                                 <option value="">-- Scegli un pacchetto (opzionale) --</option>
-                                <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                                <option value="matrimonio2">Matrimonio 2 - $60,000</option>
                             </select>
                         </div>
 
@@ -776,98 +774,6 @@
                 <!-- Pacchetti Matrimonio -->
                 <div class="packages-section matrimonio-packages" id="matrimonioPackages">
                     <h2 class="packages-title">💒 Pacchetti Matrimonio</h2>
-                    
-                    <div class="package-card">
-                        <div class="package-header">
-                            <div class="package-name">Matrimonio 1</div>
-                            <div class="package-price">$35,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto chiesa</li>
-                            <li>Celebrazione con prete</li>
-                            <li>Coordinamento base</li>
-                        </ul>
-                    </div>
-
-                    <div class="package-card">
-                        <div class="package-header">
-                            <div class="package-name">Matrimonio 2</div>
-                            <div class="package-price">$60,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Trasporto sposa e sposo con arrivo in limousine di lusso</li>
-                            <li>Affitto chiesa con decorazioni floreali personalizzate</li>
-                            <li>Celebrazione religiosa con prete</li>
-                            <li>Affitto campo da golf per celebrazione post-cerimonia</li>
-                            <li>Buffet completo (fino a 50 persone)</li>
-                            <li>Servizio DJ incluso per tutta la durata dell'evento</li>
-                        </ul>
-                    </div>
-
-                    <div class="extras-section">
-                        <h3 class="extras-title">
-                            🎁 Aggiunte Extra (personalizzabili)
-                            <span class="extras-badge">GRATIS</span>
-                        </h3>
-                        <ul class="package-features">
-                            <li>Trasporto al molo</li>
-                            <li>Barca di lusso per continuare la festa</li>
-                            <li>Cibo e buffet sulla barca</li>
-                            <li>Fotografo professionista tutto il giorno</li>
-                            <li>Fuochi d'artificio serali</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Pacchetti Funerale -->
-                <div class="packages-section funerale-packages" id="funeralePackages">
-                    <h2 class="packages-title">⚰️ Pacchetti Funerale</h2>
-                    
-                    <div class="package-card">
-                        <div class="package-header">
-                            <div class="package-name">Funerale 1</div>
-                            <div class="package-price">$25,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto cappella o sala commemorativa</li>
-                            <li>Cerimonia con officiatore laico o religioso</li>
-                            <li>Coordinamento base e allestimento sobrio</li>
-                        </ul>
-                    </div>
-
-                    <div class="package-card">
-                        <div class="package-header">
-                            <div class="package-name">Funerale 2</div>
-                            <div class="package-price">$45,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Trasporto del feretro con carro funebre di lusso</li>
-                            <li>Cerimonia completa in chiesa o sala dedicata</li>
-                            <li>Allestimento floreale personalizzato</li>
-                            <li>Accompagnamento musicale dal vivo (violino o tromba)</li>
-                            <li>Rinfresco leggero post-cerimonia (fino a 30 persone)</li>
-                            <li>Servizio fotografico commemorativo discreto</li>
-                        </ul>
-                    </div>
-
-                    <div class="extras-section">
-                        <h3 class="extras-title">
-                            🕊️ Aggiunte Extra (personalizzabili)
-                            <span class="extras-badge">GRATIS</span>
-                        </h3>
-                        <ul class="package-features">
-                            <li>Video commemorativo con montaggio musicale</li>
-                            <li>Decorazioni tematiche personalizzate</li>
-                            <li>Servizio navetta per gli invitati</li>
-                            <li>Candele commemorative personalizzate</li>
-                            <li>Lancio lanterne in memoria del defunto</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Pacchetti Festa -->
-                <div class="packages-section festa-packages" id="festaPackages">
-                    <h2 class="packages-title">🎉 Pacchetti Festa</h2>
                     
                     <div class="package-card">
                         <div class="package-header">
@@ -910,6 +816,23 @@
                         </ul>
                     </div>
                 </div>
+
+                <!-- Pacchetti Altro -->
+                <div class="packages-section altro-packages" id="altroPackages">
+                    <h2 class="packages-title">📌 Evento Personalizzato</h2>
+                    
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">Richiesta Personalizzata</div>
+                        </div>
+                        <div class="post-content" style="padding: 20px; text-align: center;">
+                            <p style="font-size: 1.1em; line-height: 1.8; color: #ccc;">
+                                <strong>Esponi il tipo di evento che vorresti organizzare.</strong><br>
+                                L'amministrazione degli eventi valuterà il tutto e ti contatterà con una proposta personalizzata.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -933,28 +856,53 @@
 
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
-            const budgetGroup = document.getElementById('budgetGroup');
+            const packageGroup = document.getElementById('packageGroup');
+            const packageSelect = document.getElementById('org_package');
+            const packageLabel = document.getElementById('packageLabel');
             const matrimonioPackages = document.getElementById('matrimonioPackages');
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
+            const altroPackages = document.getElementById('altroPackages');
             
             // Nascondi tutti i pacchetti
             matrimonioPackages.classList.remove('visible');
             funeralePackages.classList.remove('visible');
             festaPackages.classList.remove('visible');
+            altroPackages.classList.remove('visible');
+            
+            // Reset del select
+            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
             
             // Mostra il pacchetto corretto in base al tipo di evento
             if (eventType === 'matrimonio') {
-                budgetGroup.style.display = 'block';
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Matrimonio';
+                packageSelect.innerHTML += `
+                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
+                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                `;
                 matrimonioPackages.classList.add('visible');
             } else if (eventType === 'funerale') {
-                budgetGroup.style.display = 'none';
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Funerale';
+                packageSelect.innerHTML += `
+                    <option value="funerale1">Funerale 1 - $25,000</option>
+                    <option value="funerale2">Funerale 2 - $45,000</option>
+                `;
                 funeralePackages.classList.add('visible');
             } else if (eventType === 'festa') {
-                budgetGroup.style.display = 'none';
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Festa';
+                packageSelect.innerHTML += `
+                    <option value="festa1">Festa Generale 1 - $30,000</option>
+                    <option value="festa2">Festa Generale 2 - $55,000</option>
+                `;
                 festaPackages.classList.add('visible');
+            } else if (eventType === 'altro') {
+                packageGroup.style.display = 'none';
+                altroPackages.classList.add('visible');
             } else {
-                budgetGroup.style.display = 'none';
+                packageGroup.style.display = 'none';
             }
         }
 
@@ -966,6 +914,7 @@
             const matrimonioPackages = document.getElementById('matrimonioPackages');
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
+            const altroPackages = document.getElementById('altroPackages');
 
             tabs.forEach(t => t.classList.remove('active'));
 
@@ -977,6 +926,7 @@
                 matrimonioPackages.classList.remove('visible');
                 funeralePackages.classList.remove('visible');
                 festaPackages.classList.remove('visible');
+                altroPackages.classList.remove('visible');
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
@@ -1293,4 +1243,96 @@
         });
     </script>
 </body>
-</html>
+</html>Matrimonio 1</div>
+                            <div class="package-price">$35,000</div>
+                        </div>
+                        <ul class="package-features">
+                            <li>Affitto chiesa</li>
+                            <li>Celebrazione con prete</li>
+                            <li>Coordinamento base</li>
+                        </ul>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">Matrimonio 2</div>
+                            <div class="package-price">$60,000</div>
+                        </div>
+                        <ul class="package-features">
+                            <li>Trasporto sposa e sposo con arrivo in limousine di lusso</li>
+                            <li>Affitto chiesa con decorazioni floreali personalizzate</li>
+                            <li>Celebrazione religiosa con prete</li>
+                            <li>Affitto campo da golf per celebrazione post-cerimonia</li>
+                            <li>Buffet completo (fino a 50 persone)</li>
+                            <li>Servizio DJ incluso per tutta la durata dell'evento</li>
+                        </ul>
+                    </div>
+
+                    <div class="extras-section">
+                        <h3 class="extras-title">
+                            🎁 Aggiunte Extra (personalizzabili)
+                            <span class="extras-badge">GRATIS</span>
+                        </h3>
+                        <ul class="package-features">
+                            <li>Trasporto al molo</li>
+                            <li>Barca di lusso per continuare la festa</li>
+                            <li>Cibo e buffet sulla barca</li>
+                            <li>Fotografo professionista tutto il giorno</li>
+                            <li>Fuochi d'artificio serali</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pacchetti Funerale -->
+                <div class="packages-section funerale-packages" id="funeralePackages">
+                    <h2 class="packages-title">🕊️ Pacchetti Funerale</h2>
+                    
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">Funerale 1</div>
+                            <div class="package-price">$25,000</div>
+                        </div>
+                        <ul class="package-features">
+                            <li>Affitto cappella o sala commemorativa</li>
+                            <li>Cerimonia con officiatore laico o religioso</li>
+                            <li>Coordinamento base e allestimento sobrio</li>
+                        </ul>
+                    </div>
+
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">Funerale 2</div>
+                            <div class="package-price">$45,000</div>
+                        </div>
+                        <ul class="package-features">
+                            <li>Trasporto del feretro con carro funebre di lusso</li>
+                            <li>Cerimonia completa in chiesa o sala dedicata</li>
+                            <li>Allestimento floreale personalizzato</li>
+                            <li>Accompagnamento musicale dal vivo (violino o tromba)</li>
+                            <li>Rinfresco leggero post-cerimonia (fino a 30 persone)</li>
+                            <li>Servizio fotografico commemorativo discreto</li>
+                        </ul>
+                    </div>
+
+                    <div class="extras-section">
+                        <h3 class="extras-title">
+                            🕊️ Aggiunte Extra (personalizzabili)
+                            <span class="extras-badge">GRATIS</span>
+                        </h3>
+                        <ul class="package-features">
+                            <li>Video commemorativo con montaggio musicale</li>
+                            <li>Decorazioni tematiche personalizzate</li>
+                            <li>Servizio navetta per gli invitati</li>
+                            <li>Candele commemorative personalizzate</li>
+                            <li>Lancio lanterne in memoria del defunto</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Pacchetti Festa -->
+                <div class="packages-section festa-packages" id="festaPackages">
+                    <h2 class="packages-title">🎉 Pacchetti Festa</h2>
+                    
+                    <div class="package-card">
+                        <div class="package-header">
+                            <div class="package-name">
