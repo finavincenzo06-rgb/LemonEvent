@@ -146,47 +146,46 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
         }
-        .main-content {
+
+        /* 🔻 Nuovo layout verticale */
+        .page-body {
             display: flex;
+            flex-direction: column;
             gap: 32px;
             min-height: 60vh;
         }
+
         .form-section {
-            flex: 1;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(59, 130, 246, 0.35);
             border-radius: 20px;
             padding: 32px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-            margin-bottom: 24px;
             text-align: left; /* 👈 Allineamento a sinistra */
         }
-        .right-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
+
         .suggestions-container {
             display: none;
-            flex: 1;
+            flex-direction: row;
             gap: 32px;
         }
         .suggestions-container.visible {
             display: flex;
         }
+
         .suggestions-column {
             flex: 1;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(59, 130, 246, 0.35);
             border-radius: 20px;
-            padding: 36px; /* 👈 Aumentato padding */
+            padding: 36px; /* 👈 Più spazio */
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
             display: flex;
             flex-direction: column;
         }
+
         .section-title {
             color: #93c5fd;
             font-size: 2.1em; /* 👈 Titolo più grande */
@@ -197,6 +196,7 @@
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
         }
+
         .suggestions-list {
             flex: 1;
             overflow-y: auto;
@@ -213,6 +213,7 @@
             background: rgba(93, 132, 225, 0.5);
             border-radius: 3px;
         }
+
         .blog-post {
             background: rgba(20, 28, 50, 0.7);
             backdrop-filter: blur(12px);
@@ -228,6 +229,7 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
         }
+
         .ranked-item {
             display: flex;
             align-items: center;
@@ -249,6 +251,7 @@
         .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0f172a; }
         .rank-2 { background: linear-gradient(135deg, #cbd5e1, #94a3b8); color: #0f172a; }
         .rank-3 { background: linear-gradient(135deg, #d97706, #b45309); color: #f8fafc; }
+
         .post-header {
             display: flex;
             justify-content: space-between;
@@ -298,6 +301,7 @@
         .post-content p {
             margin: 8px 0;
         }
+
         .post-meta {
             display: flex;
             align-items: center;
@@ -352,6 +356,7 @@
             font-weight: 700;
             font-size: 1.1em;
         }
+
         .event-badge {
             display: inline-block;
             padding: 6px 14px;
@@ -363,6 +368,7 @@
             font-weight: 600;
             margin-bottom: 12px;
         }
+
         .success-popup, .alert-popup {
             position: fixed;
             top: 50%;
@@ -388,6 +394,7 @@
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
         }
+
         .edit-btn, .delete-btn {
             padding: 5px 10px;
             font-size: 0.78em;
@@ -420,6 +427,7 @@
             background: #ef4444;
             color: #fff;
         }
+
         .post-actions {
             position: absolute;
             bottom: 16px;
@@ -427,12 +435,14 @@
             display: flex;
             gap: 6px;
         }
+
         .loading-message {
             text-align: center;
             padding: 32px 0;
             color: #94a3b8;
             font-style: italic;
         }
+
         .form-tabs {
             display: flex;
             gap: 14px;
@@ -460,17 +470,19 @@
             border-color: #3b82f6;
             color: #fff;
         }
+
         .tab-content {
             display: none;
         }
         .tab-content.active {
             display: block;
         }
+
         .form-title {
             color: #93c5fd;
             font-size: 1.85em;
             margin-bottom: 24px;
-            text-align: left; /* 👈 Titolo form a sinistra */
+            text-align: left;
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
         }
@@ -482,11 +494,11 @@
             border-radius: 10px;
             color: #dbeafe;
             font-size: 0.94em;
-            text-align: left; /* 👈 Nota a sinistra */
+            text-align: left;
         }
         .form-group {
             margin-bottom: 24px;
-            text-align: left; /* 👈 Etichette e input a sinistra */
+            text-align: left;
         }
         label {
             display: block;
@@ -547,6 +559,7 @@
             transform: translateY(-4px);
             box-shadow: 0 10px 28px rgba(59, 130, 246, 0.5);
         }
+
         .edit-popup {
             position: fixed;
             top: 0;
@@ -615,6 +628,7 @@
             background: #ef4444;
             color: #fff;
         }
+
         /* PACCHETTI */
         .packages-section {
             display: none;
@@ -624,11 +638,9 @@
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-            flex: 1;
         }
         .packages-section.visible {
             display: block;
-            margin-top: 16px;
         }
         .packages-title {
             color: #93c5fd;
@@ -711,10 +723,8 @@
             font-weight: 600;
             margin-left: 10px;
         }
+
         @media (max-width: 1200px) {
-            .main-content {
-                flex-direction: column;
-            }
             .suggestions-container {
                 flex-direction: column;
             }
@@ -738,7 +748,7 @@
     </style>
 </head>
 <body>
-    <!-- ✅ RIMOSSO: <div class="page-loading" id="pageLoading">...</div> -->
+    <!-- ✅ RIMOSSO: loading iniziale -->
 
     <div class="blog-header">
         <div class="container">
@@ -757,14 +767,15 @@
             </div>
         </div>
     </div>
+
     <div class="container">
-        <div class="main-content">
+        <div class="page-body">
+            <!-- Form in alto -->
             <div class="form-section">
                 <div class="form-tabs">
                     <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
                     <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
                 </div>
-                <!-- Form Suggerimento -->
                 <div id="suggestForm" class="tab-content active">
                     <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                     <div class="info-note">
@@ -790,7 +801,6 @@
                         <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
                     </form>
                 </div>
-                <!-- Form Organizzazione Evento -->
                 <div id="organizeForm" class="tab-content">
                     <h2 class="form-title">Organizza un Evento</h2>
                     <div class="info-note">
@@ -837,115 +847,117 @@
                     </form>
                 </div>
             </div>
-            <div class="right-section">
-                <!-- SEZIONE SUGGERIMENTI A DUE COLONNE -->
-                <div class="suggestions-container" id="suggestionsContainer">
-                    <div class="suggestions-column">
-                        <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                        <div class="suggestions-list" id="userSuggestionsList">
-                            <div class="loading-message">Caricamento...</div>
-                        </div>
-                    </div>
-                    <div class="suggestions-column">
-                        <h2 class="section-title">🏆 Classifica Community</h2>
-                        <div class="suggestions-list" id="rankedSuggestionsList">
-                            <div class="loading-message">Caricamento...</div>
-                        </div>
+
+            <!-- 🔻 SUGGERIMENTI E CLASSIFICA IN BASSO -->
+            <div class="suggestions-container" id="suggestionsContainer">
+                <div class="suggestions-column">
+                    <h2 class="section-title">I Tuoi Suggerimenti</h2>
+                    <div class="suggestions-list" id="userSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
                     </div>
                 </div>
-                <!-- PACCHETTI -->
-                <div class="packages-section" id="packagesSection">
-                    <h2 class="packages-title">Pacchetti Disponibili</h2>
-                    <div id="matrimonioPackages" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Matrimonio 1</div>
-                            <div class="package-price">$35,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto chiesa</li>
-                            <li>Celebrazione con prete</li>
-                            <li>Coordinamento base</li>
-                        </ul>
+                <div class="suggestions-column">
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div class="suggestions-list" id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
                     </div>
-                    <div id="matrimonioPackages2" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Matrimonio 2</div>
-                            <div class="package-price">$60,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Trasporto sposa e sposo con arrivo in limousine di lusso</li>
-                            <li>Affitto chiesa con decorazioni floreali personalizzate</li>
-                            <li>Celebrazione religiosa con prete</li>
-                            <li>Affitto campo da golf per celebrazione post-cerimonia</li>
-                            <li>Buffet completo (fino a 50 persone)</li>
-                            <li>Servizio DJ incluso per tutta la durata dell'evento</li>
-                        </ul>
+                </div>
+            </div>
+
+            <!-- Pacchetti (solo in modalità Organizza) -->
+            <div class="packages-section" id="packagesSection">
+                <h2 class="packages-title">Pacchetti Disponibili</h2>
+                <div id="matrimonioPackages" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Matrimonio 1</div>
+                        <div class="package-price">$35,000</div>
                     </div>
-                    <div id="funeralePackages" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Funerale 1</div>
-                            <div class="package-price">$25,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto cappella o sala commemorativa</li>
-                            <li>Cerimonia con officiatore laico o religioso</li>
-                            <li>Coordinamento base e allestimento sobrio</li>
-                        </ul>
+                    <ul class="package-features">
+                        <li>Affitto chiesa</li>
+                        <li>Celebrazione con prete</li>
+                        <li>Coordinamento base</li>
+                    </ul>
+                </div>
+                <div id="matrimonioPackages2" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Matrimonio 2</div>
+                        <div class="package-price">$60,000</div>
                     </div>
-                    <div id="funeralePackages2" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Funerale 2</div>
-                            <div class="package-price">$45,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Trasporto del feretro con carro funebre di lusso</li>
-                            <li>Cerimonia completa in chiesa o sala dedicata</li>
-                            <li>Allestimento floreale personalizzato</li>
-                            <li>Accompagnamento musicale dal vivo (violino o tromba)</li>
-                            <li>Rinfresco leggero post-cerimonia (fino a 30 persone)</li>
-                            <li>Servizio fotografico commemorativo discreto</li>
-                        </ul>
+                    <ul class="package-features">
+                        <li>Trasporto sposa e sposo con arrivo in limousine di lusso</li>
+                        <li>Affitto chiesa con decorazioni floreali personalizzate</li>
+                        <li>Celebrazione religiosa con prete</li>
+                        <li>Affitto campo da golf per celebrazione post-cerimonia</li>
+                        <li>Buffet completo (fino a 50 persone)</li>
+                        <li>Servizio DJ incluso per tutta la durata dell'evento</li>
+                    </ul>
+                </div>
+                <div id="funeralePackages" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Funerale 1</div>
+                        <div class="package-price">$25,000</div>
                     </div>
-                    <div id="festaPackages" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Festa Generale 1</div>
-                            <div class="package-price">$30,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto location</li>
-                            <li>Impianto audio base</li>
-                            <li>Servizio sicurezza e coordinamento</li>
-                        </ul>
+                    <ul class="package-features">
+                        <li>Affitto cappella o sala commemorativa</li>
+                        <li>Cerimonia con officiatore laico o religioso</li>
+                        <li>Coordinamento base e allestimento sobrio</li>
+                    </ul>
+                </div>
+                <div id="funeralePackages2" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Funerale 2</div>
+                        <div class="package-price">$45,000</div>
                     </div>
-                    <div id="festaPackages2" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Festa Generale 2</div>
-                            <div class="package-price">$55,000</div>
-                        </div>
-                        <ul class="package-features">
-                            <li>Affitto villa o locale di lusso</li>
-                            <li>DJ professionista per tutta la durata dell'evento</li>
-                            <li>Buffet completo (fino a 50 persone)</li>
-                            <li>Decorazioni personalizzate a tema</li>
-                            <li>Servizio fotografico e video professionale</li>
-                            <li>Coordinamento completo dell'evento</li>
-                        </ul>
+                    <ul class="package-features">
+                        <li>Trasporto del feretro con carro funebre di lusso</li>
+                        <li>Cerimonia completa in chiesa o sala dedicata</li>
+                        <li>Allestimento floreale personalizzato</li>
+                        <li>Accompagnamento musicale dal vivo (violino o tromba)</li>
+                        <li>Rinfresco leggero post-cerimonia (fino a 30 persone)</li>
+                        <li>Servizio fotografico commemorativo discreto</li>
+                    </ul>
+                </div>
+                <div id="festaPackages" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Festa Generale 1</div>
+                        <div class="package-price">$30,000</div>
                     </div>
-                    <div id="altroPackages" class="package-card" style="display: none;">
-                        <div class="package-header">
-                            <div class="package-name">Richiesta Personalizzata</div>
-                        </div>
-                        <div class="post-content" style="padding: 20px; text-align: center;">
-                            <p style="font-size: 1.1em; line-height: 1.8; color: #ccc;">
-                                <strong>Esponi il tipo di evento che vorresti organizzare.</strong><br>
-                                L'amministrazione degli eventi valuterà il tutto e ti contatterà con una proposta personalizzata.
-                            </p>
-                        </div>
+                    <ul class="package-features">
+                        <li>Affitto location</li>
+                        <li>Impianto audio base</li>
+                        <li>Servizio sicurezza e coordinamento</li>
+                    </ul>
+                </div>
+                <div id="festaPackages2" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Festa Generale 2</div>
+                        <div class="package-price">$55,000</div>
+                    </div>
+                    <ul class="package-features">
+                        <li>Affitto villa o locale di lusso</li>
+                        <li>DJ professionista per tutta la durata dell'evento</li>
+                        <li>Buffet completo (fino a 50 persone)</li>
+                        <li>Decorazioni personalizzate a tema</li>
+                        <li>Servizio fotografico e video professionale</li>
+                        <li>Coordinamento completo dell'evento</li>
+                    </ul>
+                </div>
+                <div id="altroPackages" class="package-card" style="display: none;">
+                    <div class="package-header">
+                        <div class="package-name">Richiesta Personalizzata</div>
+                    </div>
+                    <div class="post-content" style="padding: 20px; text-align: center;">
+                        <p style="font-size: 1.1em; line-height: 1.8; color: #ccc;">
+                            <strong>Esponi il tipo di evento che vorresti organizzare.</strong><br>
+                            L'amministrazione degli eventi valuterà il tutto e ti contatterà con una proposta personalizzata.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Popups -->
     <div class="success-popup" id="successPopup">
         <div class="success-text" id="successText">Operazione completata con successo!</div>
     </div>
@@ -953,7 +965,6 @@
         <div class="alert-popup-message" id="alertMessage"></div>
         <button class="alert-popup-btn" onclick="closeAlert()">Ok</button>
     </div>
-    <!-- Popup Modifica Suggerimento -->
     <div class="edit-popup" id="editPopup">
         <div class="edit-popup-content">
             <h2 class="edit-popup-title">✏️ Modifica Suggerimento</h2>
@@ -982,12 +993,17 @@
             </form>
         </div>
     </div>
+
     <script>
         const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
         let currentUser = null;
         let userVotes = {};
+
+        // ... (tutto il resto dello script JS è identico al file originale) ...
+        // Per brevità non ripetuto, ma mantenuto integralmente
+
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -1026,6 +1042,7 @@
                 showAlert('Errore durante il voto. Riprova.');
             }
         }
+
         async function loadUserSuggestions() {
             const container = document.getElementById('userSuggestionsList');
             try {
@@ -1049,6 +1066,7 @@
                 container.innerHTML = `<div class="loading-message">Errore nel caricamento.</div>`;
             }
         }
+
         async function loadRankedSuggestions() {
             const container = document.getElementById('rankedSuggestionsList');
             try {
@@ -1106,6 +1124,7 @@
                 container.innerHTML = `<div class="loading-message">Errore nel caricamento.</div>`;
             }
         }
+
         function renderSuggestion(s, isOwner) {
             const userVote = userVotes[s.id];
             const upVoteClass = userVote === 'up' ? 'voted' : '';
@@ -1149,6 +1168,7 @@
             </div>
             `;
         }
+
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -1157,10 +1177,12 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
+
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
             document.getElementById('editSuggestionForm').reset();
         }
+
         async function saveEditedSuggestion(e) {
             e.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
@@ -1184,6 +1206,7 @@
                 showAlert('Errore durante la modifica. Riprova.');
             }
         }
+
         async function deleteSuggestion(id) {
             if (!confirm('Sei sicuro di voler eliminare questo suggerimento?')) return;
             try {
@@ -1203,6 +1226,7 @@
                 showAlert('Errore durante l\'eliminazione. Riprova.');
             }
         }
+
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             document.getElementById('successText').textContent = message;
@@ -1211,14 +1235,17 @@
                 popup.classList.remove('show');
             }, 3000);
         }
+
         function showAlert(message) {
             const popup = document.getElementById('alertPopup');
             document.getElementById('alertMessage').textContent = message;
             popup.classList.add('show');
         }
+
         function closeAlert() {
             document.getElementById('alertPopup').classList.remove('show');
         }
+
         async function submitSuggestion(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1242,6 +1269,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function submitEventOrganization(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1267,6 +1295,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -1286,6 +1315,7 @@
             }
             return true;
         }
+
         async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
                 .from('event_organizations')
@@ -1308,6 +1338,7 @@
             }
             return true;
         }
+
         async function getUserVotes() {
             if (!currentUser) return {};
             try {
@@ -1326,6 +1357,7 @@
                 return {};
             }
         }
+
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
@@ -1340,6 +1372,7 @@
                            'Utente';
             return { discordId, username };
         }
+
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
@@ -1351,6 +1384,7 @@
                 showAlert('Errore durante il logout. Riprova.');
             }
         }
+
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
             const packageGroup = document.getElementById('packageGroup');
@@ -1363,7 +1397,7 @@
             const festaPackages = document.getElementById('festaPackages');
             const festaPackages2 = document.getElementById('festaPackages2');
             const altroPackages = document.getElementById('altroPackages');
-            // Nascondi tutto
+
             matrimonioPackages.style.display = 'none';
             matrimonioPackages2.style.display = 'none';
             funeralePackages.style.display = 'none';
@@ -1372,6 +1406,7 @@
             festaPackages2.style.display = 'none';
             altroPackages.style.display = 'none';
             packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Matrimonio';
@@ -1406,6 +1441,7 @@
                 packageGroup.style.display = 'none';
             }
         }
+
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
@@ -1427,8 +1463,8 @@
                 packagesSection.classList.add('visible');
             }
         }
+
         document.addEventListener('DOMContentLoaded', async () => {
-            // ✅ Rimossa la logica di pageLoading
             try {
                 currentUser = await getCurrentUser();
                 if (!currentUser) return;
@@ -1440,6 +1476,7 @@
                 window.location.href = '/login.html';
             }
         });
+
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
