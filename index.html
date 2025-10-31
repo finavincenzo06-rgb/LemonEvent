@@ -959,6 +959,8 @@
         let currentUser = null;
         let userVotes = {};
 
+        // --- TUTTE LE FUNZIONI RIMANGONO IDENTICHE TRANNE voteSuggestion ---
+
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -966,98 +968,95 @@
             }
 
             try {
-                const currentVote = userVotes[id];
+                // Verifica lo stato reale nel DB
+                const { data: existingVote, error: fetchError } = await supabase
+                    .from('suggestion_votes')
+                    .select('vote_type')
+                    .eq('suggestion_id', id)
+                    .eq('discord_id', currentUser.discordId)
+                    .single();
 
-                // Se ha già votato lo stesso tipo → rimuovi il voto
-                if (currentVote === type) {
-                    // Rimuovi il voto dal DB
-                    const { error: deleteError } = await supabase
+                const currentVoteType = existingVote ? existingVote.vote_type : null;
+
+                // Se clicca sullo stesso tipo → rimuovi il voto
+                if (currentVoteType === type) {
+                    await supabase
                         .from('suggestion_votes')
                         .delete()
                         .eq('suggestion_id', id)
                         .eq('discord_id', currentUser.discordId);
-                    if (deleteError) throw deleteError;
 
-                    // Decrementa il contatore corrispondente
                     const field = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-                    const { data, error: fetchError } = await supabase
+                    const { data: suggestion, error } = await supabase
                         .from('suggestions')
                         .select(field)
                         .eq('id', id)
                         .single();
-                    if (fetchError) throw fetchError;
-
-                    const newValue = Math.max(0, data[field] - 1);
-                    const { error: updateError } = await supabase
-                        .from('suggestions')
-                        .update({ [field]: newValue })
-                        .eq('id', id);
-                    if (updateError) throw updateError;
+                    if (!error) {
+                        const newValue = Math.max(0, suggestion[field] - 1);
+                        await supabase
+                            .from('suggestions')
+                            .update({ [field]: newValue })
+                            .eq('id', id);
+                    }
 
                     delete userVotes[id];
                     await loadSuggestions();
                     return;
                 }
 
-                // Se ha votato il tipo opposto → rimuovi vecchio voto
-                if (currentVote) {
-                    const { error: deleteOldError } = await supabase
+                // Se esiste un voto opposto → rimuovilo
+                if (currentVoteType) {
+                    await supabase
                         .from('suggestion_votes')
                         .delete()
                         .eq('suggestion_id', id)
                         .eq('discord_id', currentUser.discordId);
-                    if (deleteOldError) throw deleteOldError;
 
-                    const oldField = currentVote === 'up' ? 'voti_positivi' : 'voti_negativi';
-                    const { data: oldData, error: oldFetchError } = await supabase
+                    const oldField = currentVoteType === 'up' ? 'voti_positivi' : 'voti_negativi';
+                    const { data: oldSuggestion, error } = await supabase
                         .from('suggestions')
                         .select(oldField)
                         .eq('id', id)
                         .single();
-                    if (oldFetchError) throw oldFetchError;
-
-                    const oldNewValue = Math.max(0, oldData[oldField] - 1);
-                    const { error: oldUpdateError } = await supabase
-                        .from('suggestions')
-                        .update({ [oldField]: oldNewValue })
-                        .eq('id', id);
-                    if (oldUpdateError) throw oldUpdateError;
+                    if (!error) {
+                        const oldValue = Math.max(0, oldSuggestion[oldField] - 1);
+                        await supabase
+                            .from('suggestions')
+                            .update({ [oldField]: oldValue })
+                            .eq('id', id);
+                    }
                 }
 
                 // Inserisci nuovo voto
-                const { error: insertError } = await supabase
+                await supabase
                     .from('suggestion_votes')
-                    .insert([{
-                        suggestion_id: id,
-                        discord_id: currentUser.discordId,
-                        vote_type: type
-                    }]);
-                if (insertError) throw insertError;
+                    .insert([{ suggestion_id: id, discord_id: currentUser.discordId, vote_type: type }]);
 
-                // Incrementa contatore nuovo
                 const newField = type === 'up' ? 'voti_positivi' : 'voti_negativi';
-                const { data: newData, error: newFetchError } = await supabase
+                const { data: newSuggestion, error } = await supabase
                     .from('suggestions')
                     .select(newField)
                     .eq('id', id)
                     .single();
-                if (newFetchError) throw newFetchError;
-
-                const newCount = newData[newField] + 1;
-                const { error: newUpdateError } = await supabase
-                    .from('suggestions')
-                    .update({ [newField]: newCount })
-                    .eq('id', id);
-                if (newUpdateError) throw newUpdateError;
+                if (!error) {
+                    const newValue = newSuggestion[newField] + 1;
+                    await supabase
+                        .from('suggestions')
+                        .update({ [newField]: newValue })
+                        .eq('id', id);
+                }
 
                 userVotes[id] = type;
                 await loadSuggestions();
+
             } catch (error) {
                 console.error('Errore durante il voto:', error);
                 showAlert('Errore durante il voto. Riprova.');
             }
         }
 
+        // --- RESTO DEL CODICE INALTERATO ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -1066,12 +1065,10 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
-
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
             document.getElementById('editSuggestionForm').reset();
         }
-
         async function saveEditedSuggestion(e) {
             e.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
@@ -1095,7 +1092,6 @@
                 showAlert('Errore durante la modifica. Riprova.');
             }
         }
-
         async function deleteSuggestion(id) {
             if (!confirm('Sei sicuro di voler eliminare questo suggerimento? Questa azione non può essere annullata.')) {
                 return;
@@ -1117,7 +1113,6 @@
                 showAlert('Errore durante l\'eliminazione. Riprova.');
             }
         }
-
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             const text = document.getElementById('successText');
@@ -1125,19 +1120,16 @@
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
-
         function showAlert(message) {
             const popup = document.getElementById('alertPopup');
             const messageEl = document.getElementById('alertMessage');
             messageEl.textContent = message;
             popup.classList.add('show');
         }
-
         function closeAlert() {
             const popup = document.getElementById('alertPopup');
             popup.classList.remove('show');
         }
-
         async function submitSuggestion(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1161,7 +1153,6 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
-
         async function submitEventOrganization(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -1187,7 +1178,6 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
-
         async function loadSuggestions() {
             const suggestionsList = document.getElementById('suggestionsList');
             try {
@@ -1253,7 +1243,6 @@
                     </div>`;
             }
         }
-
         document.addEventListener('DOMContentLoaded', async () => {
             const pageLoading = document.getElementById('pageLoading');
             try {
@@ -1269,13 +1258,11 @@
                 window.location.href = '/login.html';
             }
         });
-
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
             }
         });
-
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
@@ -1287,7 +1274,6 @@
                 showAlert('Errore durante il logout. Riprova.');
             }
         }
-
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
@@ -1302,7 +1288,6 @@
                            'Utente';
             return { discordId, username };
         }
-
         async function getSuggestions() {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -1311,7 +1296,6 @@
             if (error) throw error;
             return data;
         }
-
         async function getUserVotes() {
             if (!currentUser) return {};
             try {
@@ -1330,7 +1314,6 @@
                 return {};
             }
         }
-
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -1350,7 +1333,6 @@
             }
             return true;
         }
-
         async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
                 .from('event_organizations')
@@ -1373,7 +1355,6 @@
             }
             return true;
         }
-
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
             const packageGroup = document.getElementById('packageGroup');
@@ -1383,14 +1364,11 @@
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
             const altroPackages = document.getElementById('altroPackages');
-
             matrimonioPackages.classList.remove('visible');
             funeralePackages.classList.remove('visible');
             festaPackages.classList.remove('visible');
             altroPackages.classList.remove('visible');
-
             packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
-
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Matrimonio';
@@ -1422,7 +1400,6 @@
                 packageGroup.style.display = 'none';
             }
         }
-
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
@@ -1432,9 +1409,7 @@
             const funeralePackages = document.getElementById('funeralePackages');
             const festaPackages = document.getElementById('festaPackages');
             const altroPackages = document.getElementById('altroPackages');
-
             tabs.forEach(t => t.classList.remove('active'));
-
             if (tab === 'suggest') {
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
