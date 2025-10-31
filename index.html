@@ -159,6 +159,7 @@
             border-radius: 20px;
             padding: 32px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+            margin-bottom: 24px;
         }
         .right-section {
             flex: 1;
@@ -170,6 +171,9 @@
             display: none;
             flex: 1;
             gap: 32px;
+        }
+        .suggestions-container.visible {
+            display: flex;
         }
         .suggestions-column {
             flex: 1;
@@ -619,6 +623,7 @@
         }
         .packages-section.visible {
             display: block;
+            margin-top: 16px;
         }
         .packages-title {
             color: #93c5fd;
@@ -1144,7 +1149,6 @@
             </div>
             `;
         }
-        // --- RESTO DELLE FUNZIONI (identiche al file originale) ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -1413,14 +1417,14 @@
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
-                suggestionsContainer.style.display = 'flex';
-                packagesSection.style.display = 'none';
+                suggestionsContainer.classList.add('visible');
+                packagesSection.classList.remove('visible');
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                suggestionsContainer.style.display = 'none';
-                packagesSection.style.display = 'flex';
+                suggestionsContainer.classList.remove('visible');
+                packagesSection.classList.add('visible');
             }
         }
         document.addEventListener('DOMContentLoaded', async () => {
