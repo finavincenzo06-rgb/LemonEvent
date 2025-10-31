@@ -160,6 +160,7 @@
             padding: 32px;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
             margin-bottom: 24px;
+            text-align: left; /* 👈 Allineamento a sinistra */
         }
         .right-section {
             flex: 1;
@@ -181,16 +182,16 @@
             backdrop-filter: blur(14px);
             border: 1px solid rgba(59, 130, 246, 0.35);
             border-radius: 20px;
-            padding: 30px;
+            padding: 36px; /* 👈 Aumentato padding */
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
             display: flex;
             flex-direction: column;
         }
         .section-title {
             color: #93c5fd;
-            font-size: 1.8em;
-            margin-bottom: 24px;
-            padding-bottom: 14px;
+            font-size: 2.1em; /* 👈 Titolo più grande */
+            margin-bottom: 28px;
+            padding-bottom: 16px;
             border-bottom: 2px solid rgba(93, 132, 225, 0.4);
             text-align: center;
             font-weight: 700;
@@ -217,8 +218,8 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(59, 130, 246, 0.25);
             border-radius: 18px;
-            padding: 22px;
-            margin-bottom: 22px;
+            padding: 26px; /* 👈 Più spazio interno */
+            margin-bottom: 26px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
             position: relative;
@@ -231,16 +232,16 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .rank-badge {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 0.95em;
+            font-size: 1.1em;
             border-radius: 50%;
             background: rgba(93, 132, 225, 0.25);
             color: #93c5fd;
@@ -252,7 +253,7 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
             gap: 12px;
         }
@@ -262,8 +263,8 @@
             gap: 10px;
         }
         .author-icon {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border-radius: 50%;
             display: flex;
@@ -275,46 +276,46 @@
         .author-name {
             color: #93c5fd;
             font-weight: 700;
-            font-size: 1em;
+            font-size: 1.1em;
         }
         .post-date {
             color: #94a3b8;
-            font-size: 0.82em;
+            font-size: 0.86em;
         }
         .post-title {
             color: #dbeafe;
-            font-size: 1.25em;
+            font-size: 1.4em; /* 👈 Titolo suggerimento più grande */
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-family: 'Montserrat', sans-serif;
         }
         .post-content {
             color: #e2e8f0;
-            font-size: 0.95em;
-            margin-bottom: 14px;
-            line-height: 1.55;
+            font-size: 1.05em; /* 👈 Testo più grande */
+            margin-bottom: 16px;
+            line-height: 1.6;
         }
         .post-content p {
-            margin: 6px 0;
+            margin: 8px 0;
         }
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         .vote-btn {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s ease;
             border: none;
-            font-size: 0.92em;
+            font-size: 0.96em;
             font-family: 'Inter', sans-serif;
         }
         .vote-up {
@@ -349,18 +350,18 @@
         }
         .vote-count {
             font-weight: 700;
-            font-size: 1.05em;
+            font-size: 1.1em;
         }
         .event-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 6px 14px;
             background: rgba(124, 58, 237, 0.25);
             border: 1px solid #a78bfa;
             color: #ddd6fe;
             border-radius: 22px;
-            font-size: 0.85em;
+            font-size: 0.9em;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .success-popup, .alert-popup {
             position: fixed;
@@ -469,18 +470,30 @@
             color: #93c5fd;
             font-size: 1.85em;
             margin-bottom: 24px;
-            text-align: center;
+            text-align: left; /* 👈 Titolo form a sinistra */
             font-weight: 700;
             font-family: 'Montserrat', sans-serif;
         }
+        .info-note {
+            background: rgba(59, 130, 246, 0.18);
+            border-left: 4px solid #60a5fa;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            border-radius: 10px;
+            color: #dbeafe;
+            font-size: 0.94em;
+            text-align: left; /* 👈 Nota a sinistra */
+        }
         .form-group {
             margin-bottom: 24px;
+            text-align: left; /* 👈 Etichette e input a sinistra */
         }
         label {
             display: block;
             color: #cbd5e1;
             margin-bottom: 12px;
             font-weight: 600;
+            text-align: left;
         }
         input[type="text"], 
         input[type="date"],
@@ -495,6 +508,7 @@
             font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
             font-size: 1em;
+            text-align: left;
         }
         input[type="text"]:focus, 
         input[type="date"]:focus,
@@ -532,15 +546,6 @@
         .submit-btn:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 28px rgba(59, 130, 246, 0.5);
-        }
-        .info-note {
-            background: rgba(59, 130, 246, 0.18);
-            border-left: 4px solid #60a5fa;
-            padding: 14px 18px;
-            margin-bottom: 24px;
-            border-radius: 10px;
-            color: #dbeafe;
-            font-size: 0.94em;
         }
         .edit-popup {
             position: fixed;
@@ -733,11 +738,8 @@
     </style>
 </head>
 <body>
-    <div class="page-loading" id="pageLoading">
-        <div class="loading-message">
-            <p>🔄 Verifica autenticazione in corso...</p>
-        </div>
-    </div>
+    <!-- ✅ RIMOSSO: <div class="page-loading" id="pageLoading">...</div> -->
+
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
@@ -836,16 +838,14 @@
                 </div>
             </div>
             <div class="right-section">
-                <!-- SEZIONE SUGGERIMENTI A DUE COLONNE (visibile solo in "Suggerisci") -->
+                <!-- SEZIONE SUGGERIMENTI A DUE COLONNE -->
                 <div class="suggestions-container" id="suggestionsContainer">
-                    <!-- Suggerimenti dell'utente -->
                     <div class="suggestions-column">
                         <h2 class="section-title">I Tuoi Suggerimenti</h2>
                         <div class="suggestions-list" id="userSuggestionsList">
                             <div class="loading-message">Caricamento...</div>
                         </div>
                     </div>
-                    <!-- Classifica globale -->
                     <div class="suggestions-column">
                         <h2 class="section-title">🏆 Classifica Community</h2>
                         <div class="suggestions-list" id="rankedSuggestionsList">
@@ -853,7 +853,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- PACCHETTI (visibili solo in "Organizza") -->
+                <!-- PACCHETTI -->
                 <div class="packages-section" id="packagesSection">
                     <h2 class="packages-title">Pacchetti Disponibili</h2>
                     <div id="matrimonioPackages" class="package-card" style="display: none;">
@@ -1428,14 +1428,13 @@
             }
         }
         document.addEventListener('DOMContentLoaded', async () => {
-            const pageLoading = document.getElementById('pageLoading');
+            // ✅ Rimossa la logica di pageLoading
             try {
                 currentUser = await getCurrentUser();
                 if (!currentUser) return;
                 document.getElementById('username').textContent = currentUser.username;
                 userVotes = await getUserVotes();
                 await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
-                pageLoading.classList.add('hidden');
             } catch (error) {
                 console.error('Errore inizializzazione:', error);
                 window.location.href = '/login.html';
