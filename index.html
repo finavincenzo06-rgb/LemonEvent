@@ -201,6 +201,8 @@
         input[type="text"], 
         input[type="date"],
         input[type="time"],
+        input[type="tel"],
+        input[type="email"],
         textarea,
         select {
             width: 100%;
@@ -216,6 +218,8 @@
         input[type="text"]:focus, 
         input[type="date"]:focus,
         input[type="time"]:focus,
+        input[type="tel"]:focus,
+        input[type="email"]:focus,
         textarea:focus,
         select:focus {
             outline: none;
@@ -338,7 +342,7 @@
             flex-wrap: wrap;
         }
 
-        .vote-btn, .book-btn {
+        .vote-btn {
             display: flex;
             align-items: center;
             gap: 5px;
@@ -372,24 +376,6 @@
         .vote-down:hover {
             background: #f44336;
             color: #fff;
-        }
-
-        .book-btn {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
-            border: 2px solid #ffc107;
-        }
-
-        .book-btn:hover {
-            background: #ffc107;
-            color: #000;
-        }
-
-        .book-btn.booked {
-            background: rgba(76, 175, 80, 0.3);
-            color: #4caf50;
-            border: 2px solid #4caf50;
-            cursor: default;
         }
 
         .vote-count {
@@ -508,25 +494,14 @@
             box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
         }
 
-        .bookings-list {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            border-left: 3px solid #ffc107;
-        }
-
-        .bookings-list-title {
-            color: #ffc107;
-            font-weight: 600;
-            margin-bottom: 8px;
+        .info-note {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196f3;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #ccc;
             font-size: 0.9em;
-        }
-
-        .booking-item {
-            color: #bbb;
-            font-size: 0.85em;
-            padding: 3px 0;
         }
 
         @media (max-width: 900px) {
@@ -577,7 +552,7 @@
 
                 <div class="logo">🍋</div>
                 <h1>LEMONCITY EVENTS</h1>
-                <p class="subtitle">Condividi, scopri e prenota eventi della community</p>
+                <p class="subtitle">Condividi idee e organizza i tuoi eventi</p>
             </div>
         </div>
     </div>
@@ -587,12 +562,15 @@
             <div class="form-section">
                 <div class="form-tabs">
                     <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
-                    <button class="tab-btn" onclick="switchTab('book')">📅 Prenota Evento</button>
+                    <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
                 </div>
 
                 <!-- Form Suggerimento -->
                 <div id="suggestForm" class="tab-content active">
                     <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
+                    <div class="info-note">
+                        ℹ️ I suggerimenti sono pubblici e visibili a tutti gli utenti
+                    </div>
                     <form id="suggestionForm" onsubmit="submitSuggestion(event)">
                         <div class="form-group">
                             <label>Titolo dell'Evento *</label>
@@ -618,42 +596,69 @@
                     </form>
                 </div>
 
-                <!-- Form Prenotazione -->
-                <div id="bookForm" class="tab-content">
-                    <h2 class="form-title">Prenota un Evento</h2>
-                    <form id="bookingForm" onsubmit="submitBooking(event)">
+                <!-- Form Organizzazione Evento -->
+                <div id="organizeForm" class="tab-content">
+                    <h2 class="form-title">Organizza un Evento</h2>
+                    <div class="info-note">
+                        🔒 Le richieste di organizzazione sono private e visibili solo agli amministratori
+                    </div>
+                    <form id="eventOrganizationForm" onsubmit="submitEventOrganization(event)">
                         <div class="form-group">
-                            <label>Seleziona Evento *</label>
-                            <select id="event_select" required>
-                                <option value="">-- Scegli un evento --</option>
+                            <label>Tipo di Evento *</label>
+                            <select id="event_type" required>
+                                <option value="">-- Seleziona tipo evento --</option>
+                                <option value="matrimonio">💒 Matrimonio</option>
+                                <option value="funerale">🕊️ Funerale</option>
+                                <option value="festa">🎊 Festa</option>
+                                <option value="altro">📌 Altro</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>Nome Completo *</label>
-                            <input type="text" id="book_fullname" placeholder="Il tuo nome e cognome" required>
+                            <input type="text" id="org_fullname" placeholder="Il tuo nome e cognome" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Numero di Partecipanti *</label>
-                            <input type="text" id="book_participants" placeholder="es. 1 o 2 persone" required>
+                            <label>Email di Contatto *</label>
+                            <input type="email" id="org_email" placeholder="tua.email@esempio.com" required>
                         </div>
 
                         <div class="form-group">
-                            <label>Note Aggiuntive</label>
-                            <textarea id="book_notes" placeholder="Eventuali richieste o informazioni aggiuntive..."></textarea>
+                            <label>Telefono *</label>
+                            <input type="tel" id="org_phone" placeholder="+39 123 456 7890" required>
                         </div>
 
-                        <button type="submit" class="submit-btn">📅 Conferma Prenotazione</button>
+                        <div class="form-group">
+                            <label>Data Desiderata *</label>
+                            <input type="date" id="org_date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Numero Partecipanti Stimato *</label>
+                            <input type="text" id="org_participants" placeholder="es. 50-100 persone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Budget Indicativo</label>
+                            <input type="text" id="org_budget" placeholder="es. 5000€ - 10000€">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dettagli e Richieste Speciali *</label>
+                            <textarea id="org_details" placeholder="Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
                     </form>
                 </div>
             </div>
 
             <div class="suggestions-section">
-                <h2 class="section-title">Suggerimenti ed Eventi della Community</h2>
+                <h2 class="section-title">Suggerimenti della Community</h2>
                 <div id="suggestionsList">
                     <div id="loadingMessage" class="loading-message">
-                        <p>🔄 Caricamento contenuti in corso...</p>
+                        <p>🔄 Caricamento suggerimenti in corso...</p>
                     </div>
                 </div>
             </div>
@@ -679,20 +684,19 @@
 
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
-            const bookTab = document.getElementById('bookForm');
+            const organizeTab = document.getElementById('organizeForm');
             const tabs = document.querySelectorAll('.tab-btn');
 
             tabs.forEach(t => t.classList.remove('active'));
 
             if (tab === 'suggest') {
                 suggestTab.classList.add('active');
-                bookTab.classList.remove('active');
+                organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
             } else {
                 suggestTab.classList.remove('active');
-                bookTab.classList.add('active');
+                organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                loadEventsForBooking();
             }
         }
 
@@ -739,17 +743,6 @@
             return data;
         }
 
-        async function getBookingsForSuggestion(suggestionId) {
-            const { data, error } = await supabase
-                .from('event_bookings')
-                .select('*')
-                .eq('suggestion_id', suggestionId)
-                .order('data_prenotazione', { ascending: false });
-            
-            if (error) throw error;
-            return data || [];
-        }
-
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -772,16 +765,20 @@
             return true;
         }
 
-        async function saveBooking(booking) {
+        async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
-                .from('event_bookings')
+                .from('event_organizations')
                 .insert([{
-                    suggestion_id: booking.eventId,
-                    discord_id: booking.discordId,
-                    username: booking.username,
-                    nome_completo: booking.fullname,
-                    numero_partecipanti: booking.participants,
-                    note: booking.notes
+                    discord_id: eventData.discordId,
+                    username: eventData.username,
+                    tipo_evento: eventData.eventType,
+                    nome_completo: eventData.fullname,
+                    email: eventData.email,
+                    telefono: eventData.phone,
+                    data_evento: eventData.eventDate,
+                    numero_partecipanti: eventData.participants,
+                    budget: eventData.budget,
+                    dettagli: eventData.details
                 }])
                 .select();
             
@@ -850,19 +847,6 @@
             }
         }
 
-        async function checkUserBooking(suggestionId) {
-            if (!currentUser) return false;
-
-            const { data, error } = await supabase
-                .from('event_bookings')
-                .select('*')
-                .eq('suggestion_id', suggestionId)
-                .eq('discord_id', currentUser.discordId)
-                .maybeSingle();
-            
-            return data ? true : false;
-        }
-
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             const text = document.getElementById('successText');
@@ -910,56 +894,33 @@
             }
         }
 
-        async function submitBooking(e) {
+        async function submitEventOrganization(e) {
             e.preventDefault();
             
             if (!currentUser) return;
 
-            const eventId = document.getElementById('event_select').value;
-            
-            if (!eventId) {
-                showAlert('Seleziona un evento da prenotare!');
-                return;
-            }
-
-            const booking = {
-                eventId: eventId,
+            const eventData = {
                 discordId: currentUser.discordId,
                 username: currentUser.username,
-                fullname: document.getElementById('book_fullname').value,
-                participants: document.getElementById('book_participants').value,
-                notes: document.getElementById('book_notes').value
+                eventType: document.getElementById('event_type').value,
+                fullname: document.getElementById('org_fullname').value,
+                email: document.getElementById('org_email').value,
+                phone: document.getElementById('org_phone').value,
+                eventDate: document.getElementById('org_date').value,
+                participants: document.getElementById('org_participants').value,
+                budget: document.getElementById('org_budget').value,
+                details: document.getElementById('org_details').value
             };
 
             try {
-                const saved = await saveBooking(booking);
+                const saved = await saveEventOrganization(eventData);
                 if (saved) {
-                    document.getElementById('bookingForm').reset();
-                    showSuccess('Prenotazione confermata con successo!');
-                    loadSuggestions();
-                    loadEventsForBooking();
+                    document.getElementById('eventOrganizationForm').reset();
+                    showSuccess('Richiesta inviata! Verrai contattato presto dagli amministratori.');
                 }
             } catch (error) {
                 console.error('Errore:', error);
-                showAlert('Errore durante la prenotazione. Riprova.');
-            }
-        }
-
-        async function loadEventsForBooking() {
-            try {
-                const suggestions = await getSuggestions();
-                const select = document.getElementById('event_select');
-                
-                select.innerHTML = '<option value="">-- Scegli un evento --</option>';
-                
-                suggestions.forEach(s => {
-                    const option = document.createElement('option');
-                    option.value = s.id;
-                    option.textContent = `${s.titolo} - ${s.quando}`;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Errore caricamento eventi:', error);
+                showAlert('Errore durante l\'invio. Riprova.');
             }
         }
 
@@ -972,80 +933,49 @@
                 if (suggestions.length === 0) {
                     suggestionsList.innerHTML = `
                         <div class="blog-post">
-                            <h3>Nessun contenuto disponibile</h3>
+                            <h3>Nessun suggerimento disponibile</h3>
                             <p>Sii il primo a suggerire un evento!</p>
                         </div>`;
                 } else {
-                    const postsHtml = [];
-                    
-                    for (const s of suggestions) {
-                        const bookings = await getBookingsForSuggestion(s.id);
-                        const isBooked = await checkUserBooking(s.id);
-                        
-                        const bookingsHtml = bookings.length > 0 ? `
-                            <div class="bookings-list">
-                                <div class="bookings-list-title">👥 Prenotazioni (${bookings.length}):</div>
-                                ${bookings.map(b => `
-                                    <div class="booking-item">
-                                        • ${b.nome_completo} - ${b.numero_partecipanti} partecipanti
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : '';
-
-                        postsHtml.push(`
-                            <div class="blog-post">
-                                <span class="event-badge">💡 Suggerimento Community</span>
-                                <div class="post-header">
-                                    <div class="post-author">
-                                        <div class="author-icon">🎮</div>
-                                        <div>
-                                            <div class="author-name">${s.username || s.discord_id}</div>
-                                            <div class="post-date">${new Date(s.data_invio).toLocaleString('it-IT')}</div>
-                                        </div>
+                    suggestionsList.innerHTML = suggestions.map(s => `
+                        <div class="blog-post">
+                            <span class="event-badge">💡 Suggerimento Community</span>
+                            <div class="post-header">
+                                <div class="post-author">
+                                    <div class="author-icon">🎮</div>
+                                    <div>
+                                        <div class="author-name">${s.username || s.discord_id}</div>
+                                        <div class="post-date">${new Date(s.data_invio).toLocaleString('it-IT')}</div>
                                     </div>
                                 </div>
-                                <h3 class="post-title">${s.titolo || 'Evento senza titolo'}</h3>
-                                <div class="post-content">
-                                    <p><strong>📝 Descrizione:</strong> ${s.descrizione}</p>
-                                    <p><strong>🛠️ Requisiti:</strong> ${s.requisiti}</p>
-                                    <p><strong>📅 Quando:</strong> ${s.quando}</p>
-                                </div>
-                                ${bookingsHtml}
-                                <div class="post-meta">
-                                    <button class="vote-btn vote-up" onclick="voteSuggestion(${s.id}, 'up')">
-                                        <span>👍</span>
-                                        <span class="vote-count">${s.voti_positivi || 0}</span>
-                                    </button>
-                                    <button class="vote-btn vote-down" onclick="voteSuggestion(${s.id}, 'down')">
-                                        <span>👎</span>
-                                        <span class="vote-count">${s.voti_negativi || 0}</span>
-                                    </button>
-                                    ${isBooked ? 
-                                        '<button class="book-btn booked">✅ Già Prenotato</button>' :
-                                        `<button class="book-btn" onclick="quickBook(${s.id}, '${s.titolo.replace(/'/g, "\\'")}')">📅 Prenota Ora</button>`
-                                    }
-                                </div>
                             </div>
-                        `);
-                    }
-
-                    suggestionsList.innerHTML = postsHtml.join('');
+                            <h3 class="post-title">${s.titolo || 'Evento senza titolo'}</h3>
+                            <div class="post-content">
+                                <p><strong>📝 Descrizione:</strong> ${s.descrizione}</p>
+                                <p><strong>🛠️ Requisiti:</strong> ${s.requisiti}</p>
+                                <p><strong>📅 Quando:</strong> ${s.quando}</p>
+                            </div>
+                            <div class="post-meta">
+                                <button class="vote-btn vote-up" onclick="voteSuggestion(${s.id}, 'up')">
+                                    <span>👍</span>
+                                    <span class="vote-count">${s.voti_positivi || 0}</span>
+                                </button>
+                                <button class="vote-btn vote-down" onclick="voteSuggestion(${s.id}, 'down')">
+                                    <span>👎</span>
+                                    <span class="vote-count">${s.voti_negativi || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
                 }
             } catch (error) {
                 console.error("Errore caricamento:", error);
                 suggestionsList.innerHTML = `
                     <div class="blog-post">
                         <h3>Errore nel caricamento</h3>
-                        <p>Impossibile caricare i contenuti. Riprova tra poco.</p>
+                        <p>Impossibile caricare i suggerimenti. Riprova tra poco.</p>
                     </div>`;
             }
-        }
-
-        function quickBook(eventId, eventTitle) {
-            switchTab('book');
-            document.getElementById('event_select').value = eventId;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
