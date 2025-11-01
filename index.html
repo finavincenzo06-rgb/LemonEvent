@@ -123,14 +123,7 @@
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
-        .suggestions-container {
-            flex: 1;
-            display: flex;
-            gap: 30px;
-            margin-top: 30px;
-            align-items: flex-start;
-        }
-        .suggestions-column {
+        .price-section {
             flex: 1;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -138,8 +131,11 @@
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            height: fit-content;
-            min-height: auto;
+            margin-top: 30px;
+            display: none;
+        }
+        .price-section.active {
+            display: block;
         }
         .section-title {
             color: #2196f3;
@@ -149,189 +145,15 @@
             border-bottom: 2px solid rgba(33, 150, 243, 0.3);
             text-align: center;
         }
-        .blog-post {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(33, 150, 243, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-        .blog-post:hover {
-            transform: translateY(-3px);
-        }
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .post-author {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .author-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #2196f3, #1976d2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1em;
-            color: #fff;
-        }
-        .author-name {
-            color: #2196f3;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-        .post-date {
-            color: #999;
-            font-size: 0.75em;
-        }
-        .post-title {
-            color: #2196f3;
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .post-content {
+        .price-list {
             color: #ccc;
             font-size: 0.95em;
-            margin-bottom: 12px;
+            line-height: 1.8;
         }
-        .post-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .vote-btn {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 0.9em;
-            font-family: 'Poppins', sans-serif;
-        }
-        .vote-up {
-            background: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
-            border: 1px solid #4caf50;
-        }
-        .vote-up:hover:not(:disabled) {
-            background: #4caf50;
-            color: #fff;
-        }
-        .vote-up.voted, .vote-up:disabled {
-            background: #4caf50;
-            color: #fff;
-            cursor: not-allowed;
-        }
-        .vote-down {
-            background: rgba(244, 67, 54, 0.2);
-            color: #f44336;
-            border: 1px solid #f44336;
-        }
-        .vote-down:hover:not(:disabled) {
-            background: #f44336;
-            color: #fff;
-        }
-        .vote-down.voted, .vote-down:disabled {
-            background: #f44336;
-            color: #fff;
-            cursor: not-allowed;
-        }
-        .vote-count {
-            font-weight: 700;
-            font-size: 1em;
-        }
-        .event-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            background: rgba(156, 39, 176, 0.2);
-            border: 1px solid #9c27b0;
-            color: #9c27b0;
-            border-radius: 16px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        .success-popup, .alert-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 10000;
-            text-align: center;
-            padding: 20px 30px;
-            border-radius: 12px;
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-        }
-        .success-popup {
-            background: #2196f3;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .alert-popup {
-            background: rgba(0,0,0,0.9);
-            border: 2px solid rgba(255,193,7,0.6);
-            backdrop-filter: blur(10px);
-        }
-        .success-popup.show, .alert-popup.show {
-            transform: translate(-50%, -50%) scale(1);
-        }
-        .edit-btn, .delete-btn {
-            padding: 5px 9px;
-            font-size: 0.75em;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Poppins', sans-serif;
-        }
-        .edit-btn {
-            background: rgba(255, 152, 0, 0.2);
-            border: 1px solid #ff9800;
-            color: #ff9800;
-        }
-        .edit-btn:hover {
-            background: #ff9800;
-            color: #fff;
-        }
-        .delete-btn {
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid #f44336;
-            color: #f44336;
-            margin-left: 6px;
-        }
-        .delete-btn:hover {
-            background: #f44336;
-            color: #fff;
-        }
-        .post-actions {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            display: flex;
-            gap: 6px;
-        }
-        .loading-message {
-            text-align: center;
-            padding: 30px 0;
-            color: #999;
+        .price-item {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid #2196f3;
         }
         .form-tabs {
             display: flex;
@@ -506,9 +328,6 @@
             .main-content {
                 flex-direction: column;
             }
-            .suggestions-container {
-                flex-direction: column;
-            }
             .user-section, .admin-link {
                 position: static;
                 display: flex;
@@ -528,8 +347,6 @@
     </style>
 </head>
 <body>
-    <!-- ✅ RIMOSSO: <div class="page-loading" id="pageLoading">...</div> -->
-
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
@@ -628,24 +445,16 @@
                 </div>
             </div>
         </div>
-        <!-- NUOVA SEZIONE SUGGERIMENTI A DUE COLONNE -->
-        <div class="suggestions-container">
-            <!-- Suggerimenti dell'utente -->
-            <div class="suggestions-column">
-                <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                <div id="userSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
-                </div>
-            </div>
-            <!-- Classifica globale -->
-            <div class="suggestions-column">
-                <h2 class="section-title">🏆 Classifica Community</h2>
-                <div id="rankedSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
-                </div>
+
+        <!-- Sezione Listini Prezzi -->
+        <div id="priceSection" class="price-section">
+            <h2 class="section-title">💰 Listini Prezzi</h2>
+            <div id="priceContent" class="price-list">
+                <p>Seleziona un tipo di evento per vedere i relativi listini.</p>
             </div>
         </div>
     </div>
+
     <div class="success-popup" id="successPopup">
         <div class="success-text" id="successText">Operazione completata con successo!</div>
     </div>
@@ -653,6 +462,7 @@
         <div class="alert-popup-message" id="alertMessage"></div>
         <button class="alert-popup-btn" onclick="closeAlert()">Ok</button>
     </div>
+
     <!-- Popup Modifica Suggerimento -->
     <div class="edit-popup" id="editPopup">
         <div class="edit-popup-content">
@@ -682,12 +492,128 @@
             </form>
         </div>
     </div>
+
     <script>
         const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
         let currentUser = null;
         let userVotes = {};
+
+        // Prezzi statici
+        const priceLists = {
+            matrimonio: `
+                <div class="price-item">💍 Pacchetto Matrimonio 1 – $35,000<br>
+                    <small>• Cerimonia + ricevimento per 100 persone<br>
+                    • Location esclusiva<br>
+                    • Servizio fotografico e video<br>
+                    • Catering premium</small>
+                </div>
+                <div class="price-item">💍 Pacchetto Matrimonio 2 – $60,000<br>
+                    <small>• Tutto incluso del Pacchetto 1<br>
+                    • Musica live orchestra<br>
+                    • Auto d’epoca<br>
+                    • Wedding planner dedicato</small>
+                </div>
+            `,
+            funerale: `
+                <div class="price-item">🕊️ Pacchetto Funerale 1 – $25,000<br>
+                    <small>• Cerimonia privata<br>
+                    • Sala commemorativa<br>
+                    • Servizio di trasporto<br>
+                    • Fiori e allestimenti</small>
+                </div>
+                <div class="price-item">🕊️ Pacchetto Funerale 2 – $45,000<br>
+                    <small>• Tutto incluso del Pacchetto 1<br>
+                    • Servizio di supporto psicologico<br>
+                    • Video commemorativo<br>
+                    • Servizio catering per familiari</small>
+                </div>
+            `,
+            festa: `
+                <div class="price-item">🎊 Pacchetto Festa 1 – $30,000<br>
+                    <small>• Location per 150 persone<br>
+                    • Intrattenimento DJ<br>
+                    • Decorazioni tematiche<br>
+                    • Servizio bar e buffet</small>
+                </div>
+                <div class="price-item">🎊 Pacchetto Festa 2 – $55,000<br>
+                    <small>• Tutto incluso del Pacchetto 1<br>
+                    • Spettacolo live<br>
+                    • Area VIP<br>
+                    • Servizio fotografico professionale</small>
+                </div>
+            `,
+            altro: `
+                <div class="price-item">📌 Per eventi personalizzati, i costi variano in base a:<br>
+                    • Numero di partecipanti<br>
+                    • Location richiesta<br>
+                    • Servizi aggiuntivi (catering, intrattenimento, logistica)<br>
+                    • Durata dell’evento<br><br>
+                    Il nostro team ti contatterà per un preventivo su misura.
+                </div>
+            `
+        };
+
+        function handleEventTypeChange() {
+            const eventType = document.getElementById('event_type').value;
+            const packageGroup = document.getElementById('packageGroup');
+            const packageSelect = document.getElementById('org_package');
+            const packageLabel = document.getElementById('packageLabel');
+            const priceContent = document.getElementById('priceContent');
+
+            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+            packageGroup.style.display = 'none';
+            priceContent.innerHTML = eventType ? priceLists[eventType] || priceLists.altro : '<p>Seleziona un tipo di evento per vedere i relativi listini.</p>';
+
+            if (eventType === 'matrimonio') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Matrimonio';
+                packageSelect.innerHTML += `
+                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
+                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                `;
+            } else if (eventType === 'funerale') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Funerale';
+                packageSelect.innerHTML += `
+                    <option value="funerale1">Funerale 1 - $25,000</option>
+                    <option value="funerale2">Funerale 2 - $45,000</option>
+                `;
+            } else if (eventType === 'festa') {
+                packageGroup.style.display = 'block';
+                packageLabel.textContent = 'Pacchetto Festa';
+                packageSelect.innerHTML += `
+                    <option value="festa1">Festa Generale 1 - $30,000</option>
+                    <option value="festa2">Festa Generale 2 - $55,000</option>
+                `;
+            } else if (eventType === 'altro') {
+                packageGroup.style.display = 'none';
+            }
+        }
+
+        function switchTab(tab) {
+            const suggestTab = document.getElementById('suggestForm');
+            const organizeTab = document.getElementById('organizeForm');
+            const priceSection = document.getElementById('priceSection');
+            const tabs = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(t => t.classList.remove('active'));
+
+            if (tab === 'suggest') {
+                suggestTab.classList.add('active');
+                organizeTab.classList.remove('active');
+                priceSection.classList.remove('active');
+                tabs[0].classList.add('active');
+            } else {
+                suggestTab.classList.remove('active');
+                organizeTab.classList.add('active');
+                priceSection.classList.add('active');
+                tabs[1].classList.add('active');
+                // Aggiorna listino in base al tipo selezionato (se presente)
+                handleEventTypeChange();
+            }
+        }
 
         async function voteSuggestion(id, type) {
             if (!currentUser) {
@@ -929,6 +855,8 @@
                 const saved = await saveEventOrganization(eventData);
                 if (saved) {
                     document.getElementById('eventOrganizationForm').reset();
+                    document.getElementById('event_type').value = '';
+                    handleEventTypeChange(); // resetta anche i listini
                     showSuccess('Richiesta inviata! Verrai contattato presto.');
                 }
             } catch (error) {
@@ -1026,70 +954,7 @@
             }
         }
 
-        function handleEventTypeChange() {
-            const eventType = document.getElementById('event_type').value;
-            const packageGroup = document.getElementById('packageGroup');
-            const packageSelect = document.getElementById('org_package');
-            const packageLabel = document.getElementById('packageLabel');
-            const matrimonioPackages = document.getElementById('matrimonioPackages');
-            const funeralePackages = document.getElementById('funeralePackages');
-            const festaPackages = document.getElementById('festaPackages');
-            const altroPackages = document.getElementById('altroPackages');
-            matrimonioPackages.classList.remove('visible');
-            funeralePackages.classList.remove('visible');
-            festaPackages.classList.remove('visible');
-            altroPackages.classList.remove('visible');
-            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
-            if (eventType === 'matrimonio') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Matrimonio';
-                packageSelect.innerHTML += `
-                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
-                `;
-                matrimonioPackages.classList.add('visible');
-            } else if (eventType === 'funerale') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Funerale';
-                packageSelect.innerHTML += `
-                    <option value="funerale1">Funerale 1 - $25,000</option>
-                    <option value="funerale2">Funerale 2 - $45,000</option>
-                `;
-                funeralePackages.classList.add('visible');
-            } else if (eventType === 'festa') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Festa';
-                packageSelect.innerHTML += `
-                    <option value="festa1">Festa Generale 1 - $30,000</option>
-                    <option value="festa2">Festa Generale 2 - $55,000</option>
-                `;
-                festaPackages.classList.add('visible');
-            } else if (eventType === 'altro') {
-                packageGroup.style.display = 'none';
-                altroPackages.classList.add('visible');
-            } else {
-                packageGroup.style.display = 'none';
-            }
-        }
-
-        function switchTab(tab) {
-            const suggestTab = document.getElementById('suggestForm');
-            const organizeTab = document.getElementById('organizeForm');
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(t => t.classList.remove('active'));
-            if (tab === 'suggest') {
-                suggestTab.classList.add('active');
-                organizeTab.classList.remove('active');
-                tabs[0].classList.add('active');
-            } else {
-                suggestTab.classList.remove('active');
-                organizeTab.classList.add('active');
-                tabs[1].classList.add('active');
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', async () => {
-            // ✅ RIMOSSA la gestione di pageLoading
             try {
                 currentUser = await getCurrentUser();
                 if (!currentUser) return;
