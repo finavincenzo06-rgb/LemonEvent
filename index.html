@@ -125,7 +125,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         .suggestions-container {
-            flex: 1;
+            flex: 2;
             display: flex;
             gap: 30px;
         }
@@ -151,8 +151,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
-            padding: 25px; /* Aumentato da 20px a 25px per più spazio */
-            margin-bottom: 25px; /* Aumentato da 20px a 25px per più spazio tra i suggerimenti */
+            padding: 25px;
+            margin-bottom: 25px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             position: relative;
@@ -164,7 +164,7 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 15px; /* Aumentato da 12px a 15px */
+            margin-bottom: 15px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -197,17 +197,17 @@
             color: #2196f3;
             font-size: 1.2em;
             font-weight: 600;
-            margin-bottom: 10px; /* Aumentato da 8px a 10px */
+            margin-bottom: 10px;
         }
         .post-content {
             color: #ccc;
             font-size: 0.95em;
-            margin-bottom: 15px; /* Aumentato da 12px a 15px */
+            margin-bottom: 15px;
         }
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 15px; /* Aumentato da 12px a 15px */
+            gap: 15px;
             flex-wrap: wrap;
         }
         .vote-btn {
@@ -682,7 +682,7 @@
 
             <!-- COLONNA DINAMICA (SUGGERIMENTI O PACCHETTI) -->
             <div class="suggestions-container">
-                <!-- Colonna 1: I Tuoi Suggerimenti (visibile solo in "Suggerisci Evento") -->
+                <!-- Colonna 1: I Tuoi Suggerimenti (centrale) -->
                 <div id="userSuggestionsColumn" class="suggestions-column">
                     <h2 class="section-title">I Tuoi Suggerimenti</h2>
                     <div id="userSuggestionsList">
@@ -690,9 +690,8 @@
                     </div>
                 </div>
 
-                <!-- Colonna 2: Classifica Community o Pacchetti (visibile solo in "Suggerisci Evento" o "Organizza Evento") -->
-                <div id="rightColumn" class="suggestions-column">
-                    <!-- Questo contenuto verrà cambiato dinamicamente -->
+                <!-- Colonna 2: Classifica Community (destra) -->
+                <div id="rankedSuggestionsColumn" class="suggestions-column">
                     <h2 class="section-title">🏆 Classifica Community</h2>
                     <div id="rankedSuggestionsList">
                         <div class="loading-message">Caricamento...</div>
@@ -1099,7 +1098,7 @@
             const detailTextarea = document.getElementById('org_details');
 
             // Nascondi il pannello dei pacchetti
-            document.getElementById('rightColumn').innerHTML = '';
+            document.getElementById('rankedSuggestionsColumn').innerHTML = '';
 
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
@@ -1108,7 +1107,7 @@
                                           '<option value="matrimonio1">Matrimonio 1 - $35,000</option>' +
                                           '<option value="matrimonio2">Matrimonio 2 - $60,000</option>';
 
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <div class="package-info">
                         <h2>💍 PACK MATRIMONIO – ORGANIZZAZIONE EVENTI DI LUSSO</h2>
                         <p>Crea il giorno perfetto, noi ci occupiamo di tutto!</p>
@@ -1154,7 +1153,7 @@
                                           '<option value="funerale1">Funerale 1 - $25,000</option>' +
                                           '<option value="funerale2">Funerale 2 - $45,000</option>';
 
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <div class="package-info">
                         <h2>⚰️ PACK FUNERALE – RISPETTO, CLASSE E SERENITÀ</h2>
                         <p>Onoriamo i tuoi cari con dignità e cura assoluta.</p>
@@ -1199,7 +1198,7 @@
                                           '<option value="festa1">Festa Generale 1 - $30,000</option>' +
                                           '<option value="festa2">Festa Generale 2 - $55,000</option>';
 
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <div class="package-info">
                         <h2>🎉 PACK FESTA – DIVERTIMENTO SENZA LIMITI</h2>
                         <p>Che sia un compleanno, una serata privata o un evento aziendale… noi lo rendiamo indimenticabile!</p>
@@ -1240,7 +1239,7 @@
 
             } else if (eventType === 'altro') {
                 packageGroup.style.display = 'none';
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <div class="package-info">
                         <h2>📌 ALTRO – CREA IL TUO EVENTO SU MISURA</h2>
                         <p>Nessun limite, solo la tua immaginazione.</p>
@@ -1273,7 +1272,7 @@
             } else {
                 packageGroup.style.display = 'none';
                 // Mostra la classifica community se nessun tipo è selezionato
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <h2 class="section-title">🏆 Classifica Community</h2>
                     <div id="rankedSuggestionsList">
                         <div class="loading-message">Caricamento...</div>
@@ -1295,8 +1294,8 @@
                 tabs[0].classList.add('active');
                 // Mostra i suggerimenti e la classifica
                 document.getElementById('userSuggestionsColumn').style.display = 'block';
-                document.getElementById('rightColumn').style.display = 'block';
-                document.getElementById('rightColumn').innerHTML = `
+                document.getElementById('rankedSuggestionsColumn').style.display = 'block';
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
                     <h2 class="section-title">🏆 Classifica Community</h2>
                     <div id="rankedSuggestionsList">
                         <div class="loading-message">Caricamento...</div>
@@ -1307,11 +1306,11 @@
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                // Nascondi i suggerimenti dell'utente e mostra i pacchetti
-                document.getElementById('userSuggestionsColumn').style.display = 'none';
-                document.getElementById('rightColumn').style.display = 'block';
+                // Nascondi la classifica e mostra i pacchetti
+                document.getElementById('userSuggestionsColumn').style.display = 'block';
+                document.getElementById('rankedSuggestionsColumn').style.display = 'block';
                 // Resetta il pannello dei pacchetti
-                document.getElementById('rightColumn').innerHTML = '';
+                document.getElementById('rankedSuggestionsColumn').innerHTML = '';
                 // Carica i pacchetti se è già selezionato un tipo di evento
                 handleEventTypeChange();
             }
