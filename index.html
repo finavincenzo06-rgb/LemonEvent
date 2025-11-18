@@ -203,6 +203,10 @@
             color: #ccc;
             font-size: 0.95em;
             margin-bottom: 15px;
+            /* Forza il testo a andare a capo se troppo lungo */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
         }
         .post-meta {
             display: flex;
@@ -410,6 +414,8 @@
         textarea {
             min-height: 100px;
             resize: vertical;
+            /* Imposta un limite di caratteri */
+            max-length: 500;
         }
         .submit-btn {
             width: 100%;
@@ -618,7 +624,7 @@
                         </div>
                         <div class="form-group">
                             <label>Descrizione *</label>
-                            <textarea id="suggest_description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required></textarea>
+                            <textarea id="suggest_description" placeholder="Descrivi in dettaglio l'evento che vuoi suggerire..." required maxlength="500"></textarea>
                         </div>
                         <div class="form-group">
                             <label>Cosa Serve? *</label>
@@ -720,7 +726,7 @@
                 </div>
                 <div class="form-group">
                     <label>Descrizione *</label>
-                    <textarea id="edit_description" required></textarea>
+                    <textarea id="edit_description" required maxlength="500"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Cosa Serve? *</label>
@@ -1306,7 +1312,7 @@
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                // Nascondi la classifica e mostra i pacchetti
+                // Nascondi i suggerimenti dell'utente e mostra i pacchetti
                 document.getElementById('userSuggestionsColumn').style.display = 'block';
                 document.getElementById('rankedSuggestionsColumn').style.display = 'block';
                 // Resetta il pannello dei pacchetti
