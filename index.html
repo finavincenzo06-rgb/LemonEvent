@@ -330,24 +330,217 @@
             padding: 30px 0;
             color: #999;
         }
-
-        /* Pacchetti laterali */
-        .packages-column {
+        /* Manteniamo il resto dello stile per form, pacchetti, ecc. */
+        .form-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .tab-btn {
             flex: 1;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(33, 150, 243, 0.3);
+            border-radius: 10px;
+            color: #ccc;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+        }
+        .tab-btn:hover {
+            border-color: #2196f3;
+            color: #2196f3;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            border-color: #2196f3;
+            color: #fff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-title {
+            color: #2196f3;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input[type="text"], 
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(33, 150, 243, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus, 
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #2196f3;
+            background: rgba(33, 150, 243, 0.1);
+        }
+        select {
+            cursor: pointer;
+        }
+        select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+        }
+        .info-note {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196f3;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #ccc;
+            font-size: 0.9em;
+        }
+        .edit-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .edit-popup.show {
+            display: flex;
+        }
+        .edit-popup-content {
+            background: rgba(10, 14, 39, 0.95);
+            border: 2px solid rgba(33, 150, 243, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .edit-popup-title {
+            color: #2196f3;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .edit-popup-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .edit-popup-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        .save-edit-btn {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: #fff;
+        }
+        .save-edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        .cancel-edit-btn {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+        .cancel-edit-btn:hover {
+            background: #f44336;
+            color: #fff;
+        }
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .suggestions-container {
+                flex-direction: column;
+            }
+            .user-section, .admin-link {
+                position: static;
+                display: flex;
+                justify-content: center;
+                margin-top: 15px;
+            }
+            .user-section {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .form-tabs {
+                flex-direction: column;
+            }
+        }
+
+        /* STILE PER I PACCHETTI (visibile solo quando si seleziona "Organizza Evento") */
+        .packages-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            display: none;
+        }
+        .packages-panel.visible {
+            display: block;
         }
         .package-info {
-            display: none;
             color: #ccc;
             line-height: 1.6;
-        }
-        .package-info.visible {
-            display: block;
         }
         .package-info h3 {
             color: #2196f3;
@@ -375,28 +568,6 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px dashed rgba(33, 150, 243, 0.3);
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .main-content {
-                flex-direction: column;
-            }
-            .user-section, .admin-link {
-                position: static;
-                display: flex;
-                justify-content: center;
-                margin-top: 15px;
-            }
-            .user-section {
-                flex-direction: column;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .form-tabs {
-                flex-direction: column;
-            }
         }
     </style>
 </head>
@@ -506,163 +677,27 @@
                         </div>
                         <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
                     </form>
+
+                    <!-- PANNELLO DINAMICO DEI PACCHETTI (si mostra solo in "Organizza Evento") -->
+                    <div id="packagesPanel" class="packages-panel">
+                        <!-- Pacchetti verranno inseriti qui dinamicamente -->
+                    </div>
                 </div>
             </div>
 
-            <!-- COLONNA PACCHETTI -->
-            <div class="packages-column">
-                <!-- Matrimonio -->
-                <div id="matrimonioPackages" class="package-info">
-                    <h2>💍 PACK MATRIMONIO – ORGANIZZAZIONE EVENTI DI LUSSO</h2>
-                    <p>Crea il giorno perfetto, noi ci occupiamo di tutto!</p>
-
-                    <h3>💒 MATRIMONIO 1 – $35,000</h3>
-                    <ul>
-                        <li>Affitto chiesa ⛪</li>
-                        <li>Celebrazione con prete ✝️</li>
-                        <li>Coordinamento base</li>
-                    </ul>
-
-                    <h3>👰🤵 MATRIMONIO 2 – $60,000</h3>
-                    <ul>
-                        <li>🚘 Trasporto sposa e sposo con arrivo in limousine di lusso</li>
-                        <li>💐 Affitto chiesa con decorazioni floreali personalizzate</li>
-                        <li>✝️ Celebrazione religiosa con prete</li>
-                        <li>⛳ Affitto campo da golf per celebrazione post-cerimonia</li>
-                        <li>🍽️ Buffet completo (fino a 50 persone)</li>
-                        <li>🎧 Servizio DJ incluso per tutta la durata dell’evento</li>
-                    </ul>
-
-                    <div class="package-extra">
-                        <h3>🛥️ AGGIUNTE EXTRA (personalizzabili)</h3>
-                        <ul>
-                            <li>🚖 Trasporto al molo – Gratis</li>
-                            <li>🛥️ Barca di lusso per continuare la festa – Gratis</li>
-                            <li>🍷 Cibo e buffet sulla barca – Gratis</li>
-                            <li>📸 Fotografo professionista tutto il giorno – Gratis</li>
-                            <li>🎆 Fuochi d'artificio serali – Gratis</li>
-                        </ul>
+            <!-- COLONNA DEI SUGGERIMENTI (A DESTRA) -->
+            <div class="suggestions-container">
+                <div class="suggestions-column">
+                    <h2 class="section-title">I Tuoi Suggerimenti</h2>
+                    <div id="userSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
                     </div>
-
-                    <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni aperte</strong><br>📩 Apri un ticket sul nostro Discord per maggiori chiarimenti</p>
-                    <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🎊 Un matrimonio da sogno inizia da una limousine... e finisce in barca! 🥂</p>
                 </div>
-
-                <!-- Funerale -->
-                <div id="funeralePackages" class="package-info">
-                    <h2>⚰️ PACK FUNERALE – RISPETTO, CLASSE E SERENITÀ</h2>
-                    <p>Onoriamo i tuoi cari con dignità e cura assoluta.</p>
-
-                    <h3>🕊️ FUNERALE 1 – $25,000</h3>
-                    <ul>
-                        <li>Sala del commiato con allestimento classico ⚰️</li>
-                        <li>Trasporto feretro con auto funebre di lusso 🚗</li>
-                        <li>Coordinamento cerimonia base</li>
-                    </ul>
-
-                    <h3>🕯️ FUNERALE 2 – $45,000</h3>
-                    <ul>
-                        <li>🕊️ Sala del commiato con allestimento premium (fiori, musica, video tributo)</li>
-                        <li>🚗 Trasporto con corteo funebre completo (auto per famiglia + feretro)</li>
-                        <li>✝️ Celebrazione religiosa privata con officiante</li>
-                        <li>🍽️ Rinfresco riservato per parenti stretti (fino a 30 persone)</li>
-                        <li>📸 Servizio fotografico commemorativo</li>
-                        <li>🎼 Musica d’ambiente con pianista live</li>
-                    </ul>
-
-                    <div class="package-extra">
-                        <h3>🕯️ AGGIUNTE EXTRA (personalizzabili)</h3>
-                        <ul>
-                            <li>📜 Libro dei ricordi digitale – Gratis</li>
-                            <li>🎥 Video tributo con montaggio professionale – Gratis</li>
-                            <li>🕊️ Colombe bianche liberate dopo la cerimonia – Gratis</li>
-                            <li>🧯 Servizio sorveglianza e sicurezza discreta – Gratis</li>
-                        </ul>
+                <div class="suggestions-column">
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
                     </div>
-
-                    <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni immediate disponibili 24/7</strong><br>📩 Apri un ticket sul nostro Discord per assistenza riservata</p>
-                    <p style="text-align: center; margin-top: 15px;">🕊️ Perché ogni addio merita la massima eleganza.</p>
-                </div>
-
-                <!-- Festa -->
-                <div id="festaPackages" class="package-info">
-                    <h2>🎉 PACK FESTA – DIVERTIMENTO SENZA LIMITI</h2>
-                    <p>Che sia un compleanno, una serata privata o un evento aziendale… noi lo rendiamo indimenticabile!</p>
-
-                    <h3>🎊 FESTA 1 – $30,000</h3>
-                    <ul>
-                        <li>Location esclusiva (villa o rooftop) 🏙️</li>
-                        <li>Servizio bar completo 🍸</li>
-                        <li>Sicurezza e staff organizzativo 🛡️</li>
-                        <li>Decorazioni a tema base 🎈</li>
-                    </ul>
-
-                    <h3>🎪 FESTA 2 – $55,000</h3>
-                    <ul>
-                        <li>🎇 Location premium con vista panoramica</li>
-                        <li>🎤 Intrattenimento live (DJ + artista ospite)</li>
-                        <li>🍽️ Cena gourmet + open bar premium</li>
-                        <li>🚗 Servizio navetta per gli ospiti</li>
-                        <li>🎆 Spettacolo di luci e fuochi d’artificio</li>
-                        <li>📸 Photobooth + fotografo professionista</li>
-                    </ul>
-
-                    <div class="package-extra">
-                        <h3>✨ AGGIUNTE EXTRA (personalizzabili)</h3>
-                        <ul>
-                            <li>🎈 Palloncini giganti a elio con logo – Gratis</li>
-                            <li>🍾 Bottiglia di champagne per ogni tavolo – Gratis</li>
-                            <li>🎁 Pacchetti gadget per gli ospiti – Gratis</li>
-                            <li>🧊 Ice sculpture personalizzata – Gratis</li>
-                        </ul>
-                    </div>
-
-                    <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenota con almeno 14 giorni di anticipo</strong><br>📩 Apri un ticket sul nostro Discord per personalizzare la tua festa</p>
-                    <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🥳 La notte è giovane… e la tua festa lo sarà ancora di più!</p>
-                </div>
-
-                <!-- Altro -->
-                <div id="altroPackages" class="package-info">
-                    <h2>📌 ALTRO – CREA IL TUO EVENTO SU MISURA</h2>
-                    <p>Nessun limite, solo la tua immaginazione.</p>
-
-                    <h3>✍️ DESCRIVI IL TUO EVENTO</h3>
-                    <ul>
-                        <li>📍 Location desiderata (possiamo trovare noi la perfetta!)</li>
-                        <li>🕒 Data e orario</li>
-                        <li>🧑‍🤝‍🧑 Numero stimato di partecipanti</li>
-                        <li>💡 Idee, temi, richieste particolari</li>
-                        <li>💰 Budget indicativo (opzionale)</li>
-                    </ul>
-
-                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(33, 150, 243, 0.3);">
-                        <p><strong>🔹 Servizi sempre inclusi:</strong></p>
-                        <ul>
-                            <li>Coordinatore personale dedicato</li>
-                            <li>Sicurezza certificata</li>
-                            <li>Assistenza logistica 24/7</li>
-                            <li>Supporto post-evento (pulizia, reso materiali, ecc.)</li>
-                        </ul>
-                    </div>
-
-                    <p style="text-align: center; margin-top: 20px;">📩 <strong>Non sai da dove iniziare?</strong><br>Parlane con noi su Discord! Il nostro team ti guiderà passo dopo passo per realizzare <strong>qualsiasi idea</strong>, per quanto stravagante o originale.</p>
-                    <p style="text-align: center; margin-top: 15px;">✨ Il tuo evento. La nostra missione.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- SEZIONE SUGGERIMENTI A DUE COLONNE -->
-        <div class="suggestions-container">
-            <div class="suggestions-column">
-                <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                <div id="userSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
-                </div>
-            </div>
-            <div class="suggestions-column">
-                <h2 class="section-title">🏆 Classifica Community</h2>
-                <div id="rankedSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
                 </div>
             </div>
         </div>
@@ -1062,50 +1097,189 @@
             const packageGroup = document.getElementById('packageGroup');
             const packageSelect = document.getElementById('org_package');
             const packageLabel = document.getElementById('packageLabel');
+            const packagesPanel = document.getElementById('packagesPanel');
             const detailTextarea = document.getElementById('org_details');
 
-            // Nascondi tutti i pacchetti
-            document.getElementById('matrimonioPackages').classList.remove('visible');
-            document.getElementById('funeralePackages').classList.remove('visible');
-            document.getElementById('festaPackages').classList.remove('visible');
-            document.getElementById('altroPackages').classList.remove('visible');
-
-            // Reset select
-            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+            // Resetta il pannello dei pacchetti
+            packagesPanel.innerHTML = '';
+            packagesPanel.classList.remove('visible');
 
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Matrimonio';
-                packageSelect.innerHTML += `
-                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="matrimonio1">Matrimonio 1 - $35,000</option>' +
+                                          '<option value="matrimonio2">Matrimonio 2 - $60,000</option>';
+
+                packagesPanel.innerHTML = `
+                    <div class="package-info">
+                        <h2>💍 PACK MATRIMONIO – ORGANIZZAZIONE EVENTI DI LUSSO</h2>
+                        <p>Crea il giorno perfetto, noi ci occupiamo di tutto!</p>
+
+                        <h3>💒 MATRIMONIO 1 – $35,000</h3>
+                        <ul>
+                            <li>Affitto chiesa ⛪</li>
+                            <li>Celebrazione con prete ✝️</li>
+                            <li>Coordinamento base</li>
+                        </ul>
+
+                        <h3>👰🤵 MATRIMONIO 2 – $60,000</h3>
+                        <ul>
+                            <li>🚘 Trasporto sposa e sposo con arrivo in limousine di lusso</li>
+                            <li>💐 Affitto chiesa con decorazioni floreali personalizzate</li>
+                            <li>✝️ Celebrazione religiosa con prete</li>
+                            <li>⛳ Affitto campo da golf per celebrazione post-cerimonia</li>
+                            <li>🍽️ Buffet completo (fino a 50 persone)</li>
+                            <li>🎧 Servizio DJ incluso per tutta la durata dell’evento</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>🛥️ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>🚖 Trasporto al molo – Gratis</li>
+                                <li>🛥️ Barca di lusso per continuare la festa – Gratis</li>
+                                <li>🍷 Cibo e buffet sulla barca – Gratis</li>
+                                <li>📸 Fotografo professionista tutto il giorno – Gratis</li>
+                                <li>🎆 Fuochi d'artificio serali – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni aperte</strong><br>📩 Apri un ticket sul nostro Discord per maggiori chiarimenti</p>
+                        <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🎊 Un matrimonio da sogno inizia da una limousine... e finisce in barca! 🥂</p>
+                    </div>
                 `;
-                document.getElementById('matrimonioPackages').classList.add('visible');
+                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'funerale') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Funerale';
-                packageSelect.innerHTML += `
-                    <option value="funerale1">Funerale 1 - $25,000</option>
-                    <option value="funerale2">Funerale 2 - $45,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="funerale1">Funerale 1 - $25,000</option>' +
+                                          '<option value="funerale2">Funerale 2 - $45,000</option>';
+
+                packagesPanel.innerHTML = `
+                    <div class="package-info">
+                        <h2>⚰️ PACK FUNERALE – RISPETTO, CLASSE E SERENITÀ</h2>
+                        <p>Onoriamo i tuoi cari con dignità e cura assoluta.</p>
+
+                        <h3>🕊️ FUNERALE 1 – $25,000</h3>
+                        <ul>
+                            <li>Sala del commiato con allestimento classico ⚰️</li>
+                            <li>Trasporto feretro con auto funebre di lusso 🚗</li>
+                            <li>Coordinamento cerimonia base</li>
+                        </ul>
+
+                        <h3>🕯️ FUNERALE 2 – $45,000</h3>
+                        <ul>
+                            <li>🕊️ Sala del commiato con allestimento premium (fiori, musica, video tributo)</li>
+                            <li>🚗 Trasporto con corteo funebre completo (auto per famiglia + feretro)</li>
+                            <li>✝️ Celebrazione religiosa privata con officiante</li>
+                            <li>🍽️ Rinfresco riservato per parenti stretti (fino a 30 persone)</li>
+                            <li>📸 Servizio fotografico commemorativo</li>
+                            <li>🎼 Musica d’ambiente con pianista live</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>🕯️ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>📜 Libro dei ricordi digitale – Gratis</li>
+                                <li>🎥 Video tributo con montaggio professionale – Gratis</li>
+                                <li>🕊️ Colombe bianche liberate dopo la cerimonia – Gratis</li>
+                                <li>🧯 Servizio sorveglianza e sicurezza discreta – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni immediate disponibili 24/7</strong><br>📩 Apri un ticket sul nostro Discord per assistenza riservata</p>
+                        <p style="text-align: center; margin-top: 15px;">🕊️ Perché ogni addio merita la massima eleganza.</p>
+                    </div>
                 `;
-                document.getElementById('funeralePackages').classList.add('visible');
+                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'festa') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Festa';
-                packageSelect.innerHTML += `
-                    <option value="festa1">Festa Generale 1 - $30,000</option>
-                    <option value="festa2">Festa Generale 2 - $55,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="festa1">Festa Generale 1 - $30,000</option>' +
+                                          '<option value="festa2">Festa Generale 2 - $55,000</option>';
+
+                packagesPanel.innerHTML = `
+                    <div class="package-info">
+                        <h2>🎉 PACK FESTA – DIVERTIMENTO SENZA LIMITI</h2>
+                        <p>Che sia un compleanno, una serata privata o un evento aziendale… noi lo rendiamo indimenticabile!</p>
+
+                        <h3>🎊 FESTA 1 – $30,000</h3>
+                        <ul>
+                            <li>Location esclusiva (villa o rooftop) 🏙️</li>
+                            <li>Servizio bar completo 🍸</li>
+                            <li>Sicurezza e staff organizzativo 🛡️</li>
+                            <li>Decorazioni a tema base 🎈</li>
+                        </ul>
+
+                        <h3>🎪 FESTA 2 – $55,000</h3>
+                        <ul>
+                            <li>🎇 Location premium con vista panoramica</li>
+                            <li>🎤 Intrattenimento live (DJ + artista ospite)</li>
+                            <li>🍽️ Cena gourmet + open bar premium</li>
+                            <li>🚗 Servizio navetta per gli ospiti</li>
+                            <li>🎆 Spettacolo di luci e fuochi d’artificio</li>
+                            <li>📸 Photobooth + fotografo professionista</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>✨ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>🎈 Palloncini giganti a elio con logo – Gratis</li>
+                                <li>🍾 Bottiglia di champagne per ogni tavolo – Gratis</li>
+                                <li>🎁 Pacchetti gadget per gli ospiti – Gratis</li>
+                                <li>🧊 Ice sculpture personalizzata – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenota con almeno 14 giorni di anticipo</strong><br>📩 Apri un ticket sul nostro Discord per personalizzare la tua festa</p>
+                        <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🥳 La notte è giovane… e la tua festa lo sarà ancora di più!</p>
+                    </div>
                 `;
-                document.getElementById('festaPackages').classList.add('visible');
+                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'altro') {
                 packageGroup.style.display = 'none';
-                document.getElementById('altroPackages').classList.add('visible');
+                packagesPanel.innerHTML = `
+                    <div class="package-info">
+                        <h2>📌 ALTRO – CREA IL TUO EVENTO SU MISURA</h2>
+                        <p>Nessun limite, solo la tua immaginazione.</p>
+
+                        <h3>✍️ DESCRIVI IL TUO EVENTO</h3>
+                        <ul>
+                            <li>📍 Location desiderata (possiamo trovare noi la perfetta!)</li>
+                            <li>🕒 Data e orario</li>
+                            <li>🧑‍🤝‍🧑 Numero stimato di partecipanti</li>
+                            <li>💡 Idee, temi, richieste particolari</li>
+                            <li>💰 Budget indicativo (opzionale)</li>
+                        </ul>
+
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(33, 150, 243, 0.3);">
+                            <p><strong>🔹 Servizi sempre inclusi:</strong></p>
+                            <ul>
+                                <li>Coordinatore personale dedicato</li>
+                                <li>Sicurezza certificata</li>
+                                <li>Assistenza logistica 24/7</li>
+                                <li>Supporto post-evento (pulizia, reso materiali, ecc.)</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;">📩 <strong>Non sai da dove iniziare?</strong><br>Parlane con noi su Discord! Il nostro team ti guiderà passo dopo passo per realizzare <strong>qualsiasi idea</strong>, per quanto stravagante o originale.</p>
+                        <p style="text-align: center; margin-top: 15px;">✨ Il tuo evento. La nostra missione.</p>
+                    </div>
+                `;
+                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi il tuo evento';
+
             } else {
                 packageGroup.style.display = 'none';
+                packagesPanel.classList.remove('visible');
             }
         }
 
@@ -1118,13 +1292,13 @@
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
-                // Nascondi tutti i pacchetti quando si va su Suggerisci
-                document.querySelectorAll('.package-info').forEach(el => el.classList.remove('visible'));
+                // Nascondi il pannello dei pacchetti quando si va su Suggerisci
+                document.getElementById('packagesPanel').classList.remove('visible');
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                // Mostra il pacchetto attuale se già selezionato
+                // Mostra il pannello dei pacchetti se è già selezionato un tipo di evento
                 handleEventTypeChange();
             }
         }
