@@ -92,24 +92,7 @@
             color: #fff;
             transform: translateY(-2px);
         }
-        .admin-link {
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 10px 20px;
-            background: rgba(33, 150, 243, 0.1);
-            border: 2px solid #2196f3;
-            color: #2196f3;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        .admin-link:hover {
-            background: #2196f3;
-            color: #fff;
-            transform: translateY(-2px);
-        }
+        /* Layout principale */
         .main-content {
             display: flex;
             gap: 30px;
@@ -129,6 +112,105 @@
             display: flex;
             gap: 30px;
         }
+        /* Stile per la visualizzazione Prezzi (Nascosto di default) */
+        .pricing-display-container {
+            flex: 1;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            display: none; /* Nascosto finché non si seleziona organizza */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        .pricing-header {
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .pricing-header h2 {
+            color: #ffd700;
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pricing-header p {
+            color: #ccc;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+        .pack-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        .pack-card:hover {
+            transform: scale(1.02);
+            border-color: #ffd700;
+        }
+        .pack-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        .pack-price {
+            color: #4caf50;
+            font-weight: 800;
+            font-size: 1.2em;
+            background: rgba(76, 175, 80, 0.1);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+        .pack-features {
+            list-style: none;
+            padding-left: 5px;
+        }
+        .pack-features li {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #ddd;
+            display: flex;
+            align-items: start;
+        }
+        .pack-features li::before {
+            content: "•";
+            color: #ffd700;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .extras-section {
+            margin-top: 20px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+        }
+        .extras-title {
+            color: #ffd700;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        .pricing-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #aaa;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+        }
+        
+        /* Resto degli stili originali */
         .suggestions-column {
             flex: 1;
             background: rgba(255, 255, 255, 0.03);
@@ -330,7 +412,6 @@
             padding: 30px 0;
             color: #999;
         }
-        /* Manteniamo il resto dello stile per form, pacchetti, ecc. */
         .form-tabs {
             display: flex;
             gap: 10px;
@@ -507,13 +588,11 @@
             .suggestions-container {
                 flex-direction: column;
             }
-            .user-section, .admin-link {
+            .user-section {
                 position: static;
                 display: flex;
                 justify-content: center;
                 margin-top: 15px;
-            }
-            .user-section {
                 flex-direction: column;
             }
             h1 {
@@ -526,15 +605,9 @@
     </style>
 </head>
 <body>
-    <div class="page-loading" id="pageLoading">
-        <div class="loading-message">
-            <p>🔄 Verifica autenticazione in corso...</p>
-        </div>
-    </div>
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
-                <a href="admin-login.html" class="admin-link">👑 Accesso Amministratore</a>
                 <div class="user-section">
                     <div class="user-info" id="userInfo">
                         <span>👤</span>
@@ -555,7 +628,6 @@
                     <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
                     <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
                 </div>
-                <!-- Form Suggerimento -->
                 <div id="suggestForm" class="tab-content active">
                     <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
                     <div class="info-note">
@@ -581,11 +653,10 @@
                         <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
                     </form>
                 </div>
-                <!-- Form Organizzazione Evento -->
                 <div id="organizeForm" class="tab-content">
                     <h2 class="form-title">Organizza un Evento</h2>
                     <div class="info-note">
-                        🔒 Le richieste di organizzazione sono private e visibili solo agli amministratori
+                        🔒 Le richieste di organizzazione sono private
                     </div>
                     <form id="eventOrganizationForm" onsubmit="submitEventOrganization(event)">
                         <div class="form-group">
@@ -622,28 +693,29 @@
                         </div>
                         <div class="form-group">
                             <label>Dettagli e Richieste Speciali *</label>
-                            <textarea id="org_details" placeholder="Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc..." required></textarea>
+                            <textarea id="org_details" placeholder="Descrivi cosa hai in mente per il tuo evento..." required></textarea>
                         </div>
                         <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
                     </form>
                 </div>
             </div>
-        </div>
-
-        <!-- NUOVA SEZIONE SUGGERIMENTI A DUE COLONNE -->
-        <div class="suggestions-container">
-            <!-- Suggerimenti dell'utente -->
-            <div class="suggestions-column">
-                <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                <div id="userSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
-                </div>
+            
+            <div class="pricing-display-container" id="pricingContainer">
+                <div class="loading-message">Seleziona un tipo di evento per vedere i pacchetti disponibili.</div>
             </div>
-            <!-- Classifica globale -->
-            <div class="suggestions-column">
-                <h2 class="section-title">🏆 Classifica Community</h2>
-                <div id="rankedSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
+
+            <div class="suggestions-container" id="suggestionsContainer">
+                <div class="suggestions-column">
+                    <h2 class="section-title">I Tuoi Suggerimenti</h2>
+                    <div id="userSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
+                </div>
+                <div class="suggestions-column">
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -657,7 +729,6 @@
         <button class="alert-popup-btn" onclick="closeAlert()">Ok</button>
     </div>
 
-    <!-- Popup Modifica Suggerimento -->
     <div class="edit-popup" id="editPopup">
         <div class="edit-popup-content">
             <h2 class="edit-popup-title">✏️ Modifica Suggerimento</h2>
@@ -694,7 +765,210 @@
         let currentUser = null;
         let userVotes = {};
 
-        // ✅ FUNZIONE DI VOTO: UNA VOLTA SOLA, SENZA CAMBIO
+        // --- DATI DEI PACCHETTI ---
+        const eventPackagesData = {
+            matrimonio: {
+                title: "PACK MATRIMONIO - ORGANIZZAZIONE EVENTI DI LUSSO",
+                subtitle: "Crea il giorno perfetto, noi ci occupiamo di tutto!",
+                packs: [
+                    {
+                        name: "MATRIMONIO 1",
+                        price: "$35,000",
+                        features: [
+                            "Affitto chiesa",
+                            "Celebrazione con prete",
+                            "Coordinamento base"
+                        ]
+                    },
+                    {
+                        name: "MATRIMONIO 2",
+                        price: "$60,000",
+                        features: [
+                            "Trasporto sposa e sposo con arrivo in limousine di lusso",
+                            "Affitto chiesa con decorazioni floreali personalizzate",
+                            "Celebrazione religiosa con prete",
+                            "Affitto campo da golf per celebrazione post-cerimonia",
+                            "Buffet completo (fino a 50 persone)",
+                            "Servizio DJ incluso per tutta la durata dell’evento"
+                        ]
+                    }
+                ],
+                extras: [
+                    "Trasporto al molo – Gratis",
+                    "Barca di lusso per continuare la festa – Gratis",
+                    "Cibo e buffet sulla barca – Gratis",
+                    "Fotografo professionista tutto il giorno – Gratis",
+                    "Fuochi d'artificio serali – Gratis"
+                ],
+                footer: "Un matrimonio da sogno inizia da una limousine... e finisce in barca!"
+            },
+            festa: {
+                title: "PACK FESTA - DIVERTIMENTO SENZA LIMITI",
+                subtitle: "La notte più pazza della tua vita inizia qui!",
+                packs: [
+                    {
+                        name: "PARTY STANDARD",
+                        price: "$15,000",
+                        features: [
+                            "Affitto location esclusiva (Club)",
+                            "Servizio Barman (3 ore)",
+                            "Impianto audio base",
+                            "Sicurezza all'ingresso"
+                        ]
+                    },
+                    {
+                        name: "PROJECT X",
+                        price: "$40,000",
+                        features: [
+                            "Villa privata con piscina",
+                            "Open Bar illimitato",
+                            "DJ Set Famoso",
+                            "Fuochi d'artificio",
+                            "Servizio Catering e Pulizia post-evento"
+                        ]
+                    }
+                ],
+                extras: [
+                    "Ospiti VIP – Gratis",
+                    "Servizio Navetta – Gratis",
+                    "Fotografo Eventi – Gratis",
+                    "Aftermovie dedicato – Gratis"
+                ],
+                footer: "Non fartela raccontare, vivila!"
+            },
+            funerale: {
+                title: "PACK FUNERALE - L'ULTIMO SALUTO",
+                subtitle: "Rispetto, classe ed eleganza per l'addio.",
+                packs: [
+                    {
+                        name: "CERIMONIA CLASSICA",
+                        price: "$5,000",
+                        features: [
+                            "Carro funebre standard",
+                            "Servizio in chiesa",
+                            "Bara in legno semplice",
+                            "Sepoltura"
+                        ]
+                    },
+                    {
+                        name: "CERIMONIA D'ONORE",
+                        price: "$20,000",
+                        features: [
+                            "Carrozza con cavalli neri o Limousine",
+                            "Corteo funebre organizzato",
+                            "Bara di lusso rifinita",
+                            "Banda musicale per marcia funebre",
+                            "Discorso commemorativo e rinfresco"
+                        ]
+                    }
+                ],
+                extras: [
+                    "Fiori personalizzati – Gratis",
+                    "Libro delle firme – Gratis",
+                    "Video commemorativo – Gratis"
+                ],
+                footer: "Un saluto degno di una leggenda."
+            }
+        };
+
+        // --- GESTIONE TAB ---
+        function switchTab(tabName) {
+            // Rimuove active da tutti i bottoni e contenuti
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            // Aggiunge active a quello selezionato
+            if (tabName === 'suggest') {
+                document.querySelector('button[onclick="switchTab(\'suggest\')"]').classList.add('active');
+                document.getElementById('suggestForm').classList.add('active');
+                
+                // MOSTRA i suggerimenti e NASCONDE i prezzi
+                document.getElementById('suggestionsContainer').style.display = 'flex';
+                document.getElementById('pricingContainer').style.display = 'none';
+            } else {
+                document.querySelector('button[onclick="switchTab(\'organize\')"]').classList.add('active');
+                document.getElementById('organizeForm').classList.add('active');
+                
+                // NASCONDE i suggerimenti e MOSTRA i prezzi
+                document.getElementById('suggestionsContainer').style.display = 'none';
+                document.getElementById('pricingContainer').style.display = 'block';
+            }
+        }
+
+        // --- GESTIONE PREZZI DINAMICI ---
+        function handleEventTypeChange() {
+            const type = document.getElementById('event_type').value;
+            const pricingContainer = document.getElementById('pricingContainer');
+            const packageGroup = document.getElementById('packageGroup');
+            const packageSelect = document.getElementById('org_package');
+
+            // Pulisce e mostra select pacchetto nel form
+            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+
+            if (!type || !eventPackagesData[type]) {
+                pricingContainer.innerHTML = '<div class="loading-message">Seleziona un tipo di evento per vedere i pacchetti disponibili.</div>';
+                packageGroup.style.display = 'none';
+                return;
+            }
+
+            packageGroup.style.display = 'block';
+            const data = eventPackagesData[type];
+
+            // Genera HTML per i prezzi
+            let html = `
+                <div class="pricing-header">
+                    <h2>${data.title}</h2>
+                    <p>${data.subtitle}</p>
+                </div>
+            `;
+
+            // Genera cards per i pacchetti
+            data.packs.forEach(pack => {
+                // Aggiunge opzione alla select del form
+                const option = document.createElement('option');
+                option.value = pack.name;
+                option.text = `${pack.name} (${pack.price})`;
+                packageSelect.appendChild(option);
+
+                // Crea card visuale
+                html += `
+                <div class="pack-card">
+                    <div class="pack-title">
+                        <span>${pack.name}</span>
+                        <span class="pack-price">${pack.price}</span>
+                    </div>
+                    <ul class="pack-features">
+                        ${pack.features.map(f => `<li>${f}</li>`).join('')}
+                    </ul>
+                </div>`;
+            });
+
+            // Genera extra
+            if (data.extras && data.extras.length > 0) {
+                html += `
+                <div class="extras-section">
+                    <h3 class="extras-title">AGGIUNTE EXTRA (personalizzabili)</h3>
+                    <ul class="pack-features">
+                        ${data.extras.map(e => `<li>${e}</li>`).join('')}
+                    </ul>
+                </div>`;
+            }
+
+            // Footer
+            if (data.footer) {
+                html += `<div class="pricing-footer">${data.footer}</div>`;
+            }
+
+            html += `
+             <div class="pricing-footer" style="margin-top: 10px; border-top: 1px solid #444; padding-top:10px;">
+                 Prenotazioni aperte - Apri un ticket sul nostro Discord per maggiori chiarimenti
+             </div>
+            `;
+
+            pricingContainer.innerHTML = html;
+        }
+
+        // --- FUNZIONI ORIGINALI SUPABASE E LOGICA ---
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -737,7 +1011,6 @@
             }
         }
 
-        // ✅ CARICA SOLO I SUGGERIMENTI DELL'UTENTE
         async function loadUserSuggestions() {
             const container = document.getElementById('userSuggestionsList');
             try {
@@ -763,7 +1036,6 @@
             }
         }
 
-        // ✅ CARICA CLASSIFICA GLOBALE ORDINATA PER VOTI POSITIVI
         async function loadRankedSuggestions() {
             const container = document.getElementById('rankedSuggestionsList');
             try {
@@ -771,7 +1043,7 @@
                     .from('suggestions')
                     .select('*')
                     .order('voti_positivi', { ascending: false })
-                    .limit(20); // Mostra top 20
+                    .limit(20);
                 if (error) throw error;
 
                 if (data.length === 0) {
@@ -785,7 +1057,6 @@
             }
         }
 
-        // ✅ RENDERIZZA UN SUGGERIMENTO
         function renderSuggestion(s, isOwner) {
             const userVote = userVotes[s.id];
             const upVoteClass = userVote === 'up' ? 'voted' : '';
@@ -826,7 +1097,6 @@
             `;
         }
 
-        // --- RESTO DELLE FUNZIONI (inalterate rispetto al tuo file) ---
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -835,277 +1105,167 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
+
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
-            document.getElementById('editSuggestionForm').reset();
         }
-        async function saveEditedSuggestion(e) {
-            e.preventDefault();
+
+        async function saveEditedSuggestion(event) {
+            event.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
-            const updatedData = {
-                titolo: document.getElementById('edit_title').value,
-                descrizione: document.getElementById('edit_description').value,
-                requisiti: document.getElementById('edit_requirements').value,
-                quando: document.getElementById('edit_when').value
-            };
+            const title = document.getElementById('edit_title').value;
+            const desc = document.getElementById('edit_description').value;
+            const req = document.getElementById('edit_requirements').value;
+            const when = document.getElementById('edit_when').value;
+
             try {
                 const { error } = await supabase
                     .from('suggestions')
-                    .update(updatedData)
+                    .update({ titolo: title, descrizione: desc, requisiti: req, quando: when })
                     .eq('id', id);
+
                 if (error) throw error;
+
                 closeEditPopup();
-                showSuccess('Suggerimento modificato con successo!');
-                await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
+                showSuccess("Suggerimento modificato!");
+                loadUserSuggestions();
+                loadRankedSuggestions();
             } catch (error) {
-                console.error('Errore durante la modifica:', error);
-                showAlert('Errore durante la modifica. Riprova.');
+                console.error("Errore modifica:", error);
+                showAlert("Errore durante la modifica.");
             }
         }
+
         async function deleteSuggestion(id) {
-            if (!confirm('Sei sicuro di voler eliminare questo suggerimento?')) return;
+            if (!confirm("Sei sicuro di voler eliminare questo suggerimento?")) return;
             try {
-                await supabase
-                    .from('suggestion_votes')
-                    .delete()
-                    .eq('suggestion_id', id);
+                const { error } = await supabase.from('suggestions').delete().eq('id', id);
+                if (error) throw error;
+                showSuccess("Suggerimento eliminato.");
+                loadUserSuggestions();
+                loadRankedSuggestions();
+            } catch (error) {
+                console.error("Errore eliminazione:", error);
+                showAlert("Errore eliminazione.");
+            }
+        }
+
+        async function submitSuggestion(event) {
+            event.preventDefault();
+            if (!currentUser) return showAlert("Devi accedere per suggerire.");
+            
+            const title = document.getElementById('suggest_title').value;
+            const desc = document.getElementById('suggest_description').value;
+            const req = document.getElementById('suggest_requirements').value;
+            const when = document.getElementById('suggest_when').value;
+
+            try {
                 const { error } = await supabase
                     .from('suggestions')
-                    .delete()
-                    .eq('id', id);
+                    .insert([{
+                        discord_id: currentUser.discordId,
+                        username: currentUser.username,
+                        titolo: title,
+                        descrizione: desc,
+                        requisiti: req,
+                        quando: when,
+                        data_invio: new Date().toISOString(),
+                        voti_positivi: 0,
+                        voti_negativi: 0
+                    }]);
+
                 if (error) throw error;
-                showSuccess('Suggerimento eliminato con successo!');
-                await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
+                showSuccess("Suggerimento inviato!");
+                document.getElementById('suggestionForm').reset();
+                loadUserSuggestions();
+                loadRankedSuggestions();
             } catch (error) {
-                console.error('Errore durante l\'eliminazione:', error);
-                showAlert('Errore durante l\'eliminazione. Riprova.');
+                console.error("Errore invio:", error);
+                showAlert("Errore nell'invio.");
             }
         }
-        function showSuccess(message = 'Operazione completata con successo!') {
-            const popup = document.getElementById('successPopup');
-            document.getElementById('successText').textContent = message;
-            popup.classList.add('show');
-            setTimeout(() => popup.classList.remove('show'), 3000);
+
+        async function submitEventOrganization(event) {
+            event.preventDefault();
+            if (!currentUser) return showAlert("Devi accedere per organizzare.");
+            
+            const type = document.getElementById('event_type').value;
+            const fullname = document.getElementById('org_fullname').value;
+            const date = document.getElementById('org_date').value;
+            const participants = document.getElementById('org_participants').value;
+            const budget = document.getElementById('org_budget').value;
+            const details = document.getElementById('org_details').value;
+            const packageSelected = document.getElementById('org_package').value;
+
+            try {
+                const { error } = await supabase
+                    .from('event_requests')
+                    .insert([{
+                        discord_id: currentUser.discordId,
+                        username: currentUser.username,
+                        tipo_evento: type,
+                        nome_completo: fullname,
+                        data_desiderata: date,
+                        partecipanti: participants,
+                        budget: budget,
+                        dettagli: details,
+                        pacchetto_scelto: packageSelected,
+                        status: 'pending',
+                        data_richiesta: new Date().toISOString()
+                    }]);
+                if (error) throw error;
+                showSuccess("Richiesta inviata agli amministratori!");
+                document.getElementById('eventOrganizationForm').reset();
+                handleEventTypeChange(); // Reset pricing view
+            } catch (error) {
+                console.error("Errore invio richiesta:", error);
+                showAlert("Errore nell'invio della richiesta.");
+            }
         }
-        function showAlert(message) {
-            const popup = document.getElementById('alertPopup');
-            document.getElementById('alertMessage').textContent = message;
-            popup.classList.add('show');
+
+        function showSuccess(msg) {
+            const p = document.getElementById('successPopup');
+            document.getElementById('successText').textContent = msg;
+            p.classList.add('show');
+            setTimeout(() => p.classList.remove('show'), 3000);
         }
+
+        function showAlert(msg) {
+            document.getElementById('alertMessage').textContent = msg;
+            document.getElementById('alertPopup').classList.add('show');
+        }
+
         function closeAlert() {
             document.getElementById('alertPopup').classList.remove('show');
         }
-        async function submitSuggestion(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-            const suggestion = {
-                discordId: currentUser.discordId,
-                username: currentUser.username,
-                title: document.getElementById('suggest_title').value,
-                description: document.getElementById('suggest_description').value,
-                requirements: document.getElementById('suggest_requirements').value,
-                when: document.getElementById('suggest_when').value
-            };
-            try {
-                const saved = await saveSuggestion(suggestion);
-                if (saved) {
-                    document.getElementById('suggestionForm').reset();
-                    showSuccess('Suggerimento inviato con successo!');
-                    await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
-                }
-            } catch (error) {
-                console.error('Errore:', error);
-                showAlert('Errore durante l\'invio. Riprova.');
-            }
+
+        function logout() {
+            localStorage.removeItem('lemon_user');
+            window.location.href = 'login.html';
         }
-        async function submitEventOrganization(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-            const eventData = {
-                discordId: currentUser.discordId,
-                username: currentUser.username,
-                eventType: document.getElementById('event_type').value,
-                fullname: document.getElementById('org_fullname').value,
-                eventDate: document.getElementById('org_date').value,
-                participants: document.getElementById('org_participants').value,
-                package: document.getElementById('org_package')?.value || null,
-                budget: document.getElementById('org_budget').value,
-                details: document.getElementById('org_details').value
-            };
-            try {
-                const saved = await saveEventOrganization(eventData);
-                if (saved) {
-                    document.getElementById('eventOrganizationForm').reset();
-                    showSuccess('Richiesta inviata! Verrai contattato presto.');
-                }
-            } catch (error) {
-                console.error('Errore:', error);
-                showAlert('Errore durante l\'invio. Riprova.');
-            }
-        }
-        async function saveSuggestion(suggestion) {
-            const { data, error } = await supabase
-                .from('suggestions')
-                .insert([{
-                    discord_id: suggestion.discordId,
-                    username: suggestion.username,
-                    titolo: suggestion.title,
-                    descrizione: suggestion.description,
-                    requisiti: suggestion.requirements,
-                    quando: suggestion.when
-                }])
-                .select();
-            if (error) {
-                console.error('Errore Supabase:', error);
-                showAlert('Errore: ' + error.message);
-                return false;
-            }
-            return true;
-        }
-        async function saveEventOrganization(eventData) {
-            const { data, error } = await supabase
-                .from('event_organizations')
-                .insert([{
-                    discord_id: eventData.discordId,
-                    username: eventData.username,
-                    tipo_evento: eventData.eventType,
-                    nome_completo: eventData.fullname,
-                    data_evento: eventData.eventDate,
-                    numero_partecipanti: eventData.participants,
-                    pacchetto: eventData.package || null,
-                    budget: eventData.budget,
-                    dettagli: eventData.details
-                }])
-                .select();
-            if (error) {
-                console.error('Errore Supabase:', error);
-                showAlert('Errore: ' + error.message);
-                return false;
-            }
-            return true;
-        }
-        async function getUserVotes() {
-            if (!currentUser) return {};
-            try {
-                const { data, error } = await supabase
+
+        // Inizializzazione
+        window.onload = async function() {
+            const userStr = localStorage.getItem('lemon_user');
+            if (userStr) {
+                currentUser = JSON.parse(userStr);
+                document.getElementById('username').textContent = currentUser.username;
+                
+                const { data: votes } = await supabase
                     .from('suggestion_votes')
                     .select('suggestion_id, vote_type')
                     .eq('discord_id', currentUser.discordId);
-                if (error) throw error;
-                const votes = {};
-                data.forEach(vote => {
-                    votes[vote.suggestion_id] = vote.vote_type;
-                });
-                return votes;
-            } catch (error) {
-                console.error('Errore nel caricamento voti:', error);
-                return {};
-            }
-        }
-        async function getCurrentUser() {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session) {
-                window.location.href = '/login.html';
-                return null;
-            }
-            const user = session.user;
-            const discordId = user.user_metadata?.['discord_id'] || user.id;
-            const username = user.user_metadata?.['full_name'] || 
-                           user.user_metadata?.['user_name'] || 
-                           user.email || 
-                           'Utente';
-            return { discordId, username };
-        }
-        async function logout() {
-            if (!confirm('Sei sicuro di voler uscire?')) return;
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                window.location.href = '/login.html';
-            } catch (error) {
-                console.error('Errore durante il logout:', error);
-                showAlert('Errore durante il logout. Riprova.');
-            }
-        }
-        function handleEventTypeChange() {
-            const eventType = document.getElementById('event_type').value;
-            const packageGroup = document.getElementById('packageGroup');
-            const packageSelect = document.getElementById('org_package');
-            const packageLabel = document.getElementById('packageLabel');
-            const matrimonioPackages = document.getElementById('matrimonioPackages');
-            const funeralePackages = document.getElementById('funeralePackages');
-            const festaPackages = document.getElementById('festaPackages');
-            const altroPackages = document.getElementById('altroPackages');
-            matrimonioPackages.classList.remove('visible');
-            funeralePackages.classList.remove('visible');
-            festaPackages.classList.remove('visible');
-            altroPackages.classList.remove('visible');
-            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
-            if (eventType === 'matrimonio') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Matrimonio';
-                packageSelect.innerHTML += `
-                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
-                `;
-                matrimonioPackages.classList.add('visible');
-            } else if (eventType === 'funerale') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Funerale';
-                packageSelect.innerHTML += `
-                    <option value="funerale1">Funerale 1 - $25,000</option>
-                    <option value="funerale2">Funerale 2 - $45,000</option>
-                `;
-                funeralePackages.classList.add('visible');
-            } else if (eventType === 'festa') {
-                packageGroup.style.display = 'block';
-                packageLabel.textContent = 'Pacchetto Festa';
-                packageSelect.innerHTML += `
-                    <option value="festa1">Festa Generale 1 - $30,000</option>
-                    <option value="festa2">Festa Generale 2 - $55,000</option>
-                `;
-                festaPackages.classList.add('visible');
-            } else if (eventType === 'altro') {
-                packageGroup.style.display = 'none';
-                altroPackages.classList.add('visible');
+                
+                if (votes) {
+                    votes.forEach(v => userVotes[v.suggestion_id] = v.vote_type);
+                }
+
+                loadUserSuggestions();
+                loadRankedSuggestions();
             } else {
-                packageGroup.style.display = 'none';
+                window.location.href = 'login.html';
             }
-        }
-        function switchTab(tab) {
-            const suggestTab = document.getElementById('suggestForm');
-            const organizeTab = document.getElementById('organizeForm');
-            const tabs = document.querySelectorAll('.tab-btn');
-            tabs.forEach(t => t.classList.remove('active'));
-            if (tab === 'suggest') {
-                suggestTab.classList.add('active');
-                organizeTab.classList.remove('active');
-                tabs[0].classList.add('active');
-            } else {
-                suggestTab.classList.remove('active');
-                organizeTab.classList.add('active');
-                tabs[1].classList.add('active');
-            }
-        }
-        document.addEventListener('DOMContentLoaded', async () => {
-            const pageLoading = document.getElementById('pageLoading');
-            try {
-                currentUser = await getCurrentUser();
-                if (!currentUser) return;
-                document.getElementById('username').textContent = currentUser.username;
-                userVotes = await getUserVotes();
-                await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
-                pageLoading.classList.add('hidden');
-            } catch (error) {
-                console.error('Errore inizializzazione:', error);
-                window.location.href = '/login.html';
-            }
-        });
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = '/login.html';
-            }
-        });
+        };
     </script>
 </body>
 </html>
