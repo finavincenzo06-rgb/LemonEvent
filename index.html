@@ -125,7 +125,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         .suggestions-container {
-            flex: 1;
+            flex: 2;
             display: flex;
             gap: 30px;
         }
@@ -151,8 +151,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             position: relative;
@@ -164,7 +164,7 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -197,20 +197,20 @@
             color: #2196f3;
             font-size: 1.2em;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .post-content {
             color: #ccc;
             font-size: 0.95em;
-            margin-bottom: 12px;
-            /* ✅ CORREZIONE FINALE: FORZA IL TESTO A ANDARE A CAPO */
+            margin-bottom: 15px;
+            /* Forza il testo a andare a capo se troppo lungo */
             word-break: break-all;
             overflow-wrap: break-word;
         }
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
         .vote-btn {
@@ -526,14 +526,62 @@
                 flex-direction: column;
             }
         }
+
+        /* STILE PER I PACCHETTI (visibile solo quando si seleziona "Organizza Evento") */
+        .packages-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(33, 150, 243, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            display: none;
+        }
+        .packages-panel.visible {
+            display: block;
+        }
+        .package-info {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        .package-info h3 {
+            color: #2196f3;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+        .package-info h2 {
+            color: #2196f3;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+        .package-info p {
+            margin-bottom: 8px;
+        }
+        .package-info ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .package-info li {
+            margin-bottom: 6px;
+        }
+        .package-extra {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(33, 150, 243, 0.3);
+        }
     </style>
 </head>
 <body>
-    <div class="page-loading" id="pageLoading">
+    <!-- Loading screen senza testo -->
+    <div class="page-loading" id="pageLoading" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 9999;">
         <div class="loading-message">
-            <p>🔄 Verifica autenticazione in corso...</p>
+            <p style="color: #2196f3;">Caricamento...</p>
         </div>
     </div>
+
     <div class="blog-header">
         <div class="container">
             <div class="header-content">
@@ -551,6 +599,7 @@
             </div>
         </div>
     </div>
+
     <div class="container">
         <div class="main-content">
             <div class="form-section">
@@ -558,6 +607,7 @@
                     <button class="tab-btn active" onclick="switchTab('suggest')">💡 Suggerisci Evento</button>
                     <button class="tab-btn" onclick="switchTab('organize')">🎉 Organizza Evento</button>
                 </div>
+
                 <!-- Form Suggerimento -->
                 <div id="suggestForm" class="tab-content active">
                     <h2 class="form-title">Suggerisci un Nuovo Evento</h2>
@@ -584,6 +634,7 @@
                         <button type="submit" class="submit-btn">💡 Invia Suggerimento</button>
                     </form>
                 </div>
+
                 <!-- Form Organizzazione Evento -->
                 <div id="organizeForm" class="tab-content">
                     <h2 class="form-title">Organizza un Evento</h2>
@@ -631,25 +682,28 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <!-- NUOVA SEZIONE SUGGERIMENTI A DUE COLONNE -->
-        <div class="suggestions-container">
-            <!-- Suggerimenti dell'utente -->
-            <div class="suggestions-column">
-                <h2 class="section-title">I Tuoi Suggerimenti</h2>
-                <div id="userSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
+
+            <!-- COLONNA DINAMICA (SUGGERIMENTI O PACCHETTI) -->
+            <div class="suggestions-container">
+                <!-- Colonna 1: I Tuoi Suggerimenti (centrale) -->
+                <div id="userSuggestionsColumn" class="suggestions-column">
+                    <h2 class="section-title">I Tuoi Suggerimenti</h2>
+                    <div id="userSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
                 </div>
-            </div>
-            <!-- Classifica globale -->
-            <div class="suggestions-column">
-                <h2 class="section-title">🏆 Classifica Community</h2>
-                <div id="rankedSuggestionsList">
-                    <div class="loading-message">Caricamento...</div>
+
+                <!-- Colonna 2: Classifica Community (destra) -->
+                <div id="rankedSuggestionsColumn" class="suggestions-column">
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="success-popup" id="successPopup">
         <div class="success-text" id="successText">Operazione completata con successo!</div>
     </div>
@@ -657,7 +711,7 @@
         <div class="alert-popup-message" id="alertMessage"></div>
         <button class="alert-popup-btn" onclick="closeAlert()">Ok</button>
     </div>
-    <!-- Popup Modifica Suggerimento -->
+
     <div class="edit-popup" id="editPopup">
         <div class="edit-popup-content">
             <h2 class="edit-popup-title">✏️ Modifica Suggerimento</h2>
@@ -686,13 +740,14 @@
             </form>
         </div>
     </div>
+
     <script>
         const supabaseUrl = 'https://vdgpfhfztbnqzobtgkrb.supabase.co';
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkZ3BmaGZ6dGJucXpvYnRna3JiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3NzU4NDYsImV4cCI6MjA3NzM1MTg0Nn0.Wr-zs_Og1K48R9Fls2ImoeNKV6YGqtmkb2X5cbC-ZN8';
         const supabase = window.supabase.createClient(supabaseUrl.trim(), supabaseAnonKey.trim());
         let currentUser = null;
         let userVotes = {};
-        // ✅ FUNZIONE DI VOTO: UNA VOLTA SOLA, SENZA CAMBIO
+
         async function voteSuggestion(id, type) {
             if (!currentUser) {
                 showAlert("Devi essere loggato per votare.");
@@ -731,7 +786,7 @@
                 showAlert('Errore durante il voto. Riprova.');
             }
         }
-        // ✅ CARICA SOLO I SUGGERIMENTI DELL'UTENTE
+
         async function loadUserSuggestions() {
             const container = document.getElementById('userSuggestionsList');
             try {
@@ -755,7 +810,7 @@
                 container.innerHTML = `<div class="loading-message">Errore nel caricamento.</div>`;
             }
         }
-        // ✅ CARICA CLASSIFICA GLOBALE ORDINATA PER VOTI POSITIVI
+
         async function loadRankedSuggestions() {
             const container = document.getElementById('rankedSuggestionsList');
             try {
@@ -763,7 +818,7 @@
                     .from('suggestions')
                     .select('*')
                     .order('voti_positivi', { ascending: false })
-                    .limit(20); // Mostra top 20
+                    .limit(20);
                 if (error) throw error;
                 if (data.length === 0) {
                     container.innerHTML = `<div class="loading-message">Nessun suggerimento disponibile.</div>`;
@@ -775,7 +830,7 @@
                 container.innerHTML = `<div class="loading-message">Errore nel caricamento.</div>`;
             }
         }
-        // ✅ RENDERIZZA UN SUGGERIMENTO
+
         function renderSuggestion(s, isOwner) {
             const userVote = userVotes[s.id];
             const upVoteClass = userVote === 'up' ? 'voted' : '';
@@ -815,7 +870,7 @@
             </div>
             `;
         }
-        // --- RESTO DELLE FUNZIONI (inalterate rispetto al tuo file) ---
+
         function openEditPopup(suggestion) {
             document.getElementById('edit_suggestion_id').value = suggestion.id;
             document.getElementById('edit_title').value = suggestion.titolo;
@@ -824,10 +879,12 @@
             document.getElementById('edit_when').value = suggestion.quando;
             document.getElementById('editPopup').classList.add('show');
         }
+
         function closeEditPopup() {
             document.getElementById('editPopup').classList.remove('show');
             document.getElementById('editSuggestionForm').reset();
         }
+
         async function saveEditedSuggestion(e) {
             e.preventDefault();
             const id = document.getElementById('edit_suggestion_id').value;
@@ -851,6 +908,7 @@
                 showAlert('Errore durante la modifica. Riprova.');
             }
         }
+
         async function deleteSuggestion(id) {
             if (!confirm('Sei sicuro di voler eliminare questo suggerimento?')) return;
             try {
@@ -870,20 +928,24 @@
                 showAlert('Errore durante l\'eliminazione. Riprova.');
             }
         }
+
         function showSuccess(message = 'Operazione completata con successo!') {
             const popup = document.getElementById('successPopup');
             document.getElementById('successText').textContent = message;
             popup.classList.add('show');
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
+
         function showAlert(message) {
             const popup = document.getElementById('alertPopup');
             document.getElementById('alertMessage').textContent = message;
             popup.classList.add('show');
         }
+
         function closeAlert() {
             document.getElementById('alertPopup').classList.remove('show');
         }
+
         async function submitSuggestion(e) {
             e.preventDefault();
             if (!currentUser) return;
@@ -907,24 +969,33 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function submitEventOrganization(e) {
             e.preventDefault();
             if (!currentUser) return;
+            const eventType = document.getElementById('event_type').value;
+            let detailsPlaceholder = document.getElementById('org_details');
+            if (eventType === 'altro') {
+                detailsPlaceholder.value = ''; // reset
+                detailsPlaceholder.placeholder = 'Descrivi il tuo evento';
+            }
+
             const eventData = {
                 discordId: currentUser.discordId,
                 username: currentUser.username,
-                eventType: document.getElementById('event_type').value,
+                eventType: eventType,
                 fullname: document.getElementById('org_fullname').value,
                 eventDate: document.getElementById('org_date').value,
                 participants: document.getElementById('org_participants').value,
                 package: document.getElementById('org_package')?.value || null,
                 budget: document.getElementById('org_budget').value,
-                details: document.getElementById('org_details').value
+                details: detailsPlaceholder.value
             };
             try {
                 const saved = await saveEventOrganization(eventData);
                 if (saved) {
                     document.getElementById('eventOrganizationForm').reset();
+                    document.getElementById('org_details').placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
                     showSuccess('Richiesta inviata! Verrai contattato presto.');
                 }
             } catch (error) {
@@ -932,6 +1003,7 @@
                 showAlert('Errore durante l\'invio. Riprova.');
             }
         }
+
         async function saveSuggestion(suggestion) {
             const { data, error } = await supabase
                 .from('suggestions')
@@ -951,6 +1023,7 @@
             }
             return true;
         }
+
         async function saveEventOrganization(eventData) {
             const { data, error } = await supabase
                 .from('event_organizations')
@@ -973,6 +1046,7 @@
             }
             return true;
         }
+
         async function getUserVotes() {
             if (!currentUser) return {};
             try {
@@ -991,6 +1065,7 @@
                 return {};
             }
         }
+
         async function getCurrentUser() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (error || !session) {
@@ -1005,6 +1080,7 @@
                            'Utente';
             return { discordId, username };
         }
+
         async function logout() {
             if (!confirm('Sei sicuro di voler uscire?')) return;
             try {
@@ -1016,51 +1092,200 @@
                 showAlert('Errore durante il logout. Riprova.');
             }
         }
+
         function handleEventTypeChange() {
             const eventType = document.getElementById('event_type').value;
             const packageGroup = document.getElementById('packageGroup');
             const packageSelect = document.getElementById('org_package');
             const packageLabel = document.getElementById('packageLabel');
-            const matrimonioPackages = document.getElementById('matrimonioPackages');
-            const funeralePackages = document.getElementById('funeralePackages');
-            const festaPackages = document.getElementById('festaPackages');
-            const altroPackages = document.getElementById('altroPackages');
-            matrimonioPackages.classList.remove('visible');
-            funeralePackages.classList.remove('visible');
-            festaPackages.classList.remove('visible');
-            altroPackages.classList.remove('visible');
-            packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>';
+            const detailTextarea = document.getElementById('org_details');
+
+            // Nascondi il pannello dei pacchetti
+            document.getElementById('rankedSuggestionsColumn').innerHTML = '';
+
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Matrimonio';
-                packageSelect.innerHTML += `
-                    <option value="matrimonio1">Matrimonio 1 - $35,000</option>
-                    <option value="matrimonio2">Matrimonio 2 - $60,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="matrimonio1">Matrimonio 1 - $35,000</option>' +
+                                          '<option value="matrimonio2">Matrimonio 2 - $60,000</option>';
+
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <div class="package-info">
+                        <h2>💍 PACK MATRIMONIO – ORGANIZZAZIONE EVENTI DI LUSSO</h2>
+                        <p>Crea il giorno perfetto, noi ci occupiamo di tutto!</p>
+
+                        <h3>💒 MATRIMONIO 1 – $35,000</h3>
+                        <ul>
+                            <li>Affitto chiesa ⛪</li>
+                            <li>Celebrazione con prete ✝️</li>
+                            <li>Coordinamento base</li>
+                        </ul>
+
+                        <h3>👰🤵 MATRIMONIO 2 – $60,000</h3>
+                        <ul>
+                            <li>🚘 Trasporto sposa e sposo con arrivo in limousine di lusso</li>
+                            <li>💐 Affitto chiesa con decorazioni floreali personalizzate</li>
+                            <li>✝️ Celebrazione religiosa con prete</li>
+                            <li>⛳ Affitto campo da golf per celebrazione post-cerimonia</li>
+                            <li>🍽️ Buffet completo (fino a 50 persone)</li>
+                            <li>🎧 Servizio DJ incluso per tutta la durata dell’evento</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>🛥️ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>🚖 Trasporto al molo – Gratis</li>
+                                <li>🛥️ Barca di lusso per continuare la festa – Gratis</li>
+                                <li>🍷 Cibo e buffet sulla barca – Gratis</li>
+                                <li>📸 Fotografo professionista tutto il giorno – Gratis</li>
+                                <li>🎆 Fuochi d'artificio serali – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni aperte</strong><br>📩 Apri un ticket sul nostro Discord per maggiori chiarimenti</p>
+                        <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🎊 Un matrimonio da sogno inizia da una limousine... e finisce in barca! 🥂</p>
+                    </div>
                 `;
-                matrimonioPackages.classList.add('visible');
+                detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'funerale') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Funerale';
-                packageSelect.innerHTML += `
-                    <option value="funerale1">Funerale 1 - $25,000</option>
-                    <option value="funerale2">Funerale 2 - $45,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="funerale1">Funerale 1 - $25,000</option>' +
+                                          '<option value="funerale2">Funerale 2 - $45,000</option>';
+
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <div class="package-info">
+                        <h2>⚰️ PACK FUNERALE – RISPETTO, CLASSE E SERENITÀ</h2>
+                        <p>Onoriamo i tuoi cari con dignità e cura assoluta.</p>
+
+                        <h3>🕊️ FUNERALE 1 – $25,000</h3>
+                        <ul>
+                            <li>Sala del commiato con allestimento classico ⚰️</li>
+                            <li>Trasporto feretro con auto funebre di lusso 🚗</li>
+                            <li>Coordinamento cerimonia base</li>
+                        </ul>
+
+                        <h3>🕯️ FUNERALE 2 – $45,000</h3>
+                        <ul>
+                            <li>🕊️ Sala del commiato con allestimento premium (fiori, musica, video tributo)</li>
+                            <li>🚗 Trasporto con corteo funebre completo (auto per famiglia + feretro)</li>
+                            <li>✝️ Celebrazione religiosa privata con officiante</li>
+                            <li>🍽️ Rinfresco riservato per parenti stretti (fino a 30 persone)</li>
+                            <li>📸 Servizio fotografico commemorativo</li>
+                            <li>🎼 Musica d’ambiente con pianista live</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>🕯️ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>📜 Libro dei ricordi digitale – Gratis</li>
+                                <li>🎥 Video tributo con montaggio professionale – Gratis</li>
+                                <li>🕊️ Colombe bianche liberate dopo la cerimonia – Gratis</li>
+                                <li>🧯 Servizio sorveglianza e sicurezza discreta – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenotazioni immediate disponibili 24/7</strong><br>📩 Apri un ticket sul nostro Discord per assistenza riservata</p>
+                        <p style="text-align: center; margin-top: 15px;">🕊️ Perché ogni addio merita la massima eleganza.</p>
+                    </div>
                 `;
-                funeralePackages.classList.add('visible');
+                detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'festa') {
                 packageGroup.style.display = 'block';
                 packageLabel.textContent = 'Pacchetto Festa';
-                packageSelect.innerHTML += `
-                    <option value="festa1">Festa Generale 1 - $30,000</option>
-                    <option value="festa2">Festa Generale 2 - $55,000</option>
+                packageSelect.innerHTML = '<option value="">-- Scegli un pacchetto (opzionale) --</option>' +
+                                          '<option value="festa1">Festa Generale 1 - $30,000</option>' +
+                                          '<option value="festa2">Festa Generale 2 - $55,000</option>';
+
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <div class="package-info">
+                        <h2>🎉 PACK FESTA – DIVERTIMENTO SENZA LIMITI</h2>
+                        <p>Che sia un compleanno, una serata privata o un evento aziendale… noi lo rendiamo indimenticabile!</p>
+
+                        <h3>🎊 FESTA 1 – $30,000</h3>
+                        <ul>
+                            <li>Location esclusiva (villa o rooftop) 🏙️</li>
+                            <li>Servizio bar completo 🍸</li>
+                            <li>Sicurezza e staff organizzativo 🛡️</li>
+                            <li>Decorazioni a tema base 🎈</li>
+                        </ul>
+
+                        <h3>🎪 FESTA 2 – $55,000</h3>
+                        <ul>
+                            <li>🎇 Location premium con vista panoramica</li>
+                            <li>🎤 Intrattenimento live (DJ + artista ospite)</li>
+                            <li>🍽️ Cena gourmet + open bar premium</li>
+                            <li>🚗 Servizio navetta per gli ospiti</li>
+                            <li>🎆 Spettacolo di luci e fuochi d’artificio</li>
+                            <li>📸 Photobooth + fotografo professionista</li>
+                        </ul>
+
+                        <div class="package-extra">
+                            <h3>✨ AGGIUNTE EXTRA (personalizzabili)</h3>
+                            <ul>
+                                <li>🎈 Palloncini giganti a elio con logo – Gratis</li>
+                                <li>🍾 Bottiglia di champagne per ogni tavolo – Gratis</li>
+                                <li>🎁 Pacchetti gadget per gli ospiti – Gratis</li>
+                                <li>🧊 Ice sculpture personalizzata – Gratis</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;"><strong>📆 Prenota con almeno 14 giorni di anticipo</strong><br>📩 Apri un ticket sul nostro Discord per personalizzare la tua festa</p>
+                        <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🥳 La notte è giovane… e la tua festa lo sarà ancora di più!</p>
+                    </div>
                 `;
-                festaPackages.classList.add('visible');
+                detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
+
             } else if (eventType === 'altro') {
                 packageGroup.style.display = 'none';
-                altroPackages.classList.add('visible');
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <div class="package-info">
+                        <h2>📌 ALTRO – CREA IL TUO EVENTO SU MISURA</h2>
+                        <p>Nessun limite, solo la tua immaginazione.</p>
+
+                        <h3>✍️ DESCRIVI IL TUO EVENTO</h3>
+                        <ul>
+                            <li>📍 Location desiderata (possiamo trovare noi la perfetta!)</li>
+                            <li>🕒 Data e orario</li>
+                            <li>🧑‍🤝‍🧑 Numero stimato di partecipanti</li>
+                            <li>💡 Idee, temi, richieste particolari</li>
+                            <li>💰 Budget indicativo (opzionale)</li>
+                        </ul>
+
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(33, 150, 243, 0.3);">
+                            <p><strong>🔹 Servizi sempre inclusi:</strong></p>
+                            <ul>
+                                <li>Coordinatore personale dedicato</li>
+                                <li>Sicurezza certificata</li>
+                                <li>Assistenza logistica 24/7</li>
+                                <li>Supporto post-evento (pulizia, reso materiali, ecc.)</li>
+                            </ul>
+                        </div>
+
+                        <p style="text-align: center; margin-top: 20px;">📩 <strong>Non sai da dove iniziare?</strong><br>Parlane con noi su Discord! Il nostro team ti guiderà passo dopo passo per realizzare <strong>qualsiasi idea</strong>, per quanto stravagante o originale.</p>
+                        <p style="text-align: center; margin-top: 15px;">✨ Il tuo evento. La nostra missione.</p>
+                    </div>
+                `;
+                detailTextarea.placeholder = 'Descrivi il tuo evento';
+
             } else {
                 packageGroup.style.display = 'none';
+                // Mostra la classifica community se nessun tipo è selezionato
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
+                `;
+                // Ricarica la classifica
+                loadRankedSuggestions();
             }
         }
+
         function switchTab(tab) {
             const suggestTab = document.getElementById('suggestForm');
             const organizeTab = document.getElementById('organizeForm');
@@ -1070,12 +1295,30 @@
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
+                // Mostra i suggerimenti e la classifica
+                document.getElementById('userSuggestionsColumn').style.display = 'block';
+                document.getElementById('rankedSuggestionsColumn').style.display = 'block';
+                document.getElementById('rankedSuggestionsColumn').innerHTML = `
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
+                `;
+                loadRankedSuggestions();
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
+                // Nascondi i suggerimenti dell'utente e mostra i pacchetti
+                document.getElementById('userSuggestionsColumn').style.display = 'block';
+                document.getElementById('rankedSuggestionsColumn').style.display = 'block';
+                // Resetta il pannello dei pacchetti
+                document.getElementById('rankedSuggestionsColumn').innerHTML = '';
+                // Carica i pacchetti se è già selezionato un tipo di evento
+                handleEventTypeChange();
             }
         }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const pageLoading = document.getElementById('pageLoading');
             try {
@@ -1084,12 +1327,13 @@
                 document.getElementById('username').textContent = currentUser.username;
                 userVotes = await getUserVotes();
                 await Promise.all([loadUserSuggestions(), loadRankedSuggestions()]);
-                pageLoading.classList.add('hidden');
+                pageLoading.style.display = 'none';
             } catch (error) {
                 console.error('Errore inizializzazione:', error);
                 window.location.href = '/login.html';
             }
         });
+
         supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/login.html';
