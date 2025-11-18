@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>LemonCity Events</title>
-    <link rel="icon" href="fotosito.png" type="image/png">
+    <link rel="icon" href="fotosito.png" type="image/png" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -124,20 +124,37 @@
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
+        /* Modifiche: aumento larghezza e leggibilità delle colonne suggerimenti */
         .suggestions-container {
-            flex: 2;
             display: flex;
             gap: 30px;
         }
         .suggestions-column {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.03);
+            flex: 1.5; /* più larga */
+            background: rgba(255, 255, 255, 0.07); /* sfondo più visibile */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px; /* più padding per leggibilità */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            font-size: 1.1em; /* testo più grande */
+            max-width: 600px; /* limite massimo larghezza */
         }
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .suggestions-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .suggestions-column {
+                width: 90%;
+                max-width: none;
+                margin-bottom: 20px;
+            }
+        }
+        /* Resto delle classi rimane invariato */
         .section-title {
             color: #2196f3;
             font-size: 1.6em;
@@ -203,8 +220,7 @@
             color: #ccc;
             font-size: 0.95em;
             margin-bottom: 15px;
-            /* Forza il testo a andare a capo se troppo lungo */
-            word-break: break-all;
+            word-break: break-word;
             overflow-wrap: break-word;
         }
         .post-meta {
@@ -503,31 +519,7 @@
             background: #f44336;
             color: #fff;
         }
-        @media (max-width: 1200px) {
-            .main-content {
-                flex-direction: column;
-            }
-            .suggestions-container {
-                flex-direction: column;
-            }
-            .user-section, .admin-link {
-                position: static;
-                display: flex;
-                justify-content: center;
-                margin-top: 15px;
-            }
-            .user-section {
-                flex-direction: column;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .form-tabs {
-                flex-direction: column;
-            }
-        }
-
-        /* STILE PER I PACCHETTI (visibile solo quando si seleziona "Organizza Evento") */
+        /* Stile per i pacchetti (sezione visibile solo quando si seleziona "Organizza Evento") */
         .packages-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -716,10 +708,10 @@
         <div class="edit-popup-content">
             <h2 class="edit-popup-title">✏️ Modifica Suggerimento</h2>
             <form id="editSuggestionForm" onsubmit="saveEditedSuggestion(event)">
-                <input type="hidden" id="edit_suggestion_id">
+                <input type="hidden" id="edit_suggestion_id" />
                 <div class="form-group">
                     <label>Titolo dell'Evento *</label>
-                    <input type="text" id="edit_title" required>
+                    <input type="text" id="edit_title" required />
                 </div>
                 <div class="form-group">
                     <label>Descrizione *</label>
@@ -731,7 +723,7 @@
                 </div>
                 <div class="form-group">
                     <label>Quando? *</label>
-                    <input type="text" id="edit_when" required>
+                    <input type="text" id="edit_when" required />
                 </div>
                 <div class="edit-popup-buttons">
                     <button type="submit" class="save-edit-btn">💾 Salva Modifiche</button>
@@ -772,7 +764,7 @@
                     .select(field)
                     .eq('id', id)
                     .single();
-                if (fetchError) throw fetchError;
+                if (error) throw error;
                 const newCount = data[field] + 1;
                 const { error: updateError } = await supabase
                     .from('suggestions')
@@ -976,7 +968,7 @@
             const eventType = document.getElementById('event_type').value;
             let detailsPlaceholder = document.getElementById('org_details');
             if (eventType === 'altro') {
-                detailsPlaceholder.value = ''; // reset
+                detailsPlaceholder.value = '';
                 detailsPlaceholder.placeholder = 'Descrivi il tuo evento';
             }
 
