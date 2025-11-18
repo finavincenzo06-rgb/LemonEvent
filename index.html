@@ -151,8 +151,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(33, 150, 243, 0.2);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 25px; /* Aumentato da 20px a 25px per più spazio */
+            margin-bottom: 25px; /* Aumentato da 20px a 25px per più spazio tra i suggerimenti */
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             position: relative;
@@ -164,7 +164,7 @@
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 12px;
+            margin-bottom: 15px; /* Aumentato da 12px a 15px */
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -197,17 +197,17 @@
             color: #2196f3;
             font-size: 1.2em;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 10px; /* Aumentato da 8px a 10px */
         }
         .post-content {
             color: #ccc;
             font-size: 0.95em;
-            margin-bottom: 12px;
+            margin-bottom: 15px; /* Aumentato da 12px a 15px */
         }
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px; /* Aumentato da 12px a 15px */
             flex-wrap: wrap;
         }
         .vote-btn {
@@ -677,23 +677,22 @@
                         </div>
                         <button type="submit" class="submit-btn">🎉 Invia Richiesta</button>
                     </form>
-
-                    <!-- PANNELLO DINAMICO DEI PACCHETTI (si mostra solo in "Organizza Evento") -->
-                    <div id="packagesPanel" class="packages-panel">
-                        <!-- Pacchetti verranno inseriti qui dinamicamente -->
-                    </div>
                 </div>
             </div>
 
-            <!-- COLONNA DEI SUGGERIMENTI (A DESTRA) -->
+            <!-- COLONNA DINAMICA (SUGGERIMENTI O PACCHETTI) -->
             <div class="suggestions-container">
-                <div class="suggestions-column">
+                <!-- Colonna 1: I Tuoi Suggerimenti (visibile solo in "Suggerisci Evento") -->
+                <div id="userSuggestionsColumn" class="suggestions-column">
                     <h2 class="section-title">I Tuoi Suggerimenti</h2>
                     <div id="userSuggestionsList">
                         <div class="loading-message">Caricamento...</div>
                     </div>
                 </div>
-                <div class="suggestions-column">
+
+                <!-- Colonna 2: Classifica Community o Pacchetti (visibile solo in "Suggerisci Evento" o "Organizza Evento") -->
+                <div id="rightColumn" class="suggestions-column">
+                    <!-- Questo contenuto verrà cambiato dinamicamente -->
                     <h2 class="section-title">🏆 Classifica Community</h2>
                     <div id="rankedSuggestionsList">
                         <div class="loading-message">Caricamento...</div>
@@ -1097,12 +1096,10 @@
             const packageGroup = document.getElementById('packageGroup');
             const packageSelect = document.getElementById('org_package');
             const packageLabel = document.getElementById('packageLabel');
-            const packagesPanel = document.getElementById('packagesPanel');
             const detailTextarea = document.getElementById('org_details');
 
-            // Resetta il pannello dei pacchetti
-            packagesPanel.innerHTML = '';
-            packagesPanel.classList.remove('visible');
+            // Nascondi il pannello dei pacchetti
+            document.getElementById('rightColumn').innerHTML = '';
 
             if (eventType === 'matrimonio') {
                 packageGroup.style.display = 'block';
@@ -1111,7 +1108,7 @@
                                           '<option value="matrimonio1">Matrimonio 1 - $35,000</option>' +
                                           '<option value="matrimonio2">Matrimonio 2 - $60,000</option>';
 
-                packagesPanel.innerHTML = `
+                document.getElementById('rightColumn').innerHTML = `
                     <div class="package-info">
                         <h2>💍 PACK MATRIMONIO – ORGANIZZAZIONE EVENTI DI LUSSO</h2>
                         <p>Crea il giorno perfetto, noi ci occupiamo di tutto!</p>
@@ -1148,7 +1145,6 @@
                         <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🎊 Un matrimonio da sogno inizia da una limousine... e finisce in barca! 🥂</p>
                     </div>
                 `;
-                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
 
             } else if (eventType === 'funerale') {
@@ -1158,7 +1154,7 @@
                                           '<option value="funerale1">Funerale 1 - $25,000</option>' +
                                           '<option value="funerale2">Funerale 2 - $45,000</option>';
 
-                packagesPanel.innerHTML = `
+                document.getElementById('rightColumn').innerHTML = `
                     <div class="package-info">
                         <h2>⚰️ PACK FUNERALE – RISPETTO, CLASSE E SERENITÀ</h2>
                         <p>Onoriamo i tuoi cari con dignità e cura assoluta.</p>
@@ -1194,7 +1190,6 @@
                         <p style="text-align: center; margin-top: 15px;">🕊️ Perché ogni addio merita la massima eleganza.</p>
                     </div>
                 `;
-                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
 
             } else if (eventType === 'festa') {
@@ -1204,7 +1199,7 @@
                                           '<option value="festa1">Festa Generale 1 - $30,000</option>' +
                                           '<option value="festa2">Festa Generale 2 - $55,000</option>';
 
-                packagesPanel.innerHTML = `
+                document.getElementById('rightColumn').innerHTML = `
                     <div class="package-info">
                         <h2>🎉 PACK FESTA – DIVERTIMENTO SENZA LIMITI</h2>
                         <p>Che sia un compleanno, una serata privata o un evento aziendale… noi lo rendiamo indimenticabile!</p>
@@ -1241,12 +1236,11 @@
                         <p style="text-align: center; margin-top: 15px; font-size: 1.1em;">🥳 La notte è giovane… e la tua festa lo sarà ancora di più!</p>
                     </div>
                 `;
-                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi cosa hai in mente per il tuo evento, location preferita, servizi richiesti, ecc...';
 
             } else if (eventType === 'altro') {
                 packageGroup.style.display = 'none';
-                packagesPanel.innerHTML = `
+                document.getElementById('rightColumn').innerHTML = `
                     <div class="package-info">
                         <h2>📌 ALTRO – CREA IL TUO EVENTO SU MISURA</h2>
                         <p>Nessun limite, solo la tua immaginazione.</p>
@@ -1274,12 +1268,19 @@
                         <p style="text-align: center; margin-top: 15px;">✨ Il tuo evento. La nostra missione.</p>
                     </div>
                 `;
-                packagesPanel.classList.add('visible');
                 detailTextarea.placeholder = 'Descrivi il tuo evento';
 
             } else {
                 packageGroup.style.display = 'none';
-                packagesPanel.classList.remove('visible');
+                // Mostra la classifica community se nessun tipo è selezionato
+                document.getElementById('rightColumn').innerHTML = `
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
+                `;
+                // Ricarica la classifica
+                loadRankedSuggestions();
             }
         }
 
@@ -1292,13 +1293,26 @@
                 suggestTab.classList.add('active');
                 organizeTab.classList.remove('active');
                 tabs[0].classList.add('active');
-                // Nascondi il pannello dei pacchetti quando si va su Suggerisci
-                document.getElementById('packagesPanel').classList.remove('visible');
+                // Mostra i suggerimenti e la classifica
+                document.getElementById('userSuggestionsColumn').style.display = 'block';
+                document.getElementById('rightColumn').style.display = 'block';
+                document.getElementById('rightColumn').innerHTML = `
+                    <h2 class="section-title">🏆 Classifica Community</h2>
+                    <div id="rankedSuggestionsList">
+                        <div class="loading-message">Caricamento...</div>
+                    </div>
+                `;
+                loadRankedSuggestions();
             } else {
                 suggestTab.classList.remove('active');
                 organizeTab.classList.add('active');
                 tabs[1].classList.add('active');
-                // Mostra il pannello dei pacchetti se è già selezionato un tipo di evento
+                // Nascondi i suggerimenti dell'utente e mostra i pacchetti
+                document.getElementById('userSuggestionsColumn').style.display = 'none';
+                document.getElementById('rightColumn').style.display = 'block';
+                // Resetta il pannello dei pacchetti
+                document.getElementById('rightColumn').innerHTML = '';
+                // Carica i pacchetti se è già selezionato un tipo di evento
                 handleEventTypeChange();
             }
         }
